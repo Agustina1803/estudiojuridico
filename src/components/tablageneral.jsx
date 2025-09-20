@@ -4,14 +4,14 @@ const Tablageneral = ({ columnas,filas }) => {
   return (
     <>
       <Table striped bordered hover>
-        <thead >
+        <thead className="text-center">
           <tr>
             {columnas.map((columna, indicecolumna) => (
               <th key={indicecolumna}>{columna}</th>
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="text-center">
           
             {filas.map((fila, indicefila) => (
               <tr key={indicefila}>
