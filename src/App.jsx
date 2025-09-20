@@ -1,12 +1,13 @@
-import { Tablageneral } from './components/tablageneral'
+
 import './App.css'
+import Testabla from './components/testabla'
 
 function App() {
   
 
   return (
     <>
-     <Tablageneral/>
+     <Testabla/>
     </>
   )
 }

@@ -2,15 +2,22 @@ import { Table } from "react-bootstrap";
 
 const Tablageneral = ({ columnas }) => {
   return (
-    <Table>
+    <>
+      <Table>
       <thead>
         <tr>
-            {columnas.map((columnas,indicecolumnas)=>(
-                <th key={indicecolumnas}>{columnas}</th>
+            {columnas.map((columna,indicecolumna)=>(
+                <th key={indicecolumna}>{columna}</th>
             ))}
         </tr>
       </thead>
+      <tbody>
+
+      </tbody>
     </Table>
+    </>
+  
+    
   );
 };
 
