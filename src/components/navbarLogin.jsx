@@ -1,7 +1,20 @@
-import React from 'react'
+import { RegistroPage} from 'react-bootstrap';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import Form from 'react-bootstrap/Form';
 
-export const navbarLogin = () => {
+export function RegistroPage() {
   return (
-    <div>navbarLogin</div>
-  )
+    <>
+      <FloatingLabel
+        controlId="floatingInput"
+        label="Email address"
+        className="mb-3"
+      >
+        <Form.Control type="email" placeholder="name@example.com" />
+      </FloatingLabel>
+      <FloatingLabel controlId="floatingPassword" label="Password">
+        <Form.Control type="password" placeholder="Password" />
+      </FloatingLabel>
+    </>
+  );
 }
