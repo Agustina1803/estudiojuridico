@@ -15,7 +15,7 @@ const actionMap = {
   eliminar: { icon: <FaTrash />, variant: 'danger', label: 'Eliminar' },
   agregar: { icon: <FaPlus />, variant: 'success', label: 'Agregar' },
   enviar: { icon: <FaPaperPlane />, variant: 'primary', label: 'Enviar' },
-  cerrar: { icon: <FaSignOutAlt />, variant: 'danger', label: 'Cerrar sesión' },
+  cerrar: { icon: <FaSignOutAlt />, variant: 'danger', label: 'Cerrar sesion' },
   iniciar: { icon: <FaSignOutAlt />, variant: 'success', label: 'Iniciar sesión' },
   descargar: { icon: <FaDownload />, variant: 'secondary', label: 'Descargar' }
 };
