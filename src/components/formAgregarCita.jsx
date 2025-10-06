@@ -3,7 +3,8 @@ import { Modal, Button, Form, Row, Col, Alert } from 'react-bootstrap';
 
 const ModalAgregarCita = () => {
   const [show, setShow] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
   const [formData, setFormData] = useState({
     fecha: '',
     hora: '',
@@ -20,10 +21,24 @@ const ModalAgregarCita = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Validar campos obligatorios
+    if (
+      formData.fecha.trim() === '' ||
+      formData.hora.trim() === '' ||
+      formData.cliente.trim() === '' ||
+      formData.notas.trim() === ''
+    ) {
+      setShowError(true);
+      setShowSuccess(false);
+      return;
+    }
+
     console.log('Cita guardada:', formData);
 
     // Mostrar alerta de éxito
-    setShowAlert(true);
+    setShowSuccess(true);
+    setShowError(false);
 
     // Limpiar formulario
     setFormData({
@@ -34,8 +49,6 @@ const ModalAgregarCita = () => {
       tipoEvento: 'Audiencia',
       notas: ''
     });
-
-    // El modal permanece abierto
   };
 
   const handleCancel = () => {
@@ -47,7 +60,8 @@ const ModalAgregarCita = () => {
       tipoEvento: 'Audiencia',
       notas: ''
     });
-    setShowAlert(false);
+    setShowSuccess(false);
+    setShowError(false);
     setShow(false);
   };
 
@@ -62,9 +76,14 @@ const ModalAgregarCita = () => {
           <Modal.Title>Nueva Cita</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {showAlert && (
-            <Alert variant="success" onClose={() => setShowAlert(false)} dismissible>
+          {showSuccess && (
+            <Alert variant="success" onClose={() => setShowSuccess(false)} dismissible>
               ¡La cita fue agregada exitosamente!
+            </Alert>
+          )}
+          {showError && (
+            <Alert variant="danger" onClose={() => setShowError(false)} dismissible>
+              Por favor completá todos los campos obligatorios.
             </Alert>
           )}
 
