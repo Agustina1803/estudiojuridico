@@ -1,0 +1,22 @@
+.styloHeader{
+  background-color: #1E3A5F;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* equivalente a shadow-md */
+display: flex;
+justify-content: end;
+
+}
+
+.botonCerrarSesion{
+   color:white;
+   background-color:transparent;
+   border-radius: 10px;
+   padding: 10px;
+   transition: background-color 0.3s ease;
+   border: 2px solid white;
+   
+
+}
+.botonCerrarSesion:hover {
+background-color: white;
+color: black;
+}
