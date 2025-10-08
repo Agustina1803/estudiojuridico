@@ -1,24 +1,45 @@
 // src/assets/Components/RegistroPage.jsx
-import { FloatingLabel, Form, Button } from 'react-bootstrap';
+import { FloatingLabel, Form, Button, Card } from 'react-bootstrap';
+import '../styles/RegistroPage.css'
 
 export function RegistroPage() {
   return (
-    <div className="container mt-5" style={{ maxWidth: '400px' }}>
-      <h2 className="mb-4 text-center">Registro</h2>
+    <Card border="primary" className='FormRegistro'>
       <Form>
-        <FloatingLabel controlId="floatingEmail" label="Correo electrónico" className="mb-3">
-          <Form.Control type="email" placeholder="nombre@ejemplo.com" />
-        </FloatingLabel>
+        <div>
+          <h3 className='text-center'>Iniciar Sesión</h3>
+        </div>
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>Email</Form.Label>
+          <Form.Control type="email" placeholder="Enter email" />
+          <Form.Text className="text-muted">
+          </Form.Text>
+        </Form.Group>
 
-        <FloatingLabel controlId="floatingPassword" label="Contraseña" className="mb-3">
-          <Form.Control type="password" placeholder="Contraseña" />
-        </FloatingLabel>
+        <Form.Group className="mb-3" controlId="formBasicPassword">
+          <Form.Label>Contraseña</Form.Label>
+          <Form.Control type="password" placeholder="Password" />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="formBasicCheckbox">
+          <Form.Check type="checkbox" label="Recuérdame" />
+        </Form.Group>
+        <div className='d-flex justify-content-center'>
+          <Button variant="primary" type="submit" className='w-100'>
+            Iniciar Sesión
+          </Button>
+        </div >
+        <div className='d-flex justify-content-center mt-2'>
+        <p>O</p>
+        </div>
+        <div className='d-flex justify-content-center mb-2'>
+          <Button variant="primary" type="submit" className='w-100'>
+            Continuar con Google
+          </Button>
+        </div>
+        </Form>
 
-        <Button variant="primary" type="submit" className="w-100">
-          Registrarse
-        </Button>
-      </Form>
-    </div>
+      <a href="#" className='text-center'>Olvidé mi contraseña</a>
+    </Card>
   )
 };
 
