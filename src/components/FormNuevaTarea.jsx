@@ -6,7 +6,7 @@ const FormNuevaTarea = ({ mostrar, cerrar }) => {
   const {
     register,
     handleSubmit,
-    watch,
+    reset,
     formState: { errors },
   } = useForm();
 
@@ -14,7 +14,6 @@ const FormNuevaTarea = ({ mostrar, cerrar }) => {
     data.id = uuidv4();
     console.log(data);
     reset();
-    cerrar();
   };
 
   return (
