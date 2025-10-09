@@ -31,7 +31,7 @@ const LateralMenu = ({ onSelect, title = 'Panel principal' }) => {
     <aside className="d-flex flex-column h-100 bg-light border-end">
       <div className="p-3 border-bottom">
         <h4 className="mb-0">{title}</h4>
-        <small className="text-muted">Selecciona una opción para continuar</small>
+        <small className="text-muted">Selecciona una opción para continuar o no</small>
       </div>
 
       <ListGroup variant="flush" className="flex-grow-1">
