@@ -8,9 +8,16 @@ const FormNuevaTarea = ({ mostrar, cerrar }) => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      descripcion: "",
+      responsable: "Dr.Gómez",
+      prioridad: "alta",
+      fecha: "",
+    },
+  });
 
-  const crearCita = (data) => {
+  const crearNuevaTarea = (data) => {
     data.id = uuidv4();
     console.log(data);
     reset();
@@ -22,7 +29,7 @@ const FormNuevaTarea = ({ mostrar, cerrar }) => {
         <Modal.Title>Nueva Tarea</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={handleSubmit(crearCita)}>
+        <Form onSubmit={handleSubmit(crearNuevaTarea)}>
           <Form.Group className="mb-3" controlId="descripcion">
             <Form.Label>Descripcion</Form.Label>
             <Form.Control
@@ -75,8 +82,7 @@ const FormNuevaTarea = ({ mostrar, cerrar }) => {
               {errors.fecha?.message}
             </Form.Text>
           </Form.Group>
-        </Form>
-        <div className="justify-content-end d-flex">
+                  <div className="justify-content-end d-flex">
           <Button variant="success" type="submit" className="me-2">
             Guardar
           </Button>
@@ -84,6 +90,7 @@ const FormNuevaTarea = ({ mostrar, cerrar }) => {
             Cancelar
           </Button>
         </div>
+        </Form>
       </Modal.Body>
       <Modal.Footer></Modal.Footer>
     </Modal>
