@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "react-bootstrap";
-import FormSubirArchivo from "./components/FormSubirArchivo";
+
 
 function App() {
   const [mostrarModal, setMostrarModal] = useState(false);
