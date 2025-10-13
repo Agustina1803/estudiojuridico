@@ -18,7 +18,7 @@ export function RegistroPage() {
       <Form onSubmit={handleSubmit()}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" {...register("Email", {
+          <Form.Control type="email" placeholder="Enter email" {...register("formBasicEmail", {
             required: "El correo es obligatorio",
             pattern: {
               value: /^[a-z0-9!#$%&'+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'+/=?^_`{|}~-]+)@(?:[a-z0-9](?:[a-z0-9-][a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/,
