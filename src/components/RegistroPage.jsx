@@ -32,8 +32,8 @@ export function RegistroPage() {
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Contraseña</Form.Label>
-          <Form.Control type="password" placeholder="Password" 
-          {...register("Password", {
+          <Form.Control type="password" placeholder="Contraseña" 
+          {...register("formBasicPassword", {
             required: "La contraseña es obligatorio",
             pattern: {
               value: /^(?=.\d)(?=.[\u0021-\u002b\u003c-\u0040])(?=.[A-Z])(?=.[a-z])\S{8,16}$/,
