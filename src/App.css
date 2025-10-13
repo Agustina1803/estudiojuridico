@@ -1,19 +1,24 @@
-.styloHeader{
-  height: 64px;
-  padding: 0 16px; /* valor por defecto (mobile) */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #1E3A5F;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* equivalente a shadow-md */
-  position: sticky; /* opcional */
-  top: 0;           /* opcional */
-  z-index: 50;      /* opcional */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
-/* Desktop */
-@media (min-width: 768px) {
-  header {
-    padding: 0 24px;
-  }
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
+
+.main-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+
