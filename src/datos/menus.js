@@ -1,36 +1,36 @@
-// Datos de los menús laterales
 export const menues = {
-  admin: [
-    { titulo: "🏠 Inicio", enlace: "./adminPage.html", seccion: "principal" },
-    { subtitulo: "Gestión" },
-    { titulo: "👥 Usuarios", enlace: "./usuariosPage.html", seccion: "gestion" },
-    { titulo: "⚖️ Abogados", enlace: "./abogadosPage.html", seccion: "gestion" },
-    { titulo: "📋 Secretaría", enlace: "./secretariaPage.html", seccion: "gestion" },
-    { subtitulo: "Administración" },
-    { titulo: "📂 Documentos", enlace: "./documentosPage.html", seccion: "admin" },
-    { titulo: "📊 Reportes", enlace: "./reportesPage.html", seccion: "admin" },
-    { titulo: "⚙️ Configuración", enlace: "./configuracionPage.html", seccion: "admin" },
-  ],
-
-  abogado: [
-    { titulo: "🏠 Inicio", enlace: "./adminPage.html", seccion: "principal" },
-    { subtitulo: "Gestión" },
-    { titulo: "👥 Usuarios", enlace: "./usuariosPage.html", seccion: "gestion" },
-    { titulo: "⚖️ Abogados", enlace: "./abogadosPage.html", seccion: "gestion" },
-    { titulo: "📋 Secretaría", enlace: "./secretariaPage.html", seccion: "gestion" },
-    { subtitulo: "Administración" },
-    { titulo: "📂 Documentos", enlace: "./documentosPage.html", seccion: "admin" },
-    { titulo: "📊 Reportes", enlace: "./reportesPage.html", seccion: "admin" },
-    { titulo: "⚙️ Configuración", enlace: "./configuracionPage.html", seccion: "admin" },
-  ],
-
-  secretaria: [
-    { titulo: "🏠 Inicio", enlace: "./inicioSecre.html", seccion: "principal" },
-    { titulo: "📅 Agenda", enlace: "./agendaSecre.html", seccion: "tareas" },
-    { titulo: "👥 Clientes", enlace: "./clientSecre.html", seccion: "tareas" },
-    { titulo: "📂 Documentos", enlace: "./docSecre.html", seccion: "tareas" },
-    { titulo: "✅ Tareas", enlace: "./tareaSecre.html", seccion: "tareas" },
-    { titulo: "💰 Facturación", enlace: "./facturacionSecre.html", seccion: "tareas" },
-    { titulo: "📊 Informes", enlace: "./informesSecre.html", seccion: "tareas" },
-  ],
+  admin: {
+    titulo: "Administrador",
+    items: [
+      { key: "inicio", icono: "🏠", nombre: "Inicio" },
+      { key: "usuarios", icono: "👥", nombre: "Usuarios" },
+      { key: "abogados", icono: "⚖️", nombre: "Abogados" },
+      { key: "secretaria", icono: "📋", nombre: "Secretaría" },
+      { key: "documentos", icono: "📂", nombre: "Documentos" },
+      { key: "reportes", icono: "📊", nombre: "Reportes" },
+      { key: "configuracion", icono: "⚙️", nombre: "Configuración" },
+    ],
+  },
+  abogado: {
+    titulo: "Abogado",
+    items: [
+      { key: "inicio", icono: "🏠", nombre: "Inicio" },
+      { key: "clientes", icono: "👥", nombre: "Clientes" },
+      { key: "expedientes", icono: "📂", nombre: "Expedientes" },
+      { key: "reportes", icono: "📊", nombre: "Reportes" },
+      { key: "ajustes", icono: "⚙️", nombre: "Ajustes" },
+    ],
+  },
+  secretaria: {
+    titulo: "Secretaría",
+    items: [
+      { key: "inicio", icono: "🏠", nombre: "Inicio" },
+      { key: "agenda", icono: "📅", nombre: "Agenda" },
+      { key: "clientes", icono: "👥", nombre: "Clientes" },
+      { key: "documentos", icono: "📂", nombre: "Documentos" },
+      { key: "tareas", icono: "✅", nombre: "Tareas" },
+      { key: "facturacion", icono: "💰", nombre: "Facturación" },
+      { key: "informes", icono: "📊", nombre: "Informes" },
+    ],
+  },
 };
