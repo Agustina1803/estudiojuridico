@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route,} from 'react-router-dom'
+import { BrowserRouter, Routes, Route, } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
 import { LoginPages } from './pages/LoginPages'
@@ -7,12 +7,11 @@ import { AbogPages } from './pages/AbogPages'
 import { SecrePages } from './pages/SecrePages'
 import { ErrorPages } from './pages/ErrorPages'
 
-
 function App() {
 
 
   return (
-    
+      
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<LoginPages />} />
