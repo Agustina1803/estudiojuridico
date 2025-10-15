@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route,} from 'react-router-dom'
+import { BrowserRouter, Routes, Route, } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import Footer from "./shared/footer.jsx";
@@ -8,10 +8,9 @@ import { AbogPages } from './pages/AbogPages'
 import { SecrePages } from './pages/SecrePages'
 import { ErrorPages } from './pages/ErrorPages'
 
-
-
 function App() {
   return (
+      
     <BrowserRouter>
       <div className="app-layout">
         <main className="main-content">
