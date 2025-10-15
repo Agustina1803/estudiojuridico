@@ -6,7 +6,7 @@ import { LoginPages } from './pages/LoginPages'
 import { AdminPages } from './pages/AdminPages'
 import { AbogPages } from './pages/AbogPages'
 import { SecrePages } from './pages/SecrePages'
-import { ErrorPages } from './pages/ErrorPages'
+import  ErrorPages  from './pages/ErrorPages'
 
 function App() {
   return (
