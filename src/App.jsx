@@ -7,15 +7,19 @@ import { AdminPages } from './pages/AdminPages'
 import { AbogPages } from './pages/AbogPages'
 import { SecrePages } from './pages/SecrePages'
 import  ErrorPages  from './pages/ErrorPages'
+import { useState } from 'react';
 
 function App() {
+const usuarioSessionStorage = JSON.parse(sessionStorage.getItem('userKey')) || false
+const [usuariorLogeado, setUsuarioLogeado] = useState(usuarioSessionStorage)
+
   return (
       
     <BrowserRouter>
       <div className="app-layout">
         <main className="main-content">
           <Routes>
-            <Route path="/" element={<LoginPages />} />
+            <Route path="/" element={<LoginPages setUsuarioLogeado={setUsuarioLogeado} />} />
             <Route path="/admin" element={<AdminPages />} />
             <Route path="/abog" element={<AbogPages />} />
             <Route path="/secre" element={<SecrePages />} />
