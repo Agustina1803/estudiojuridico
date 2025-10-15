@@ -18,7 +18,7 @@ export function RegistroPage() {
       <Form onSubmit={handleSubmit()}>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email</Form.Label>
-          <Form.Control type="email" placeholder="Enter email" {...register("Email", {
+          <Form.Control type="email" placeholder="Enter email" {...register("formBasicEmail", {
             required: "El correo es obligatorio",
             pattern: {
               value: /^[a-z0-9!#$%&'+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'+/=?^_`{|}~-]+)@(?:[a-z0-9](?:[a-z0-9-][a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/,
@@ -32,14 +32,14 @@ export function RegistroPage() {
 
         <Form.Group className="mb-3" controlId="formBasicPassword">
           <Form.Label>Contraseña</Form.Label>
-          <Form.Control type="password" placeholder="Password"
-            {...register("Password", {
-              required: "La contraseña es obligatorio",
-              pattern: {
-                value: /^(?=.\d)(?=.[\u0021-\u002b\u003c-\u0040])(?=.[A-Z])(?=.[a-z])\S{8,16}$/,
-                message: "La contraseña debe tener al entre 8 y 16 caracteres, al menos un dígito, al menos una minúscula, al menos una mayúscula y al menos un caracter no alfanumérico",
-              }
-            })} />
+          <Form.Control type="password" placeholder="Contraseña" 
+          {...register("formBasicPassword", {
+            required: "La contraseña es obligatorio",
+            pattern: {
+              value: /^(?=.\d)(?=.[\u0021-\u002b\u003c-\u0040])(?=.[A-Z])(?=.[a-z])\S{8,16}$/,
+              message: "La contraseña debe tener al entre 8 y 16 caracteres, al menos un dígito, al menos una minúscula, al menos una mayúscula y al menos un caracter no alfanumérico",
+            }
+          })} />
           <Form.Text className="text-danger">
             {errors.Password?.message}
           </Form.Text>

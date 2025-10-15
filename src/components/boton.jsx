@@ -6,7 +6,9 @@ import {
   FaEye,
   FaPlus,
   FaPaperPlane,
-  FaDownload
+  FaDownload,
+  FaSearch,
+  FaUserPlus
 } from 'react-icons/fa';
 
 const actionMap = {
@@ -15,11 +17,12 @@ const actionMap = {
   eliminar: { icon: <FaTrash />, variant: 'danger', label: 'Eliminar' },
   agregar: { icon: <FaPlus />, variant: 'success', label: 'Agregar' },
   enviar: { icon: <FaPaperPlane />, variant: 'primary', label: 'Enviar' },
-  cerrar: { icon: <FaSignOutAlt />, variant: 'danger', label: 'Cerrar sesion' },
+  cerrar: { icon: <FaSignOutAlt />, variant: 'danger', label: 'Cerrar sesión' },
   iniciar: { icon: <FaSignOutAlt />, variant: 'success', label: 'Iniciar sesión' },
-  descargar: { icon: <FaDownload />, variant: 'secondary', label: 'Descargar' }
+  descargar: { icon: <FaDownload />, variant: 'secondary', label: 'Descargar' },
+  buscar: { icon: <FaSearch />, variant: 'info', label: 'Buscar' },
+  registrarse: { icon: <FaUserPlus />, variant: 'success', label: 'Registrarse' }
 };
-
 
 const Boton = ({
   action,
@@ -28,7 +31,6 @@ const Boton = ({
 }) => {
   const config = actionMap[action];
 
-  
   return (
     <Button
       variant={config.variant}

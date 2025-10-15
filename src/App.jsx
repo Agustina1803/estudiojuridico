@@ -1,23 +1,27 @@
-import { useState } from "react";
-import { Button } from "react-bootstrap";
-
+import { BrowserRouter, Routes, Route, } from 'react-router-dom'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css'
+import { LoginPages } from './pages/LoginPages'
+import { AdminPages } from './pages/AdminPages'
+import { AbogPages } from './pages/AbogPages'
+import { SecrePages } from './pages/SecrePages'
+import { ErrorPages } from './pages/ErrorPages'
 
 function App() {
-  const [mostrarModal, setMostrarModal] = useState(false);
+
 
   return (
-    <div className="container mt-4">
-      <h1>Subir archivos</h1>
-      <Button variant="primary" onClick={() => setMostrarModal(true)}>
-        Agregar Archivo
-      </Button>
-      <FormSubirArchivo
-        mostrar={mostrarModal}
-        cerrar={() => setMostrarModal(false)}
-      />
-    </div>
-  );
-}
+      
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<LoginPages />} />
+        <Route path='/admin' element={<AdminPages />} />
+        <Route path='/abog' element={<AbogPages />} />
+        <Route path='/secre' element={<SecrePages />} />
+        <Route path='*' element={<ErrorPages />} />
+      </Routes>
+    </BrowserRouter>
+  )
+};
 
 export default App;
-
