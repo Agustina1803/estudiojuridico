@@ -37,7 +37,7 @@ const FormSubirArchivo = ({ mostrar, cerrar }) => {
             <Modal.Body>
                 <Form onSubmit={handleSubmit(SubirArchivo)}>
                     <Form.Group className="mb-3" controlId="nombre">
-                        <Form.Label>Cliente: </Form.Label>
+                        <Form.Label>Cliente:: </Form.Label>
                         <Form.Control
                             type="text"
                             placeholder="Nombre del cliente"
