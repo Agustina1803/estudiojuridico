@@ -10,6 +10,8 @@ import ErrorPages from "./pages/ErrorPages";
 import { useState } from "react";
 import ProteccionRutas from "./routers/ProteccionRutas.jsx";
 
+
+
 function App() {
   const usuarioSessionStorage = sessionStorage.getItem("userKey") === "true";
   const [usuariorLogeado, setUsuarioLogeado] = useState(usuarioSessionStorage);

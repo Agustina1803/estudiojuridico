@@ -1,22 +1,33 @@
-.styloHeader{
+.styloHeader {
   background-color: #1E3A5F;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* equivalente a shadow-md */
-display: flex;
-justify-content: end;
-
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 1rem;
 }
 
-.botonCerrarSesion{
-   color:white;
-   background-color:transparent;
-   border-radius: 10px;
-   padding: 10px;
-   transition: background-color 0.3s ease;
-   border: 2px solid white;
-   
-
+/* Botón de cerrar sesión */
+.botonCerrarSesion {
+  color: white;
+  background-color: transparent;
+  border-radius: 10px;
+  padding: 10px 16px;
+  transition: background-color 0.3s ease;
+  border: 2px solid white;
+  font-weight: 500;
 }
+
+/* Hover elegante */
 .botonCerrarSesion:hover {
-background-color: white;
-color: black;
+  background-color: white;
+  color: #1E3A5F;
+}
+
+/* Responsive: centrar botón en pantallas pequeñas */
+@media (max-width: 768px) {
+  .botonCerrarSesion {
+    width: 100%;
+    margin-top: 10px;
+    text-align: center;
+  }
+
+ 
 }
