@@ -1,4 +1,6 @@
-import React from 'react'
+import { Nav,Card} from 'react-bootstrap';
+import { NavLink } from 'react-router-dom';
+
 import {
     FaHome,
     FaUser,
@@ -8,10 +10,8 @@ import {
     FaChartBar,
     FaCog,
     FaCalendarAlt,
-    FaTasks,
     FaMoneyBillWave,
-    FaFolder,
-    MdCheckCircle,
+    FaFolder
 } from 'react-icons/fa';
 
 const Menu = ({ role }) => {
@@ -33,18 +33,18 @@ const Menu = ({ role }) => {
                     { to: '/abogado/agendaabog', label: 'Agenda', icon: <FaCalendarAlt /> },
                     { to: '/abogado/clienteabog', label: 'Cliente', icon: <FaUsers /> },
                     { to: '/abogado/documentoabog', label: 'Documento', icon: <FaFolder /> },
-                    { to: '/abogado/tareasabog', label: 'Tareas', icon: <MdCheckCircle /> },
+                    { to: '/abogado/tareasabog', label: 'Tareas', icon: <FaFolder /> },
                     { to: '/abogado/facturacionabog', label: 'Facturación', icon: <FaMoneyBillWave /> },
                     { to: '/abogado/informeabog', label: 'Informe', icon: <FaChartBar /> },
                     { to: '/abogado/juiciosabog', label: 'Juicios', icon: <FaBalanceScale /> },
                 ];
             case 'secre':
                 return [
-                  { to: '/secretario', label: 'Inicio', icon: <FaHome /> },
+                    { to: '/secretario', label: 'Inicio', icon: <FaHome /> },
                     { to: '/secretario/agendasecre', label: 'Agenda', icon: <FaCalendarAlt /> },
                     { to: '/secretario/clientesecre', label: 'Cliente', icon: <FaUser /> },
                     { to: '/secretario/documentossecre', label: 'Documentos', icon: <FaFolder /> },
-                    { to: '/secretario/tareassecre', label: 'Tareas', icon: <MdCheckCircle/> },
+                    { to: '/secretario/tareassecre', label: 'Tareas', icon: <FaFolder /> },
                     { to: '/secretario/facturacionsecre', label: 'Facturación', icon: <FaMoneyBillWave /> },
                     { to: '/secretario/informessecre', label: 'Informes', icon: <FaChartBar /> },
                 ];
@@ -52,17 +52,26 @@ const Menu = ({ role }) => {
                 return [];
         }
     }
+
+    const menuItems = menus();
+
+
     return (
-         <Card>
-      <Card.Header>Featured</Card.Header>
-      <Card.Body>
-        <Card.Title>Special title treatment</Card.Title>
-        <Card.Text>
-          With supporting text below as a natural lead-in to additional content.
-        </Card.Text>
-        <Button variant="primary">Go somewhere</Button>
-      </Card.Body>
-    </Card>
+
+
+        <Card>
+            <Card.Header>Menu</Card.Header>
+            <Card.Body>
+                <Nav>
+                    {menuItems.map((item) => (
+                        <Nav.Link as={NavLink} to={item.to} key={item.to}>
+<span>{item.icon}{item.label}</span>
+                        </Nav.Link>
+                    ))}
+                </Nav>
+
+            </Card.Body>
+        </Card>
     )
 
 }
