@@ -1,29 +1,75 @@
-function ChatInterno() {
+import React, { useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+const ChatInterno = () => {
+  const [mensajes, setMensajes] = useState([
+    { usuario: "Usuario1", texto: "Hola, ¿todo listo?", propio: false },
+    { usuario: "Yo", texto: "Sí, ya está cargado ✅", propio: true },
+  ]);
+
+  const [mensajeNuevo, setMensajeNuevo] = useState("");
+
+  const enviarMensaje = () => {
+    if (mensajeNuevo.trim() === "") return;
+
+    const nuevo = { usuario: "Yo", texto: mensajeNuevo, propio: true };
+    setMensajes([...mensajes, nuevo]);
+    setMensajeNuevo("");
+  };
+
   return (
-    <div className="d-flex flex-column h-100">
-      <div className="flex-grow-1 overflow-auto p-3">
+    <aside
+      className="bg-light d-flex flex-column p-3 border-start h-100"
+      style={{ overflowY: "auto" }}
+    >
+      <h5 className="mb-3">💬 Chat interno</h5>
 
-        {/* Mensaje enviado */}
-        <div className="d-flex justify-content-end mb-2">
-          <div className="bg-primary text-white rounded p-2" style={{ maxWidth: '75%' }}>
-            <p className="mb-0">
-              Enviando
-            </p>
+      {/* Área de mensajes */}
+      <div className="flex-grow-1 overflow-auto mb-3 px-2">
+        {mensajes.map((msg, i) => (
+          <div
+            key={i}
+            className={`d-flex mb-2 ${
+              msg.propio ? "justify-content-end" : "justify-content-start"
+            }`}
+          >
+            <div
+              className={`p-2 rounded shadow-sm ${
+                msg.propio
+                  ? "bg-primary text-white text-end"
+                  : "bg-white text-start"
+              }`}
+              style={{ maxWidth: "75%" }}
+            >
+              <small
+                className={`d-block ${
+                  msg.propio ? "text-white-50" : "text-muted"
+                }`}
+              >
+                {msg.usuario}
+              </small>
+              {msg.texto}
+            </div>
           </div>
-        </div>
-
-        {/* Mensaje recibido */}
-        <div className="d-flex justify-content-start mb-2">
-          <div className="bg-light rounded p-2" style={{ maxWidth: '75%' }}>
-            <p className="mb-0">
-              Recibiendo
-            </p>
-          </div>
-        </div>
-        
+        ))}
       </div>
-    </div>
+
+      {/* Entrada de mensaje */}
+      <div className="input-group">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Escribe un mensaje..."
+          value={mensajeNuevo}
+          onChange={(e) => setMensajeNuevo(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && enviarMensaje()}
+        />
+        <button className="btn btn-primary" onClick={enviarMensaje}>
+          Enviar
+        </button>
+      </div>
+    </aside>
   );
-}
+};
 
 export default ChatInterno;
