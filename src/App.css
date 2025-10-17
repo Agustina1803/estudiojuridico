@@ -1,19 +1,1 @@
-.styloHeader{
-  height: 64px;
-  padding: 0 16px; /* valor por defecto (mobile) */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #1E3A5F;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* equivalente a shadow-md */
-  position: sticky; /* opcional */
-  top: 0;           /* opcional */
-  z-index: 50;      /* opcional */
-}
 
-/* Desktop */
-@media (min-width: 768px) {
-  header {
-    padding: 0 24px;
-  }
-}
