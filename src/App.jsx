@@ -1,4 +1,7 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+ import { BrowserRouter, Routes, Route } from "react-router-dom";
+import "./App.css";
+import LayoutsAdmi from "./layouts/LayoutsAdmi.jsx";
+{/* import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import Footer from "./shared/footer.jsx";
@@ -8,17 +11,17 @@ import { AbogPages } from "./pages/AbogPages";
 import { SecrePages } from "./pages/SecrePages";
 import ErrorPages from "./pages/ErrorPages";
 import { useState } from "react";
-import ProteccionRutas from "./routers/ProteccionRutas.jsx";
+import ProteccionRutas from "./routers/ProteccionRutas.jsx";*/}
 
 
 
 function App() {
-  const usuarioSessionStorage = sessionStorage.getItem("userKey") === "true";
-  const [usuariorLogeado, setUsuarioLogeado] = useState(usuarioSessionStorage);
+  /* const usuarioSessionStorage = sessionStorage.getItem("userKey") === "true";
+  const [usuariorLogeado, setUsuarioLogeado] = useState(usuarioSessionStorage); */
 
   return (
     <BrowserRouter>
-      <div className="app-layout">
+      {/* <div className="app-layout">
         <main className="main-content">
           <Routes>
             <Route
@@ -38,7 +41,10 @@ function App() {
           </Routes>
         </main>
         <Footer />
-      </div>
+      </div> */}
+      <Routes>
+        <Route path="/" element={<LayoutsAdmi />}/>
+      </Routes>
     </BrowserRouter>
   );
 }

@@ -62,7 +62,7 @@ const Menu = ({ role }) => {
     return (
 
 
-        <Card className=' border-primary w-75 shadow'>
+        <Card className=' border-primary shadow'>
             <Card.Header className='text-center'><h3 className='fw-bold h4'>Menu</h3>
             </Card.Header>
             <Card.Body className='p-0'>

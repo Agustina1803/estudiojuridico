@@ -12,7 +12,7 @@ const ChatCentral = () => {
   };
 
   return (
-    <div className="d-flex flex-column p-3 h-100 border-start border-end bg-white">
+    <div className="d-flex flex-column p-3 max-vh-100 border-start border-end bg-white ">
       {/* Área de respuestas */}
       <div
         id="chat"
