@@ -19,22 +19,25 @@ export function RegistroPage({setUsuarioLogeado}) {
       formBasicEmail === import.meta.env.VITE_ADMIN_EMAIL &&
       formBasicPassword === import.meta.env.VITE_ADMIN_PASSWORD
     ) {
-      setUsuarioLogeado(true);
-      sessionStorage.setItem("userKey", true);
-      navegacion("/admin");
+      user.role = "admin";
+      setUsuarioLogeado(user);
+      sessionStorage.setItem("user", user);
+      navegacion("/administrador");
     } else if (
       formBasicEmail === import.meta.env.VITE_SECRE_EMAIL &&
       formBasicPassword === import.meta.env.VITE_SECRE_PASSWORD
     ) {
-      setUsuarioLogeado(true);
-      sessionStorage.setItem("userKey", true);
+      user.role = "secre";
+      setUsuarioLogeado(user);
+      sessionStorage.setItem("user", user);
       navegacion("/secre");
     } else if (
       formBasicEmail === import.meta.env.VITE_ABOG_EMAIL &&
       formBasicPassword === import.meta.env.VITE_ABOG_PASSWORD
     ) {
-      setUsuarioLogeado(true);
-      sessionStorage.setItem("userKey", true);
+      user.role = "abog";
+      setUsuarioLogeado(user);
+      sessionStorage.setItem("user", user);
       navegacion("/abog");
     } else {
       alert("Usuario o contraseña incorrectos");

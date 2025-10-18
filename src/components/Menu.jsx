@@ -62,8 +62,8 @@ const Menu = ({ role }) => {
     return (
 
 
-        <Card className=' border-primary shadow'>
-            <Card.Header className='text-center'><h3 className='fw-bold h4'>Menu</h3>
+        <Card className=' border-primary shadow '>
+            <Card.Header className='text-center '><h3 className='fw-bold h4'>Menu</h3>
             </Card.Header>
             <Card.Body className='p-0'>
                 <Nav className='flex-column p-0 m-0'>
