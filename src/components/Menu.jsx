@@ -22,7 +22,7 @@ const Menu = ({ role }) => {
         switch (role) {
             case 'admin':
                 return [
-                    { to: '/administrador', label: 'Inicio', icon: <FaHome /> },
+                    { to: '/administrador/inicioAdmi', label: 'Inicio', icon: <FaHome /> },
                     { to: '/administrador/usuariosadmi', label: 'Usuarios', icon: <FaUsers /> },
                     { to: '/administrador/abogadosadmi', label: 'Abogados', icon: < FaBalanceScale /> },
                     { to: '/administrador/secretarioadmi', label: 'Clientes', icon: <FaFileAlt /> },

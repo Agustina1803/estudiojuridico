@@ -6,6 +6,7 @@ import LayoutsUser from "./layouts/LayoutsUser.jsx";
 import { AdminPages } from "./pages/AdminPages";
 import { AbogPages } from "./pages/AbogPages";
 import { SecrePages } from "./pages/SecrePages";
+
 {
   /* import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -50,10 +51,10 @@ function App() {
           path="/"
           element={<LoginPages setUsuarioLogeado={setUsuarioLogeado} />}
         />
-        <Route element={<LayoutsUser usuariorLogeado={usuariorLogeado} />}>
+        <Route path="/*" element={<LayoutsUser usuariorLogeado={usuariorLogeado} />}>
           <Route path="/administrador" element={<AdminPages />} />
-          <Route path="/abog/*" element={<AbogPages />} />
-          <Route path="/secre/*" element={<SecrePages />} />
+          <Route path="/abog" element={<AbogPages />} />
+          <Route path="/secre" element={<SecrePages />} />
         </Route>
       </Routes>
     </BrowserRouter>
