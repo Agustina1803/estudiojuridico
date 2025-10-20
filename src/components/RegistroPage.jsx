@@ -3,7 +3,7 @@ import "../styles/RegistroPage.css";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-export function RegistroPage({ setUsuarioLogeado }) {
+export function RegistroPage() {
   const {
     register,
     handleSubmit,
@@ -21,7 +21,7 @@ export function RegistroPage({ setUsuarioLogeado }) {
     ) {
       user.role = "admin";
       const userString = JSON.stringify(user);
-      setUsuarioLogeado(userString);
+      
       sessionStorage.setItem("user", userString);
       navegacion("/app/inicioadmi");
     } else if (
@@ -30,7 +30,7 @@ export function RegistroPage({ setUsuarioLogeado }) {
     ) {
       user.role = "secre";
       const userString = JSON.stringify(user);
-      setUsuarioLogeado(userString);
+      
       sessionStorage.setItem("user", userString);
       navegacion("/app/iniciosecre");
     } else if (
@@ -39,7 +39,7 @@ export function RegistroPage({ setUsuarioLogeado }) {
     ) {
       user.role = "abog";
       const userString = JSON.stringify(user);
-      setUsuarioLogeado(userString);
+      
       sessionStorage.setItem("user", userString);
       navegacion("/app/inicioabog");
     } else {
