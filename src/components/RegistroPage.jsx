@@ -3,7 +3,7 @@ import "../styles/RegistroPage.css";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-export function RegistroPage({setUsuarioLogeado}) {
+export function RegistroPage({ setUsuarioLogeado }) {
   const {
     register,
     handleSubmit,
@@ -19,23 +19,29 @@ export function RegistroPage({setUsuarioLogeado}) {
       formBasicEmail === import.meta.env.VITE_ADMIN_EMAIL &&
       formBasicPassword === import.meta.env.VITE_ADMIN_PASSWORD
     ) {
-      setUsuarioLogeado(true);
-      sessionStorage.setItem("userKey", true);
-      navegacion("/admin");
+      user.role = "admin";
+      const userString = JSON.stringify(user);
+      setUsuarioLogeado(userString);
+      sessionStorage.setItem("user", userString);
+      navegacion("/app/inicioadmi");
     } else if (
       formBasicEmail === import.meta.env.VITE_SECRE_EMAIL &&
       formBasicPassword === import.meta.env.VITE_SECRE_PASSWORD
     ) {
-      setUsuarioLogeado(true);
-      sessionStorage.setItem("userKey", true);
-      navegacion("/secre");
+      user.role = "secre";
+      const userString = JSON.stringify(user);
+      setUsuarioLogeado(userString);
+      sessionStorage.setItem("user", userString);
+      navegacion("/app/iniciosecre");
     } else if (
       formBasicEmail === import.meta.env.VITE_ABOG_EMAIL &&
       formBasicPassword === import.meta.env.VITE_ABOG_PASSWORD
     ) {
-      setUsuarioLogeado(true);
-      sessionStorage.setItem("userKey", true);
-      navegacion("/abog");
+      user.role = "abog";
+      const userString = JSON.stringify(user);
+      setUsuarioLogeado(userString);
+      sessionStorage.setItem("user", userString);
+      navegacion("/app/inicioabog");
     } else {
       alert("Usuario o contraseña incorrectos");
       reset();

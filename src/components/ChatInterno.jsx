@@ -19,7 +19,7 @@ const ChatInterno = () => {
 
   return (
     <aside
-      className="bg-light d-flex flex-column p-3 border-start h-100"
+      className="bg-light d-flex flex-column p-3 border-start"
       style={{ overflowY: "auto" }}
     >
       <h5 className="mb-3">💬 Chat interno</h5>
