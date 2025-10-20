@@ -8,3 +8,8 @@ color: #fff;
 background-color: #162E4A;
 
 }
+
+.menu {
+  height: 100%;
+  overflow-y: auto;
+}
