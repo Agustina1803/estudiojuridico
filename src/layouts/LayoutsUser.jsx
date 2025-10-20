@@ -1,9 +1,10 @@
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import Menu from "../components/Menu.jsx";
-import Footer from "../shared/footer.jsx";
-import { NavBarHeader } from "../components/NavBarHeader.jsx";
+import Menu from "../components/Menu";
+import Footer from "../shared/footer";
+import { NavBarHeader } from "../components/NavBarHeader";
 import { Outlet } from "react-router-dom";
+import ChatInterno from "../components/ChatInterno";
 
 
 const LayoutsAdmi = ({usuariorLogeado}) => {
@@ -13,17 +14,15 @@ const LayoutsAdmi = ({usuariorLogeado}) => {
       <main className="flex-grow-1">
         <Container fluid className="my-4">
           <Row>
-            <Col md={4} lg={3} className="d-flex align-items-center justify-content-center">
+            <Col md={3} className="d-flex align-items-center justify-content-center">
               <Menu role={usuariorLogeado?.role}/>
             </Col>
-            <Col md={8} lg={9}>
+            <Col md={6}>
               <Outlet></Outlet>
             </Col>
-            {/* 
-            Este componente ChatInterno está comentado para evitar conflictos de espacio en la interfaz.
             <Col md={3}>
               <ChatInterno></ChatInterno>
-            </Col> */}
+            </Col> 
           </Row>
         </Container>
       </main>

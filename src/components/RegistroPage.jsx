@@ -22,7 +22,7 @@ export function RegistroPage({setUsuarioLogeado}) {
       user.role = "admin";
       setUsuarioLogeado(user);
       sessionStorage.setItem("user", user);
-      navegacion("/administrador");
+      navegacion("/app/inicioadmi");
     } else if (
       formBasicEmail === import.meta.env.VITE_SECRE_EMAIL &&
       formBasicPassword === import.meta.env.VITE_SECRE_PASSWORD
@@ -30,7 +30,7 @@ export function RegistroPage({setUsuarioLogeado}) {
       user.role = "secre";
       setUsuarioLogeado(user);
       sessionStorage.setItem("user", user);
-      navegacion("/secre");
+      navegacion("/app/iniciosecre");
     } else if (
       formBasicEmail === import.meta.env.VITE_ABOG_EMAIL &&
       formBasicPassword === import.meta.env.VITE_ABOG_PASSWORD
@@ -38,7 +38,7 @@ export function RegistroPage({setUsuarioLogeado}) {
       user.role = "abog";
       setUsuarioLogeado(user);
       sessionStorage.setItem("user", user);
-      navegacion("/abog");
+      navegacion("/app/inicioabog");
     } else {
       alert("Usuario o contraseña incorrectos");
       reset();

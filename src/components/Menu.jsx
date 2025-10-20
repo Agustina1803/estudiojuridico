@@ -22,34 +22,34 @@ const Menu = ({ role }) => {
         switch (role) {
             case 'admin':
                 return [
-                    { to: '/administrador/inicioAdmi', label: 'Inicio', icon: <FaHome /> },
-                    { to: '/administrador/usuariosadmi', label: 'Usuarios', icon: <FaUsers /> },
-                    { to: '/administrador/abogadosadmi', label: 'Abogados', icon: < FaBalanceScale /> },
-                    { to: '/administrador/secretarioadmi', label: 'Clientes', icon: <FaFileAlt /> },
-                    { to: '/administrador/documentosadmi', label: 'Documentos', icon: <FaFolder /> },
-                    { to: '/administrador/reportes', label: 'Reportes', icon: <FaChartBar /> },
-                    { to: '/administrador/configuracionadmi', label: 'Configuración', icon: <FaCog /> },
+                    { to: 'inicioadmi', label: 'Inicio', icon: <FaHome /> },
+                    { to: 'usuariosadmi', label: 'Usuarios', icon: <FaUsers /> },
+                    { to: 'abogadosadmi', label: 'Abogados', icon: < FaBalanceScale /> },
+                    { to: 'secretarioadmi', label: 'Secretario/a', icon: <FaFileAlt /> },
+                    { to: 'documentosadmi', label: 'Documentos', icon: <FaFolder /> },
+                    { to: 'reportesadmi', label: 'Reportes', icon: <FaChartBar /> },
+                    { to: 'configuracionadmi', label: 'Configuración', icon: <FaCog /> },
                 ];
             case 'abog':
                 return [
-                    { to: '/abogado', label: 'Inicio', icon: <FaHome /> },
-                    { to: '/abogado/agendaabog', label: 'Agenda', icon: <FaCalendarAlt /> },
-                    { to: '/abogado/clienteabog', label: 'Cliente', icon: <FaUsers /> },
-                    { to: '/abogado/documentoabog', label: 'Documento', icon: <FaFolder /> },
-                    { to: '/abogado/tareasabog', label: 'Tareas', icon: <FaFolder /> },
-                    { to: '/abogado/facturacionabog', label: 'Facturación', icon: <FaMoneyBillWave /> },
-                    { to: '/abogado/informeabog', label: 'Informe', icon: <FaChartBar /> },
-                    { to: '/abogado/juiciosabog', label: 'Juicios', icon: <FaBalanceScale /> },
+                    { to: 'inicioabog', label: 'Inicio', icon: <FaHome /> },
+                    { to: 'agendaabog', label: 'Agenda', icon: <FaCalendarAlt /> },
+                    { to: 'clienteabog', label: 'Cliente', icon: <FaUsers /> },
+                    { to: 'documentoabog', label: 'Documento', icon: <FaFolder /> },
+                    { to: 'tareasabog', label: 'Tareas', icon: <FaFolder /> },
+                    { to: 'facturacionabog', label: 'Facturación', icon: <FaMoneyBillWave /> },
+                    { to: 'informeabog', label: 'Informe', icon: <FaChartBar /> },
+                    { to: 'juiciosabog', label: 'Juicios', icon: <FaBalanceScale /> },
                 ];
             case 'secre':
                 return [
-                    { to: '/secretario', label: 'Inicio', icon: <FaHome /> },
-                    { to: '/secretario/agendasecre', label: 'Agenda', icon: <FaCalendarAlt /> },
-                    { to: '/secretario/clientesecre', label: 'Cliente', icon: <FaUser /> },
-                    { to: '/secretario/documentossecre', label: 'Documentos', icon: <FaFolder /> },
-                    { to: '/secretario/tareassecre', label: 'Tareas', icon: <FaFolder /> },
-                    { to: '/secretario/facturacionsecre', label: 'Facturación', icon: <FaMoneyBillWave /> },
-                    { to: '/secretario/informessecre', label: 'Informes', icon: <FaChartBar /> },
+                    { to: 'iniciosecre', label: 'Inicio', icon: <FaHome /> },
+                    { to: 'agendasecre', label: 'Agenda', icon: <FaCalendarAlt /> },
+                    { to: 'clientesecre', label: 'Cliente', icon: <FaUser /> },
+                    { to: 'documentossecre', label: 'Documentos', icon: <FaFolder /> },
+                    { to: 'tareassecre', label: 'Tareas', icon: <FaFolder /> },
+                    { to: 'facturacionsecre', label: 'Facturación', icon: <FaMoneyBillWave /> },
+                    { to: 'informessecre', label: 'Informes', icon: <FaChartBar /> },
                 ];
             default:
                 return [];

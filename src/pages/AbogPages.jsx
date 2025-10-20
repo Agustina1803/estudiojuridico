@@ -1,7 +1,9 @@
 import React from 'react'
 
-export const AbogPages = () => {
+const AbogPages = () => {
   return (
     <div>AbogPages</div>
   )
 }
+
+export default AbogPages

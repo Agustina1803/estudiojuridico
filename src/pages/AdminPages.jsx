@@ -1,11 +1,11 @@
 
 
-
-
 import React from 'react'
 
-export const AdminPages = () => {
+const AdminPages = () => {
   return (
     <div>AdminPages</div>
   )
 }
+
+export default AdminPages
