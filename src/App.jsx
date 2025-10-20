@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
-import { useState} from "react";
+import { useEffect, useState } from "react";
 import { LoginPages } from "./pages/LoginPages";
 import LayoutsUser from "./layouts/LayoutsUser";
 import ErrorPages from "./pages/ErrorPages";
@@ -26,47 +26,55 @@ import DocumentosSecre from "./pages/Secretario/DocumentosSecre";
 import TareasSecre from "./pages/Secretario/TareasSecre";
 import FacturacionSecre from "./pages/Secretario/FacturacionSecre";
 import InformesSecre from "./pages/Secretario/InformesSecre";
+import ProteccionRutas from "./routers/ProteccionRutas";
 
 function App() {
-  const usuarioSessionStorage = sessionStorage.getItem("user") || null;
-  const [usuariorLogeado, setUsuarioLogeado] = useState(usuarioSessionStorage);
 
-  console.log("Usuario logeado en App.jsx:", usuariorLogeado);
- 
+  const usuariosession = sessionStorage.getItem("user");
+  const usuarioParseado = usuariosession ? JSON.parse(usuariosession) : null;
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path="/"
-          element={<LoginPages setUsuarioLogeado={setUsuarioLogeado} />}
+          element={<LoginPages />}
         />
         <Route
           path="app"
-          element={<LayoutsUser usuariorLogeado={usuariorLogeado} />}
+          element={<LayoutsUser usuarioLogueado={usuarioParseado} />}
         >
+          <Route element={<ProteccionRutas usuarioLogueado={usuarioParseado} roleUsuario="admin" />}>
+            <Route path="inicioadmi" element={<InicioAdmi />} />
+            <Route path="usuariosadmi" element={<UsuariosAdmi />} />
+            <Route path="abogadosadmi" element={<AbogadosAdmi />} />
+            <Route path="secretarioadmi" element={<SecretarioAdmi />} />
+            <Route path="documentosadmi" element={<DocumentosAdmi />} />
+            <Route path="reportesadmi" element={<ReportesAdmi />} />
+            <Route path="configuracionadmi" element={<ConfiguracionAdmi />} />
+          </Route>
 
-          <Route path="inicioadmi" element={<InicioAdmi />} />
-          <Route path="inicioabog" element={<InicioAbog />} />
-          <Route path="iniciosecre" element={<InicioSecre />} />
-          <Route path="usuariosadmi" element={<UsuariosAdmi />} />
-          <Route path="abogadosadmi" element={<AbogadosAdmi />} />
-          <Route path="secretarioadmi" element={<SecretarioAdmi />} />
-          <Route path="documentosadmi" element={<DocumentosAdmi />} />
-          <Route path="reportesadmi" element={<ReportesAdmi />} />
-          <Route path="configuracionadmi" element={<ConfiguracionAdmi />} />
+          <Route element={<ProteccionRutas usuarioLogueado={usuarioParseado} roleUsuario="secre" />}>
+            <Route path="iniciosecre" element={<InicioSecre />} />
+            <Route path="agendasecre" element={<AgendaSecre />} />
+            <Route path="clientesecre" element={<ClienteSecre />} />
+            <Route path="documentossecre" element={<DocumentosSecre />} />
+            <Route path="tareassecre" element={<TareasSecre />} />
+            <Route path="facturacionsecre" element={<FacturacionSecre />} />
+              <Route path="informessecre" element={<InformesSecre />} />
+          </Route>
+
+
+ <Route element={<ProteccionRutas usuarioLogueado={usuarioParseado} roleUsuario="abog" />}>
+            <Route path="inicioabog" element={<InicioAbog />} />
           <Route path="agendaabog" element={<AgendaAbog />} />
-          <Route path="agendasecre" element={<AgendaSecre />} />
           <Route path="clienteabog" element={<ClienteAbog />} />
-          <Route path="clientesecre" element={<ClienteSecre />} />
           <Route path="documentoabog" element={<DocumentoAbog />} />
-          <Route path="documentossecre" element={<DocumentosSecre />} />
           <Route path="tareasabog" element={<TareasAbog />} />
-          <Route path="tareassecre" element={<TareasSecre />} />
           <Route path="facturacionabog" element={<FacturacionAbog />} />
-          <Route path="facturacionsecre" element={<FacturacionSecre />} />
           <Route path="informeabog" element={<InformeAbog />} />
-          <Route path="informessecre" element={<InformesSecre />} />
           <Route path="juiciosabog" element={<JuiciosAbog />} />
+          </Route>
+        
         </Route>
         <Route path="*" element={<ErrorPages />} />
       </Routes>

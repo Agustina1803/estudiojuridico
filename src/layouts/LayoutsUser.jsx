@@ -7,8 +7,8 @@ import '../styles/layoutsAdmi.css';
 
 
 
-const LayoutsAdmi = ({usuariorLogeado}) => {
-  const usuarioParseado= JSON.parse(usuariorLogeado);
+const LayoutsAdmi = ({usuarioLogueado}) => {
+  const usuarioParseado= usuarioLogueado;
   return (
     <div className="d-flex flex-column vh-100">
       <NavBarHeader></NavBarHeader>
