@@ -29,10 +29,7 @@ export default function ChatCentral() {
         contents: texto,
       });
 
-      const respuesta =
-        res.output_text ||
-        res.output?.[0]?.content?.[0]?.text ||
-        res.candidates?.[0]?.content?.parts?.[0]?.text ||
+     const respuesta = res.text; 
         "Sin respuesta de Gemini.";
 
       setMensajes([...nuevos, { role: "model", content: respuesta }]);
