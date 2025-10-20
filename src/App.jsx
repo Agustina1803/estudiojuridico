@@ -30,7 +30,9 @@ import InformesSecre from "./pages/Secretario/InformesSecre";
 function App() {
   const usuarioSessionStorage = sessionStorage.getItem("user") || null;
   const [usuariorLogeado, setUsuarioLogeado] = useState(usuarioSessionStorage);
+
   console.log("Usuario logeado en App.jsx:", usuariorLogeado);
+ 
   return (
     <BrowserRouter>
       <Routes>
