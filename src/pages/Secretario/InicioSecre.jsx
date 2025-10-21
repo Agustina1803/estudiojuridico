@@ -1,8 +1,13 @@
 import React from 'react'
+import ChatCentral from '../../components/ChatCentral'
+import "bootstrap/dist/css/bootstrap.min.css";
+
 
 const InicioSecre = () => {
   return (
-    <div>InicioSecre</div>
+    <div className='vh-70'>
+      <ChatCentral></ChatCentral>
+    </div>
   )
 }
 
