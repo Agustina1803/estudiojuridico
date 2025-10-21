@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+
 import { GoogleGenAI } from "@google/genai";
 
 const genAI = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
@@ -9,34 +10,44 @@ export default function ChatCentral() {
   const [texto, setTexto] = useState("");
   const [cargando, setCargando] = useState(false);
   const chatRef = useRef(null);
+  const [chatSession, setChatSession] = useState(null);
 
-  // Auto scroll
   useEffect(() => {
-    chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    try {
+      if (!chatSession) {
+        const chat = genAI.chats.create({
+          model: "gemini-2.5-flash",
+        });
+        setChatSession(chat);
+      }
+    } catch (error) {
+      console.error("Error al inicializar la sesión de chat:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }
   }, [mensajes]);
 
   const enviar = async () => {
-    if (!texto.trim() || cargando) return;
+    if (!texto.trim() || cargando || !chatSession) return;
 
-    const nuevos = [...mensajes, { role: "user", content: texto }];
+    const mensajeUsuario = { role: "user", content: texto };
+    const nuevos = [...mensajes, mensajeUsuario];
     setMensajes(nuevos);
     setTexto("");
     setCargando(true);
 
     try {
-      const res = await genAI.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: texto,
+      const res = await chatSession.sendMessage({
+        message: mensajeUsuario.content,
       });
-
-      const respuesta =
-        res.output_text ||
-        res.output?.[0]?.content?.[0]?.text ||
-        res.candidates?.[0]?.content?.parts?.[0]?.text ||
-        "Sin respuesta de Gemini.";
-
+      const respuesta = res.text || "Sin respuesta de Gemini.";
       setMensajes([...nuevos, { role: "model", content: respuesta }]);
-    } catch {
+    } catch (error) {
+      console.error("Error al conectar con la IA:", error);
       setMensajes([...nuevos, { role: "model", content: "Error al conectar con la IA." }]);
     } finally {
       setCargando(false);
@@ -44,40 +55,68 @@ export default function ChatCentral() {
   };
 
   return (
-    <div className="d-flex flex-column p-3 border-start border-end bg-white h-100">
+    <div className="d-flex flex-column p-3  bg-white" >
+      {/* 🔹 Contenedor fijo del chat con scroll interno */}
       <div
         ref={chatRef}
-        className="flex-grow-1 mb-3 p-3 border rounded bg-light"
-        style={{ overflowY: "auto", minHeight: "300px" }}
+        className="flex-grow-1 mb-3 p-3 border rounded bg-light overflow-auto"
+        style={{
+          height: "65vh", // altura fija del área de mensajes
+          display: "flex",
+          flexDirection: "column",
+        }}
       >
+        {mensajes.length === 0 && (
+          <div className="text-center text-muted">Inicia una conversación con Gemini.</div>
+        )}
+
         {mensajes.map((m, i) => (
-          <div key={i} className={`d-flex ${m.role === "user" ? "justify-content-end" : "justify-content-start"}`}>
+          <div
+            key={i}
+            className={`d-flex ${
+              m.role === "user" ? "justify-content-end" : "justify-content-start"
+            }`}
+          >
             <div
-              className="p-2 my-1 rounded shadow-sm"
-              style={{
-                maxWidth: "75%",
-                background: m.role === "user" ? "#0d6efd" : "#e9ecef",
-                color: m.role === "user" ? "white" : "black",
-              }}
+              className={`p-2 my-1 rounded shadow-sm ${
+                m.role === "user" ? "bg-primary text-white" : "bg-light borde"
+              }`}
+             
             >
               {m.content}
             </div>
           </div>
         ))}
-        {cargando && <div className="text-muted fst-italic mt-2">🤖 Escribiendo...</div>}
+
+        {cargando && <div className="text-muted fst-italic mt-2">Escribiendo...</div>}
       </div>
 
+      {/* 🔹 Área de texto fija al final */}
       <div className="input-group">
         <textarea
           className="form-control"
           placeholder="Escribe tu mensaje..."
           value={texto}
-          disabled={cargando}
+          disabled={cargando || !chatSession}
           onChange={(e) => setTexto(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && (e.preventDefault(), enviar())}
+          onKeyDown={(e) =>
+            e.key === "Enter" && !e.shiftKey && (e.preventDefault(), enviar())
+          }
+          style={{
+            resize: "none",
+            height: "60px",
+          }}
         />
-        <button className="btn btn-primary" onClick={enviar} disabled={cargando}>
-          {cargando ? <span className="spinner-border spinner-border-sm"></span> : "Enviar"}
+        <button
+          className="btn btn-primary"
+          onClick={enviar}
+          disabled={cargando || !chatSession}
+        >
+          {cargando ? (
+            <span className="spinner-border spinner-border-sm"></span>
+          ) : (
+            "Enviar"
+          )}
         </button>
       </div>
     </div>

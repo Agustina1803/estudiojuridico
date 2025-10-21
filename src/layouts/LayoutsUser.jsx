@@ -15,10 +15,10 @@ const LayoutsAdmi = ({usuarioLogueado}) => {
       <main className="flex-grow-1">
         <Container fluid className="my-4">
           <Row>
-            <Col md={4} lg={4} className="d-flex flex-column">
+            <Col md={3} lg={3} className="d-flex flex-column">
               <Menu role={usuarioParseado?.role} className="menu"/>
             </Col>
-            <Col md={6} lg={6}>
+            <Col md={9} lg={9}>
               <Outlet></Outlet>
             </Col>
             {/*  Este componente lo vamos a utilizar para la 3era entrega 
