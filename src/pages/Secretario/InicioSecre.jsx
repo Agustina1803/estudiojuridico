@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 import React from 'react'
 import ChatCentral from '../../components/ChatCentral'
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -14,4 +12,3 @@ const InicioSecre = () => {
 }
 
 export default InicioSecre
->>>>>>> Stashed changes
