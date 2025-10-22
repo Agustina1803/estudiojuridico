@@ -15,8 +15,23 @@ export default function ChatCentral() {
   useEffect(() => {
     try {
       if (!chatSession) {
+        
+        const instruction = `
+            Eres MARIO, abogado especializado en Derecho Argentino.
+            Siempre respondes en español claro, formal y profesional.
+            Citas leyes argentinas vigentes (Código Civil y Comercial, Ley de Contrato de Trabajo, etc.).
+            Si algo no aplica a Argentina, lo aclaras.
+            No inventes leyes ni jurisprudencia.
+            Sé empático y preciso, evitando tecnicismos innecesarios.
+          `;
+          
+       
         const chat = genAI.chats.create({
           model: "gemini-2.5-flash",
+          config: {
+            systemInstruction: instruction,
+            temperature: 0.3, 
+          },
         });
         setChatSession(chat);
       }
@@ -26,6 +41,7 @@ export default function ChatCentral() {
   }, []);
 
   useEffect(() => {
+    // Esto asegura que la ventana de chat se desplace automáticamente hacia abajo
     if (chatRef.current) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
@@ -41,8 +57,10 @@ export default function ChatCentral() {
     setCargando(true);
 
     try {
+      
       const res = await chatSession.sendMessage({
         message: mensajeUsuario.content,
+        
       });
       const respuesta = res.text || "Sin respuesta de Gemini.";
       setMensajes([...nuevos, { role: "model", content: respuesta }]);
@@ -54,14 +72,15 @@ export default function ChatCentral() {
     }
   };
 
+  
   return (
     <div className="d-flex flex-column p-3  bg-white" >
-      {/* 🔹 Contenedor fijo del chat con scroll interno */}
+      
       <div
         ref={chatRef}
         className="flex-grow-1 mb-3 p-3 border rounded bg-light overflow-auto"
         style={{
-          height: "65vh", // altura fija del área de mensajes
+          height: "65vh", 
           display: "flex",
           flexDirection: "column",
         }}
@@ -91,7 +110,7 @@ export default function ChatCentral() {
         {cargando && <div className="text-muted fst-italic mt-2">Escribiendo...</div>}
       </div>
 
-      {/* 🔹 Área de texto fija al final */}
+      {/*Área de texto fija al final */}
       <div className="input-group">
         <textarea
           className="form-control"
