@@ -2,8 +2,12 @@ import { useState, useRef, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import { GoogleGenAI } from "@google/genai";
+import "../styles/chatCentral.css"; 
 
-const genAI = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+const genAI = new GoogleGenAI({ apiKey: API_KEY });
+
 
 export default function ChatCentral() {
   const [mensajes, setMensajes] = useState([]);
@@ -47,6 +51,7 @@ export default function ChatCentral() {
     }
   }, [mensajes]);
 
+ 
   const enviar = async () => {
     if (!texto.trim() || cargando || !chatSession) return;
 
@@ -113,7 +118,6 @@ export default function ChatCentral() {
       {/*Área de texto fija al final */}
       <div className="input-group">
         <textarea
-          className="form-control"
           placeholder="Escribe tu mensaje..."
           value={texto}
           disabled={cargando || !chatSession}
