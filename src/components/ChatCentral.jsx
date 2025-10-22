@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { GoogleGenAI } from "@google/genai";
-import "../styles/chatCentral.css"; 
+import "./ChatCentral.css"; 
 
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
@@ -31,9 +31,9 @@ export default function ChatCentral() {
     }
   }, []);
 
- 
+  
   const enviar = async () => {
-    if (!texto.trim() || cargando) return;
+    if (!texto.trim() || cargando || !chatSession) return;
 
     const mensajeUsuario = { role: "user", content: texto };
     const historialActualizado = [...mensajes, mensajeUsuario];
@@ -63,9 +63,17 @@ export default function ChatCentral() {
     }
   };
 
+  
+  const manejarPulsacion = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      enviar();
+    }
+  };
+
   return (
     <div className="chat-container">
-    
+     
       <div className="chat-area">
         {mensajes.length === 0 && (
           <div className="chat-placeholder">Inicia una conversación.</div>
@@ -83,16 +91,14 @@ export default function ChatCentral() {
         {cargando && <div className="escribiendo">Escribiendo...</div>}
       </div>
 
-     
+      
       <div className="input-area">
         <textarea
           placeholder="Escribe tu mensaje..."
           value={texto}
-          disabled={cargando}
+          disabled={cargando || !chatSession}
           onChange={(e) => setTexto(e.target.value)}
-          onKeyDown={(e) =>
-            e.key === "Enter" && !e.shiftKey && (e.preventDefault(), enviar())
-          }
+          onKeyDown={manejarPulsacion} 
         />
         <button
           onClick={enviar}
