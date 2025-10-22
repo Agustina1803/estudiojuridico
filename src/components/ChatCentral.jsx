@@ -110,4 +110,5 @@ export default function ChatCentral() {
       </div>
     </div>
   );
+  
 }
