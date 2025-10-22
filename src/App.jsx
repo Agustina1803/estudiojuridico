@@ -30,20 +30,20 @@ import ProteccionRutas from "./routers/ProteccionRutas";
 
 function App() {
 
-  const usuariosession = sessionStorage.getItem("user");
-  const usuarioParseado = usuariosession ? JSON.parse(usuariosession) : null;
+const usuarioSessionStorage = sessionStorage.getItem("user");
+const [usuarioLogueado, setUsuarioLogueado] = useState(JSON.parse(usuarioSessionStorage))
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path="/"
-          element={<LoginPages />}
+          element={<LoginPages setUsuarioLogeado={setUsuarioLogueado} />}
         />
         <Route
           path="app"
-          element={<LayoutsUser usuarioLogueado={usuarioParseado} />}
+          element={<LayoutsUser  usuarioLogueado={usuarioLogueado} />}
         >
-          <Route element={<ProteccionRutas usuarioLogueado={usuarioParseado} roleUsuario="admin" />}>
+          <Route element={<ProteccionRutas usuarioLogueado={usuarioLogueado} roleUsuario="admin" />}>
             <Route path="inicioadmi" element={<InicioAdmi />} />
             <Route path="usuariosadmi" element={<UsuariosAdmi />} />
             <Route path="abogadosadmi" element={<AbogadosAdmi />} />
@@ -53,7 +53,7 @@ function App() {
             <Route path="configuracionadmi" element={<ConfiguracionAdmi />} />
           </Route>
 
-          <Route element={<ProteccionRutas usuarioLogueado={usuarioParseado} roleUsuario="secre" />}>
+          <Route element={<ProteccionRutas usuarioLogueado={usuarioLogueado} roleUsuario="secre" />}>
             <Route path="iniciosecre" element={<InicioSecre />} />
             <Route path="agendasecre" element={<AgendaSecre />} />
             <Route path="clientesecre" element={<ClienteSecre />} />
@@ -64,7 +64,7 @@ function App() {
           </Route>
 
 
- <Route element={<ProteccionRutas usuarioLogueado={usuarioParseado} roleUsuario="abog" />}>
+ <Route element={<ProteccionRutas usuarioLogueado={usuarioLogueado} roleUsuario="abog" />}>
             <Route path="inicioabog" element={<InicioAbog />} />
           <Route path="agendaabog" element={<AgendaAbog />} />
           <Route path="clienteabog" element={<ClienteAbog />} />

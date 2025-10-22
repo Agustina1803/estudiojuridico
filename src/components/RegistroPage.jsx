@@ -3,7 +3,7 @@ import "../styles/RegistroPage.css";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-export function RegistroPage() {
+export function RegistroPage({setUsuarioLogeado}) {
   const {
     register,
     handleSubmit,
@@ -21,8 +21,8 @@ export function RegistroPage() {
     ) {
       user.role = "admin";
       const userString = JSON.stringify(user);
-      
       sessionStorage.setItem("user", userString);
+      setUsuarioLogeado(user);
       navegacion("/app/inicioadmi");
     } else if (
       formBasicEmail === import.meta.env.VITE_SECRE_EMAIL &&
@@ -30,8 +30,8 @@ export function RegistroPage() {
     ) {
       user.role = "secre";
       const userString = JSON.stringify(user);
-      
       sessionStorage.setItem("user", userString);
+      setUsuarioLogeado(user);
       navegacion("/app/iniciosecre");
     } else if (
       formBasicEmail === import.meta.env.VITE_ABOG_EMAIL &&
@@ -39,8 +39,8 @@ export function RegistroPage() {
     ) {
       user.role = "abog";
       const userString = JSON.stringify(user);
-      
       sessionStorage.setItem("user", userString);
+      setUsuarioLogeado(user);
       navegacion("/app/inicioabog");
     } else {
       alert("Usuario o contraseña incorrectos");
