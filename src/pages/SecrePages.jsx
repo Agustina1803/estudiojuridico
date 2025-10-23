@@ -1,7 +1,9 @@
 import React from 'react'
 
-export const SecrePages = () => {
+const SecrePages = () => {
   return (
     <div>SecrePages</div>
   )
 }
+
+export default SecrePages

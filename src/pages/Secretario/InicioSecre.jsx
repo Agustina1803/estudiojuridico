@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 const InicioSecre = () => {
   return (
-    <div >
+    <div className='vh-70'>
       <ChatCentral></ChatCentral>
     </div>
   )
