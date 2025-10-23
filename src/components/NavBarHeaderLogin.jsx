@@ -1,7 +1,7 @@
-import React from "react";
+
 import { Navbar, Container } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import logo from "../assets/logo.jpg"; 
+import logo from "../assets/logo.png"; 
 import '../styles/navBarHeader.css';
 
 const NavBarHeaderLogin = () => {
@@ -13,12 +13,16 @@ const NavBarHeaderLogin = () => {
       <Container fluid className="d-flex justify-content-start align-items-center">
         
         <Navbar.Brand className="ms-3">
-          <img
-            src={logo}
-            alt="Logo del estudio"
-            height="45"
-            className="d-inline-block align-top"
-          />
+ <img
+  src={logo}
+  alt="Logo estudio jurídico"
+  width="60"
+  height="55"
+  
+  loading="lazy"
+/>
+
+
         </Navbar.Brand>
       </Container>
     </Navbar>
