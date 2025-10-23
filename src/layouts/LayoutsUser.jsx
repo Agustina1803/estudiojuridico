@@ -25,7 +25,6 @@ const LayoutsAdmi = ({usuarioLogueado}) => {
             <Col md={3} lg={3}>
               <ChatInterno></ChatInterno>
             </Col>*/}
-           
           </Row>
         </Container>
       </main>
