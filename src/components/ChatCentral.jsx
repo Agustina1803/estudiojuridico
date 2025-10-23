@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { GoogleGenAI } from "@google/genai";
-import "./ChatCentral.css"; 
+import "../styles/chatCentral.css"; 
 
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;

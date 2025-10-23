@@ -21,6 +21,7 @@
   color: #1E3A5F;
 }
 
+
 /* Responsive: centrar botón en pantallas pequeñas */
 @media (max-width: 768px) {
   .botonCerrarSesion {
