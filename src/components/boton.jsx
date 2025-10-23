@@ -12,9 +12,9 @@ import {
 } from 'react-icons/fa';
 
 const actionMap = {
-  ver: { icon: <FaEye />, variant: 'info', label: 'Ver' },
-  editar: { icon: <FaEdit />, variant: 'warning', label: 'Editar' },
-  eliminar: { icon: <FaTrash />, variant: 'danger', label: 'Eliminar' },
+  ver: { icon: <FaEye />, variant: 'info' },
+  editar: { icon: <FaEdit />, variant: 'warning'},
+  eliminar: { icon: <FaTrash />, variant: 'danger'},
   agregar: { icon: <FaPlus />, variant: 'success', label: 'Agregar' },
   enviar: { icon: <FaPaperPlane />, variant: 'primary', label: 'Enviar' },
   cerrar: { icon: <FaSignOutAlt />, variant: 'danger', label: 'Cerrar sesión' },
