@@ -5,7 +5,7 @@ import FormAgregarCita from '../../components/formAgregarCita'
 import { useState, useEffect } from 'react'
 
 const AgendaSecre = () => {
-  const columnas = ['Nº','Fecha', 'Hora', 'Cliente', 'Abogado', 'Tipo de Evento', 'Notas', 'Acciones'];
+  const columnas = ['Nº','Fecha', 'Hora', 'Cliente', 'Abogado', 'Tipo de Evento', 'Notas'];
   const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
 
