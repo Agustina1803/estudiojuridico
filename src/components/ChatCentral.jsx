@@ -1,114 +1,83 @@
 import { useState, useEffect } from "react";
-import { GoogleGenAI } from "@google/genai";
-import "../styles/chatCentral.css"; 
+import Tablageneral from "../../components/tablageneral";
+import Boton from "../../components/Boton";
+import { ver, editar, eliminar } from "../../utils/AccionesBoton";
+import FormNuevoCliente from "../../components/FormNuevoCliente";
+import Buscador from "../components/Buscador" // 👈 importamos tu componente de búsqueda
 
+const ClientesSecre = () => {
+  const columnas = ["Nº", "Nombre", "DNI / CUIT", "Email", "Teléfono", "Estado"];
+  const [filas, setFilas] = useState([]);
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [busqueda, setBusqueda] = useState("");
 
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-const genAI = new GoogleGenAI({ apiKey: API_KEY });
+  const abrirModal = () => setMostrarModal(true);
+  const cerrarModal = () => setMostrarModal(false);
 
-
-export default function ChatCentral() {
-  const [mensajes, setMensajes] = useState([]);
-  const [texto, setTexto] = useState("");
-  const [cargando, setCargando] = useState(false);
-  const [chatSession, setChatSession] = useState(null);
-
-  
+  // 🔹 Cargar clientes desde localStorage
   useEffect(() => {
-    const instruction =
-      "Eres MARIO, abogado especializado en Derecho Argentino y respondes formalmente.";
-
-    try {
-      if (!chatSession) {
-        const chat = genAI.chats.create({
-          model: "gemini-2.5-flash",
-          config: { systemInstruction: instruction },
-        });
-        setChatSession(chat);
-      }
-    } catch (error) {
-      console.error("Error al iniciar chat:", error);
+    const clientesGuardados = localStorage.getItem("clientes");
+    if (clientesGuardados) {
+      setFilas(JSON.parse(clientesGuardados));
     }
   }, []);
 
-  
-  const enviar = async () => {
-    if (!texto.trim() || cargando || !chatSession) return;
-
-    const mensajeUsuario = { role: "user", content: texto };
-    const historialActualizado = [...mensajes, mensajeUsuario];
-
-    setMensajes(historialActualizado);
-    setTexto("");
-    setCargando(true);
-
-    try {
-      const res = await chatSession.sendMessage({
-        message: mensajeUsuario.content,
-      });
-      const respuesta = res.text || "Error: Sin respuesta.";
-
-      setMensajes([
-        ...historialActualizado,
-        { role: "model", content: respuesta },
-      ]);
-    } catch (error) {
-      console.error("Error de la API:", error);
-      setMensajes([
-        ...historialActualizado,
-        { role: "model", content: "Lo siento, hubo un error de conexión." },
-      ]);
-    } finally {
-      setCargando(false);
-    }
+  // 🔹 Agregar nuevo cliente
+  const agregarCliente = (nuevoCliente) => {
+    const nuevasFilas = [...filas, nuevoCliente];
+    setFilas(nuevasFilas);
+    localStorage.setItem("clientes", JSON.stringify(nuevasFilas));
+    cerrarModal();
   };
 
-  
-  const manejarPulsacion = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      enviar();
-    }
+  // 🔹 Filtrar por búsqueda (nombre, DNI o email)
+  const filasFiltradas = filas.filter(
+    (fila) =>
+      fila[1]?.toLowerCase().includes(busqueda.toLowerCase()) ||
+      fila[2]?.toLowerCase().includes(busqueda.toLowerCase()) ||
+      fila[3]?.toLowerCase().includes(busqueda.toLowerCase())
+  );
+
+  // 🔹 Manejador para el SearchBar
+  const handleSearch = (valor) => {
+    setBusqueda(valor);
   };
 
   return (
-    <div className="chat-container">
-     
-      <div className="chat-area">
-        {mensajes.length === 0 && (
-          <div className="chat-placeholder">Inicia una conversación.</div>
-        )}
+    <div className="p-4">
+      <h2 className="mb-4">👥 Lista de Clientes</h2>
 
-        {mensajes.map((m, i) => (
-          <div
-            key={i}
-            className={`mensaje ${m.role === "user" ? "usuario" : "mario"}`}
-          >
-            {m.content}
+      {/* Componente SearchBar */}
+      <div className="mb-3">
+        <SearchBar onSearch={handleSearch} />
+      </div>
+
+      {/* Tabla general */}
+      <Tablageneral
+        columnas={columnas}
+        filas={filasFiltradas}
+        acciones={(fila) => (
+          <div className="d-flex gap-2 align-items-center justify-content-center">
+            <Boton action="ver" onClick={() => ver(fila[0])} />
+            <Boton action="editar" onClick={() => editar(fila[0])} />
+            <Boton action="eliminar" onClick={() => eliminar(fila[0])} />
           </div>
-        ))}
+        )}
+      />
 
-        {cargando && <div className="escribiendo">Escribiendo...</div>}
+      {/* Botón agregar cliente */}
+      <div className="d-flex justify-content-end mt-3">
+        <Boton action="agregar" onClick={abrirModal} />
       </div>
 
-      
-      <div className="input-area">
-        <textarea
-          placeholder="Escribe tu mensaje..."
-          value={texto}
-          disabled={cargando || !chatSession}
-          onChange={(e) => setTexto(e.target.value)}
-          onKeyDown={manejarPulsacion} 
-        />
-        <button
-          onClick={enviar}
-          disabled={cargando || !chatSession}
-          className="btn-enviar"
-        >
-          {cargando ? "Cargando..." : "Enviar"}
-        </button>
-      </div>
+      {/* Modal para agregar cliente */}
+      <FormNuevoCliente
+        show={mostrarModal}
+        onHide={cerrarModal}
+        onGuardar={agregarCliente}
+      />
     </div>
   );
-  
-}
+};
+
+export default ClientesSecre;
