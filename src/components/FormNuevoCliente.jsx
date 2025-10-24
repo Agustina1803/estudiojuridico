@@ -2,36 +2,27 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
-const FormNuevoCliente = ({ mostrar, cerrar, onGuardar }) => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      nombre: "",
-      identificador: "",
-      email: "",
-      telefono: "",
-      prioridad: "alta",
-    },
-  });
+const FormNuevoCliente = ({ mostrar, cerrar }) => {
+const {
+  register,
+  handleSubmit,
+  reset,
+  formState: { errors },
+} = useForm({
+  defaultValues: {
+    nombre: "",
+    identificador: "",
+    email: "",
+    telefono: "",
+    prioridad: "alta"
+  }
+});
 
   const crearCliente = (data) => {
     data.id = uuidv4();
-
-    const clienteFormateado = [
-      data.id,
-      data.nombre,
-      data.identificador,
-      data.email,
-      data.telefono,
-      data.prioridad,
-    ];
-
-    onGuardar(clienteFormateado); // ✅ envía array al padre
+    console.log(data);
     reset();
+    
   };
 
   const validarCuit = (cuit) => {
@@ -52,14 +43,22 @@ const FormNuevoCliente = ({ mostrar, cerrar, onGuardar }) => {
       <Modal.Body>
         <Form onSubmit={handleSubmit(crearCliente)}>
           <Form.Group className="mb-3" controlId="nombre">
-            <Form.Label>Nombre Completo:</Form.Label>
+            <Form.Label>Nombre Completo: </Form.Label>
             <Form.Control
               type="text"
               placeholder="Ej: Juan Perez"
               {...register("nombre", {
                 required: "El nombre del cliente es obligatorio",
-                minLength: { value: 10, message: "Mínimo 10 caracteres" },
-                maxLength: { value: 50, message: "Máximo 50 caracteres" },
+                minLength: {
+                  value: 10,
+                  message:
+                    "El nombre del cliente debe tener como minimo 10 caracteres",
+                },
+                maxLength: {
+                  value: 50,
+                  message:
+                    "El nombre del cliente debe tener como maximo 50 caracteres",
+                },
               })}
             />
             <Form.Text className="text-danger">
@@ -68,7 +67,7 @@ const FormNuevoCliente = ({ mostrar, cerrar, onGuardar }) => {
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="identificador">
-            <Form.Label>DNI / CUIT:</Form.Label>
+            <Form.Label>DNI / CUIT :</Form.Label>
             <Form.Control
               type="text"
               placeholder="Ej: 20301234567"
@@ -77,7 +76,8 @@ const FormNuevoCliente = ({ mostrar, cerrar, onGuardar }) => {
                 validate: (value) => {
                   const limpio = value.replace(/-/g, "");
                   const soloNumeros = /^\d{7,11}$/.test(limpio);
-                  if (!soloNumeros) return "Solo números (7 a 11 dígitos)";
+                  if (!soloNumeros)
+                    return "Debe contener solo números (7 a 11 dígitos)";
                   if (limpio.length === 11 && !validarCuit(limpio)) {
                     return "CUIT/CUIL inválido";
                   }
@@ -99,8 +99,9 @@ const FormNuevoCliente = ({ mostrar, cerrar, onGuardar }) => {
               {...register("email", {
                 required: "El email es obligatorio",
                 pattern: {
-                  value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
-                  message: "Formato de email incorrecto",
+                  value:
+                    /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/,
+                  message: "El formato del email es incorrecto",
                 },
               })}
             />
@@ -110,15 +111,15 @@ const FormNuevoCliente = ({ mostrar, cerrar, onGuardar }) => {
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="telefono">
-            <Form.Label>Teléfono:</Form.Label>
+            <Form.Label>Telefono:</Form.Label>
             <Form.Control
-              type="text"
+              type="telefono"
               placeholder="3813005896"
               {...register("telefono", {
-                required: "El teléfono es obligatorio",
+                required: "El telefono es obligatorio",
                 pattern: {
-                  value: /^[0-9]{6,12}$/,
-                  message: "Formato de teléfono inválido",
+                  value: /^(?:(?:00)?549?)?0?(?:11|[2368]\d{2})\d{6,8}$/,
+                  message: "El formato del telefono es incorrecto",
                 },
               })}
             />
@@ -126,25 +127,25 @@ const FormNuevoCliente = ({ mostrar, cerrar, onGuardar }) => {
               {errors.telefono?.message}
             </Form.Text>
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="prioridad">
             <Form.Label>Prioridad</Form.Label>
             <Form.Select {...register("prioridad")}>
-              <option value="alta">Activo</option>
-              <option value="baja">Inactivo</option>
+              <option value="alta"> Activo</option>
+              <option value="alta"> Inactivo</option>
             </Form.Select>
           </Form.Group>
-
-          <div className="d-flex justify-content-end">
-            <Button variant="success" type="submit" className="me-2">
-              Guardar
-            </Button>
-            <Button variant="secondary" onClick={cerrar}>
-              Cancelar
-            </Button>
-          </div>
+            <div className="justify-content-end d-flex">
+          <Button variant="success" type="submit" className="me-2">
+            Guardar
+          </Button>
+          <Button variant="secondary" onClick={cerrar}>
+            Cancelar
+          </Button>
+        </div>
         </Form>
+      
       </Modal.Body>
+      <Modal.Footer></Modal.Footer>
     </Modal>
   );
 };
