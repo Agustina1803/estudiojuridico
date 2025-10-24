@@ -22,7 +22,7 @@ const ClientesSecre = () => {
   }, []);
 
   const agregarCliente = (nuevoCliente) => {
-    const nuevasFilas = [...filas, nuevoCliente]; // ✅ ya es array
+    const nuevasFilas = [...filas, nuevoCliente];
     setFilas(nuevasFilas);
     localStorage.setItem("clientes", JSON.stringify(nuevasFilas));
     cerrarModal();

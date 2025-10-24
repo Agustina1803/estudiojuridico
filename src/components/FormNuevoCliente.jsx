@@ -1,28 +1,39 @@
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form } from "react-bootstrap"; 
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
-const FormNuevoCliente = ({ mostrar, cerrar }) => {
-const {
-  register,
-  handleSubmit,
-  reset,
-  formState: { errors },
-} = useForm({
-  defaultValues: {
-    nombre: "",
-    identificador: "",
-    email: "",
-    telefono: "",
-    prioridad: "alta"
-  }
-});
+const FormNuevoCliente = ({ mostrar, cerrar, onGuardar }) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      nombre: "",
+      identificador: "",
+      email: "",
+      telefono: "",
+      prioridad: "alta" 
+    }
+  });
 
   const crearCliente = (data) => {
     data.id = uuidv4();
-    console.log(data);
-    reset();
+
     
+    const nuevoCliente = [
+      data.id,
+      data.nombre,
+      data.identificador,
+      data.email,
+      data.telefono,
+      data.prioridad === "alta" ? "Activo" : "Inactivo"
+    ];
+
+    onGuardar?.(nuevoCliente); 
+    reset();
+    cerrar();
   };
 
   const validarCuit = (cuit) => {
@@ -52,12 +63,12 @@ const {
                 minLength: {
                   value: 10,
                   message:
-                    "El nombre del cliente debe tener como minimo 10 caracteres",
+                    "El nombre del cliente debe tener como mínimo 10 caracteres",
                 },
                 maxLength: {
                   value: 50,
                   message:
-                    "El nombre del cliente debe tener como maximo 50 caracteres",
+                    "El nombre del cliente debe tener como máximo 50 caracteres",
                 },
               })}
             />
@@ -110,42 +121,39 @@ const {
             </Form.Text>
           </Form.Group>
 
+         
           <Form.Group className="mb-3" controlId="telefono">
-            <Form.Label>Telefono:</Form.Label>
+            <Form.Label>Teléfono:</Form.Label>
             <Form.Control
               type="telefono"
               placeholder="3813005896"
               {...register("telefono", {
-                required: "El telefono es obligatorio",
-                pattern: {
-                  value: /^(?:(?:00)?549?)?0?(?:11|[2368]\d{2})\d{6,8}$/,
-                  message: "El formato del telefono es incorrecto",
-                },
+                required: "El teléfono es obligatorio",
               })}
             />
             <Form.Text className="text-danger">
               {errors.telefono?.message}
             </Form.Text>
           </Form.Group>
+
           <Form.Group className="mb-3" controlId="prioridad">
-            <Form.Label>Prioridad</Form.Label>
+            <Form.Label>Estado</Form.Label>
             <Form.Select {...register("prioridad")}>
-              <option value="alta"> Activo</option>
-              <option value="alta"> Inactivo</option>
+              <option value="alta">Activo</option>
+              <option value="baja">Inactivo</option>
             </Form.Select>
           </Form.Group>
-            <div className="justify-content-end d-flex">
-          <Button variant="success" type="submit" className="me-2">
-            Guardar
-          </Button>
-          <Button variant="secondary" onClick={cerrar}>
-            Cancelar
-          </Button>
-        </div>
+
+          <div className="justify-content-end d-flex">
+            <Button variant="success" type="submit" className="me-2">
+              Guardar
+            </Button>
+            <Button variant="secondary" onClick={cerrar}>
+              Cancelar
+            </Button>
+          </div>
         </Form>
-      
       </Modal.Body>
-      <Modal.Footer></Modal.Footer>
     </Modal>
   );
 };
