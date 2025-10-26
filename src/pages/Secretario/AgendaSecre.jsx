@@ -1,6 +1,6 @@
 import Tablageneral from '../../components/tablageneral'
 import Boton from '../../components/Boton'
-import {ver, editar, eliminar} from '../../utils/AccionesBoton'
+import Swal from "sweetalert2";
 import FormAgregarCita from '../../components/formAgregarCita'
 import { useState, useEffect } from 'react'
 
