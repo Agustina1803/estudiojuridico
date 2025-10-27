@@ -60,7 +60,8 @@ const AgendaSecre = () => {
       }
     });
   };
-  const agregarCita = (cita) => {
+
+  const agegarCita = (cita) => {
     let actualizadas;
     if (itemEditar) {
       actualizadas = filas.map((fila) => (fila.id === cita.id ? cita : fila));
@@ -91,7 +92,7 @@ const AgendaSecre = () => {
       <FormAgregarCita
         show={mostrarModal}
         onHide={cerrarModal}
-        onGuardar={agregarCita}
+        onGuardar={agegarCita }
         itemEditar={itemEditar}
       />
     </>
