@@ -1,15 +1,15 @@
 import Tablageneral from "../../components/tablageneral";
 import Boton from "../../components/Boton";
-import { ver, editar, eliminar } from "../../utils/AccionesBoton";
 import FormNuevoCliente from "../../components/FormNuevoCliente";
 import Buscador from "../../components/Buscador";
 import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 
 const ClientesSecre = () => {
   const columnas = ["Nº", "Nombre", "DNI / CUIT", "Email", "Teléfono", "Estado"];
-  const claves = ["nombre", "dni", "email", "telefono", "estado"];
+  const claves = ["nombre", "identificador", "email", "telefono", "prioridad"];
   const tipo = "clientes";
- const [filas, setFilas] = useState([]);
+  const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
   const [busqueda, setBusqueda] = useState("");
@@ -34,13 +34,11 @@ const ClientesSecre = () => {
     const ver = (id) => {
     const cliente = filas.find((item) => item.id === id);
     Swal.fire({
-      title: "Detalles",
-      text: `Fecha: ${cliente.fecha}
-      Hora: ${cliente.hora}
-      Cliente: ${cliente.cliente}
-      Abogado: ${cliente.abogado}
-      Tipo de Evento: ${cliente.tipoEvento}
-      Notas: ${cliente.notas || "Sin notas"}`,
+      title: `Fecha: ${cliente.nombre}
+      Hora: ${cliente.identificador}
+      Cliente: ${cliente.email}
+      Abogado: ${cliente.telefono}
+      Estado: ${cliente.estado === "Activo" ? "Activo" : "Inactivo"}`,
       confirmButtonText: "Cerrar",
     });
   };
@@ -51,17 +49,22 @@ const ClientesSecre = () => {
     setMostrarModal(true);
   };
 
-  const agregarCita = (nuevaCita) => {
-    const nuevasFilas = [...filas, nuevaCita];
-    setFilas(nuevasFilas);
-    localStorage.setItem("citas", JSON.stringify(nuevasFilas));
-    cerrarModal();
-  };
+const agregarCliente = (cliente) => {
+  let actualizadas;
+  if (itemEditar) {
+    actualizadas = filas.map((fila) => (fila.id === cliente.id ? cliente : fila));
+  } else {
+    actualizadas = [...filas, cliente];
+  }
+  setFilas(actualizadas);
+  localStorage.setItem(tipo, JSON.stringify(actualizadas));
+  cerrarModal();
+};
 
     const eliminar = (id) => {
     const cliente = filas.find((item) => item.id === id);
     Swal.fire({
-      title: `¿Eliminar la ${cliente.tipoEvento} de ${cliente.cliente}?`,
+      title: `¿Eliminar al ${cliente.nombre}?`,
       text: "Este cambio no se puede revertir",
       icon: "warning",
       showCancelButton: true,
@@ -76,7 +79,7 @@ const ClientesSecre = () => {
         localStorage.setItem(tipo, JSON.stringify(actualizadas));
         Swal.fire({
           title: "Eliminado",
-          text: "La cita fue eliminada correctamente.",
+          text: "El cliente fue eliminada correctamente.",
           icon: "success",
         });
       }
@@ -100,9 +103,9 @@ const ClientesSecre = () => {
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">
-            <Boton action="ver" onClick={() => verCliente(fila.id)} />
-            <Boton action="editar" onClick={() => editarCliente(fila.id)} />
-            <Boton action="eliminar" onClick={() => eliminarCliente(fila.id)} />
+            <Boton action="ver" onClick={() => ver(fila.id)} />
+            <Boton action="editar" onClick={() => editar(fila.id)} />
+            <Boton action="eliminar" onClick={() => eliminar(fila.id)} />
           </div>
         )}
       />
@@ -112,8 +115,8 @@ const ClientesSecre = () => {
       </div>
 
       <FormNuevoCliente
-        mostrar={mostrarModal}
-        cerrar={cerrarModal}
+        show={mostrarModal}
+        onHide={cerrarModal}
         onGuardar={agregarCliente}
         itemEditar={itemEditar}
       />

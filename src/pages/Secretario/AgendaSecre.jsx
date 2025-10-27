@@ -52,9 +52,14 @@ const AgendaSecre = () => {
   };
 
   const agregarCita = (nuevaCita) => {
-    const nuevasFilas = [...filas, nuevaCita];
+   let nuevasFilas;
+     if (itemEditar) {
+    nuevasFilas = filas.map((fila) => (fila.id === nuevaCita.id ? nuevaCita : fila));
+  } else {
+     nuevasFilas = [...filas, nuevaCita];
+  }
     setFilas(nuevasFilas);
-    localStorage.setItem("citas", JSON.stringify(nuevasFilas));
+    localStorage.setItem("citas", JSON.stringify(nuevaCita));
     cerrarModal();
   };
 
@@ -84,13 +89,11 @@ const AgendaSecre = () => {
   };
   const manejarGuardarCita = (cita) => {
     let actualizadas;
-
     if (itemEditar) {
-      actualizadas = filas.map((fila) => (fila.id === cita.id ? cita : f));
+      actualizadas = filas.map((fila) => (fila.id === cita.id ? cita : fila));
     } else {
       actualizadas = [...filas, cita];
     }
-
     setFilas(actualizadas);
     localStorage.setItem(tipo, JSON.stringify(actualizadas));
     cerrarModal();

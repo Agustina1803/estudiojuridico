@@ -1,12 +1,15 @@
-import { Modal, Button, Form } from "react-bootstrap"; 
+import { useEffect } from "react";
+import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
+import Swal from "sweetalert2";
 
-const FormNuevoCliente = ({ mostrar, cerrar, onGuardar }) => {
+const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -14,27 +17,47 @@ const FormNuevoCliente = ({ mostrar, cerrar, onGuardar }) => {
       identificador: "",
       email: "",
       telefono: "",
-      prioridad: "alta" 
-    }
+      estado: "inactivo",
+    },
   });
 
-  const crearCliente = (data) => {
-    data.id = uuidv4();
+  useEffect(() => {
+    if (itemEditar) {
+      Object.entries(itemEditar).forEach(([key, value]) => {
+        setValue(key, value || "");
+      });
+    } else {
+      reset();
+    }
+  }, [itemEditar, setValue, reset]);
 
-    
-    const nuevoCliente = [
-      data.id,
-      data.nombre,
-      data.identificador,
-      data.email,
-      data.telefono,
-      data.prioridad === "alta" ? "Activo" : "Inactivo"
-    ];
+  const onSubmit = (data) => {
+    const cliente = {
+      id: itemEditar ? itemEditar.id : uuidv4(),
+      ...data,
+    };
 
-    onGuardar?.(nuevoCliente); 
+    Swal.fire({
+      icon: "success",
+      title: itemEditar ? "¡Cliente actualizado!" : "¡Cliente agregado!",
+      text: itemEditar
+        ? "El cliente fue actualizado exitosamente."
+        : "El cliente fue agregado exitosamente.",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+
     reset();
-    cerrar();
+    onHide();
+    onGuardar(cliente);
   };
+
+  const handleCancel = () => {
+    reset();
+    onHide();
+  };
+  const modalTitle = itemEditar ? "Editar Cliente" : "Nuevo Cliente";
+  const submitButtonText = itemEditar ? "Actualizar" : "Guardar";
 
   const validarCuit = (cuit) => {
     if (cuit.length !== 11) return false;
@@ -47,12 +70,12 @@ const FormNuevoCliente = ({ mostrar, cerrar, onGuardar }) => {
   };
 
   return (
-    <Modal show={mostrar} onHide={cerrar}>
+    <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Agregar Cliente</Modal.Title>
+        <Modal.Title>{modalTitle}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={handleSubmit(crearCliente)}>
+        <Form onSubmit={handleSubmit(onSubmit)}>
           <Form.Group className="mb-3" controlId="nombre">
             <Form.Label>Nombre Completo: </Form.Label>
             <Form.Control
@@ -101,7 +124,6 @@ const FormNuevoCliente = ({ mostrar, cerrar, onGuardar }) => {
               {errors.identificador?.message}
             </Form.Text>
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="email">
             <Form.Label>Email:</Form.Label>
             <Form.Control
@@ -120,8 +142,6 @@ const FormNuevoCliente = ({ mostrar, cerrar, onGuardar }) => {
               {errors.email?.message}
             </Form.Text>
           </Form.Group>
-
-         
           <Form.Group className="mb-3" controlId="telefono">
             <Form.Label>Teléfono:</Form.Label>
             <Form.Control
@@ -135,20 +155,18 @@ const FormNuevoCliente = ({ mostrar, cerrar, onGuardar }) => {
               {errors.telefono?.message}
             </Form.Text>
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="prioridad">
             <Form.Label>Estado</Form.Label>
             <Form.Select {...register("prioridad")}>
-              <option value="alta">Activo</option>
-              <option value="baja">Inactivo</option>
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
             </Form.Select>
           </Form.Group>
-
           <div className="justify-content-end d-flex">
             <Button variant="success" type="submit" className="me-2">
-              Guardar
+              {submitButtonText}
             </Button>
-            <Button variant="secondary" onClick={cerrar}>
+            <Button variant="secondary" onClick={handleCancel}>
               Cancelar
             </Button>
           </div>

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
 
-const FormNuevaCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
+const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
   const {
     register,
     handleSubmit,
@@ -155,7 +155,6 @@ const FormNuevaCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
         </Form>
       </Modal.Body>
     </Modal>
-  );
-};
-
-export default FormNuevaCita;
+  )
+}
+  export default FormAgregarCita;
