@@ -86,12 +86,12 @@ const agregarCliente = (cliente) => {
     });
   };
 
-   const filasFiltradas = filas.filter(
-    (fila) =>
-      fila.nombre?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      fila.dni?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      fila.email?.toLowerCase().includes(busqueda.toLowerCase())
-  );
+const filasFiltradas = filas.filter(
+  (fila) =>
+    fila.nombre?.toLowerCase().includes(busqueda.toLowerCase()) ||
+    fila.identificador?.toLowerCase().includes(busqueda.toLowerCase()) ||
+    fila.email?.toLowerCase().includes(busqueda.toLowerCase())
+);
 
  return (
     <>

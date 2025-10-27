@@ -1,32 +1,24 @@
 import React, { useState } from 'react';
-import { Form, FormControl, Button } from 'react-bootstrap';
+import { Form, FormControl } from 'react-bootstrap';
 
-function SearchBar() {
-  console.log('SearchBar component rendered');
-  
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const handleSearchSubmit = (event) => {
-    event.preventDefault(); // Prevent default form submission
-    console.log('Searching for:', searchTerm);
-    // Here you would typically trigger a search function or API call
+function SearchBar({ onSearch }) {
+  const [search, setSearch] = useState('');
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearch(value);
+    onSearch(value);
   };
 
   return (
-    <Form className="d-flex" onSubmit={handleSearchSubmit}>
+    <Form className="d-flex mb-2" onSubmit={handleSearchChange}>
       <FormControl
         type="search"
-        placeholder="Buscar..."
+        placeholder="Buscar cliente..."
         className="me-2"
         aria-label="Search"
-        value={searchTerm}
+        value={search}
         onChange={handleSearchChange}
       />
-      <Button variant="outline-success" type="submit">Buscar</Button>
     </Form>
   );
 }
