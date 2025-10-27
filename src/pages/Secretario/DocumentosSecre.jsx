@@ -1,198 +1,133 @@
 import { useState, useEffect } from "react";
 import Tablageneral from "../../components/tablageneral";
 import Boton from "../../components/Boton";
-import { Modal, Button, Form } from "react-bootstrap";
+import Swal from "sweetalert2";
+import FormAgregarDocumento from "../../components/FormAgregarDocumento";
+import Buscador from "../../components/Buscador";
 
 const DocumentosSecre = () => {
-  const columnas = ["Nombre", "Cliente", "Tipo", "Fecha", "Archivo"];
+  const columnas = ["Nº", "Nombre", "Cliente", "Tipo", "Fecha", "Archivo"];
+  const claves = ["nombre", "cliente", "tipo", "fecha", "archivo"];
+  const tipo = "documentos";
+
   const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
-  const [nuevoDoc, setNuevoDoc] = useState({
-    nombre: "",
-    cliente: "",
-    tipo: "",
-    fecha: "",
-    archivo: "",
-  });
+  const [itemEditar, setItemEditar] = useState(null);
+  const [busqueda, setBusqueda] = useState("");
 
-  // --- Abrir / cerrar modal ---
-  const abrirModal = () => setMostrarModal(true);
-  const cerrarModal = () => setMostrarModal(false);
-
-  // --- Cargar documentos almacenados ---
   useEffect(() => {
-    const docsGuardados = localStorage.getItem("documentos");
+    const docsGuardados = localStorage.getItem(tipo);
     if (docsGuardados) {
       setFilas(JSON.parse(docsGuardados));
     }
   }, []);
 
-  // --- Agregar nuevo documento ---
-  const agregarDocumento = (e) => {
-    e.preventDefault();
+  const abrirModal = () => {
+    setItemEditar(null);
+    setMostrarModal(true);
+  };
 
-    if (!nuevoDoc.archivo) {
-      alert("Por favor selecciona un archivo antes de subir.");
-      return;
-    }
+  const cerrarModal = () => {
+    setItemEditar(null);
+    setMostrarModal(false);
+  };
 
-    const nuevasFilas = [...filas, nuevoDoc];
-    setFilas(nuevasFilas);
-    localStorage.setItem("documentos", JSON.stringify(nuevasFilas));
-    cerrarModal();
+  const editar = (id) => {
+    const documento = filas.find((item) => item.id === id);
+    setItemEditar(documento);
+    setMostrarModal(true);
+  };
 
-    // Reset
-    setNuevoDoc({
-      nombre: "",
-      cliente: "",
-      tipo: "",
-      fecha: "",
-      archivo: "",
+  const eliminar = (id) => {
+    const documento = filas.find((item) => item.id === id);
+    Swal.fire({
+      title: `¿Eliminar el documento "${documento.nombre}"?`,
+      text: "Este cambio no se puede revertir",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const actualizadas = filas.filter((item) => item.id !== id);
+        setFilas(actualizadas);
+        localStorage.setItem(tipo, JSON.stringify(actualizadas));
+        Swal.fire({
+          title: "Eliminado",
+          text: "El documento fue eliminado correctamente.",
+          icon: "success",
+        });
+      }
     });
   };
 
-  // --- Eliminar documento ---
-  const eliminarDocumento = (nombreDoc) => {
-    const docsFiltrados = filas.filter((fila) => fila.nombre !== nombreDoc);
-    setFilas(docsFiltrados);
-    localStorage.setItem("documentos", JSON.stringify(docsFiltrados));
+  const descargarDocumento = (id) => {
+    const documento = filas.find((item) => item.id === id);
+    Swal.fire({
+      icon: "info",
+      title: "Descargando...",
+      text: `Descargando ${documento.archivo}`,
+      timer: 1500,
+      showConfirmButton: false,
+    });
   };
 
-  // --- Capturar archivo seleccionado ---
-  const manejarArchivo = (e) => {
-    const archivoSeleccionado = e.target.files[0];
-    if (archivoSeleccionado) {
-      setNuevoDoc((prev) => ({
-        ...prev,
-        archivo: archivoSeleccionado.name,
-        nombre: prev.nombre || archivoSeleccionado.name,
-      }));
+  const agregarDocumento = (documento) => {
+    let actualizadas;
+    if (itemEditar) {
+      actualizadas = filas.map((fila) =>
+        fila.id === documento.id ? documento : fila
+      );
+    } else {
+      actualizadas = [...filas, documento];
     }
+    setFilas(actualizadas);
+    localStorage.setItem(tipo, JSON.stringify(actualizadas));
+    cerrarModal();
   };
+
+  const filasFiltradas = filas.filter(
+    (fila) =>
+      fila.nombre?.trim().toLowerCase().includes(busqueda.trim().toLowerCase()) ||
+      fila.cliente?.trim().toLowerCase().includes(busqueda.trim().toLowerCase()) ||
+      fila.tipo?.trim().toLowerCase().includes(busqueda.trim().toLowerCase()) ||
+      fila.archivo?.trim().toLowerCase().includes(busqueda.trim().toLowerCase())
+  );
 
   return (
     <>
       <h2 className="mb-4">Gestión de Documentos</h2>
 
+      <Buscador onSearch={setBusqueda} />
+
       <Tablageneral
         columnas={columnas}
-        filas={filas.map((fila) => [
-          fila.nombre,
-          fila.cliente,
-          fila.tipo,
-          fila.fecha,
-          fila.archivo,
-          <div
-            key={fila.nombre}
-            className="d-flex gap-2 align-items-center justify-content-center"
-          >
-            <Boton action="ver" onClick={() => alert("Viendo " + fila.nombre)} />
+        filas={filasFiltradas}
+        claves={claves}
+        acciones={(fila) => (
+          <div className="d-flex gap-2 align-items-center justify-content-center">
             <Boton
               action="descargar"
-              onClick={() => alert("Descargando " + fila.nombre)}
+              onClick={() => descargarDocumento(fila.id)}
             />
-            <Boton
-              action="eliminar"
-              onClick={() => eliminarDocumento(fila.nombre)}
-            />
-          </div>,
-        ])}
+            <Boton action="editar" onClick={() => editar(fila.id)} />
+            <Boton action="eliminar" onClick={() => eliminar(fila.id)} />
+          </div>
+        )}
       />
 
       <div className="d-flex justify-content-end mt-3">
         <Boton action="agregar" onClick={abrirModal} />
       </div>
 
-      {/* Modal para subir documento */}
-      <Modal show={mostrarModal} onHide={cerrarModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>📤 Subir nuevo documento</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={agregarDocumento}>
-            <Form.Group className="mb-3">
-              <Form.Label>Nombre del documento</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Ej: Contrato_Laboral.pdf"
-                value={nuevoDoc.nombre}
-                onChange={(e) =>
-                  setNuevoDoc({ ...nuevoDoc, nombre: e.target.value })
-                }
-                required
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Cliente</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Nombre del cliente"
-                value={nuevoDoc.cliente}
-                onChange={(e) =>
-                  setNuevoDoc({ ...nuevoDoc, cliente: e.target.value })
-                }
-                required
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Tipo de documento</Form.Label>
-              <Form.Select
-                value={nuevoDoc.tipo}
-                onChange={(e) =>
-                  setNuevoDoc({ ...nuevoDoc, tipo: e.target.value })
-                }
-                required
-              >
-                <option value="">Seleccionar</option>
-                <option>Demanda</option>
-                <option>Contrato</option>
-                <option>Escrito</option>
-                <option>Poder</option>
-                <option>Notificación</option>
-                <option>Otro</option>
-              </Form.Select>
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Fecha</Form.Label>
-              <Form.Control
-                type="date"
-                value={nuevoDoc.fecha}
-                onChange={(e) =>
-                  setNuevoDoc({ ...nuevoDoc, fecha: e.target.value })
-                }
-                required
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3">
-              <Form.Label>Seleccionar archivo</Form.Label>
-              <Form.Control
-                type="file"
-                onChange={manejarArchivo}
-                accept=".pdf,.doc,.docx,.txt,.jpg,.png"
-                required
-              />
-              {nuevoDoc.archivo && (
-                <small className="text-muted">
-                  Archivo seleccionado: {nuevoDoc.archivo}
-                </small>
-              )}
-            </Form.Group>
-
-            <div className="d-flex justify-content-end">
-              <Button variant="secondary" onClick={cerrarModal} className="me-2">
-                Cancelar
-              </Button>
-              <Button variant="primary" type="submit">
-                Subir documento
-              </Button>
-            </div>
-          </Form>
-        </Modal.Body>
-      </Modal>
+      <FormAgregarDocumento
+        show={mostrarModal}
+        onHide={cerrarModal}
+        onGuardar={agregarDocumento}
+        itemEditar={itemEditar}
+      />
     </>
   );
 };
