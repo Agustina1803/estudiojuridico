@@ -31,17 +31,6 @@ const ClientesSecre = () => {
     setMostrarModal(false);
   };
 
-    const ver = (id) => {
-    const cliente = filas.find((item) => item.id === id);
-    Swal.fire({
-      title: `Fecha: ${cliente.nombre}
-      Hora: ${cliente.identificador}
-      Cliente: ${cliente.email}
-      Abogado: ${cliente.telefono}
-      Estado: ${cliente.estado === "Activo" ? "Activo" : "Inactivo"}`,
-      confirmButtonText: "Cerrar",
-    });
-  };
 
     const editar = (id) => {
     const cliente = filas.find((item) => item.id === id);
@@ -103,7 +92,6 @@ const filasFiltradas = filas.filter(
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">
-            <Boton action="ver" onClick={() => ver(fila.id)} />
             <Boton action="editar" onClick={() => editar(fila.id)} />
             <Boton action="eliminar" onClick={() => eliminar(fila.id)} />
           </div>

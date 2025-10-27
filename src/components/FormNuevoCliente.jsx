@@ -39,9 +39,9 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
 
     Swal.fire({
       icon: "success",
-      title: itemEditar ? "¡Cliente actualizado!" : "¡Cliente agregado!",
+      title: itemEditar ? `¡Cliente ${cliente.nombre} fue actualizado!` : "¡Cliente agregado!",
       text: itemEditar
-        ? "El cliente fue actualizado exitosamente."
+        ? `El cliente  fue actualizado  exitosamente.`
         : "El cliente fue agregado exitosamente.",
       timer: 2000,
       showConfirmButton: false,
@@ -59,15 +59,6 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
   const modalTitle = itemEditar ? "Editar Cliente" : "Nuevo Cliente";
   const submitButtonText = itemEditar ? "Actualizar" : "Guardar";
 
-  const validarCuit = (cuit) => {
-    if (cuit.length !== 11) return false;
-    const mult = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
-    const digitos = cuit.split("").map(Number);
-    const suma = mult.reduce((acc, val, i) => acc + val * digitos[i], 0);
-    const resto = suma % 11;
-    const verificador = resto === 0 ? 0 : resto === 1 ? 9 : 11 - resto;
-    return verificador === digitos[10];
-  };
 
   return (
     <Modal show={show} onHide={onHide} centered>

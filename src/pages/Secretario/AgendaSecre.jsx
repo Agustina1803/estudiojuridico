@@ -8,7 +8,6 @@ const AgendaSecre = () => {
   const columnas = ['Nº','Fecha', 'Hora', 'Cliente', 'Abogado', 'Tipo de Evento', 'Notas'];
    const claves = ["fecha", "hora", "cliente", "abogado", "tipoEvento", "notas"];
   const tipo = "citas";
-
  const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
@@ -31,19 +30,7 @@ const AgendaSecre = () => {
     setMostrarModal(false);
   };
 
-    const ver = (id) => {
-    const cliente = filas.find((item) => item.id === id);
-    Swal.fire({
-      title: "Detalles",
-      text: `Fecha: ${cliente.fecha}
-      Hora: ${cliente.hora}
-      Cliente: ${cliente.cliente}
-      Abogado: ${cliente.abogado}
-      Tipo de Evento: ${cliente.tipoEvento}
-      Notas: ${cliente.notas || "Sin notas"}`,
-      confirmButtonText: "Cerrar",
-    });
-  };
+
 
     const editar = (id) => {
     const cliente = filas.find((item) => item.id === id);
@@ -108,7 +95,6 @@ const AgendaSecre = () => {
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">
-            <Boton action="ver" onClick={() => ver(fila.id)} />
             <Boton action="editar" onClick={() => editar(fila.id)} />
             <Boton action="eliminar" onClick={() => eliminar(fila.id)} />
           </div>
