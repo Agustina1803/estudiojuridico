@@ -5,7 +5,7 @@ import FormAltaUsuario from '../Administrador/FormAltaUsuario'
 import { useState, useEffect } from 'react'
 
 const UsuariosAdmi = () => {
-  const columnas = ['Nº','Nombre', 'Apellido', 'Email',"Telefono", 'Rol'];
+  const columnas = ['Nº','Nombre', 'Apellido', 'Email','Telefono', 'Rol'];
    const claves = ["nombre", "apellido", "email", "telefono", "role"];
   const tipo = "usuarios";
  const [filas, setFilas] = useState([]);
@@ -30,14 +30,11 @@ const UsuariosAdmi = () => {
     setMostrarModal(false);
   };
 
-
-
     const editar = (id) => {
     const usuarios = filas.find((item) => item.id === id);
     setItemEditar(usuarios);
     setMostrarModal(true);
   };
-
 
     const eliminar = (id) => {
     const usuarios = filas.find((item) => item.id === id);
@@ -64,12 +61,12 @@ const UsuariosAdmi = () => {
     });
   };
 
-  const agegarUsuario = (cita) => {
+  const agegarUsuario = (user) => {
     let actualizadas;
     if (itemEditar) {
-      actualizadas = filas.map((fila) => (fila.id === cita.id ? cita : fila));
+      actualizadas = filas.map((fila) => (fila.id === user.id ? user : fila));
     } else {
-      actualizadas = [...filas, cita];
+      actualizadas = [...filas, user];
     }
     setFilas(actualizadas);
     localStorage.setItem(tipo, JSON.stringify(actualizadas));

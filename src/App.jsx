@@ -30,20 +30,19 @@ import ProteccionRutas from "./routers/ProteccionRutas";
 
 function App() {
 
-const usuarioSessionStorage = sessionStorage.getItem("user");
-const [usuarioLogueado, setUsuarioLogueado] = useState(JSON.parse(usuarioSessionStorage))
+
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path="/"
-          element={<LoginPages setUsuarioLogeado={setUsuarioLogueado} />}
+          element={<LoginPages />}
         />
         <Route
           path="app"
-          element={<LayoutsUser  usuarioLogueado={usuarioLogueado} />}
+          element={<LayoutsUser />}
         >
-          <Route element={<ProteccionRutas usuarioLogueado={usuarioLogueado} roleUsuario="admin" />}>
+          <Route element={<ProteccionRutas  roleUsuario="admin" />}>
             <Route path="inicioadmi" element={<InicioAdmi />} />
             <Route path="usuariosadmi" element={<UsuariosAdmi />} />
             <Route path="abogadosadmi" element={<AbogadosAdmi />} />
@@ -53,7 +52,7 @@ const [usuarioLogueado, setUsuarioLogueado] = useState(JSON.parse(usuarioSession
             <Route path="configuracionadmi" element={<ConfiguracionAdmi />} />
           </Route>
 
-          <Route element={<ProteccionRutas usuarioLogueado={usuarioLogueado} roleUsuario="secre" />}>
+          <Route element={<ProteccionRutas roleUsuario="secre" />}>
             <Route path="iniciosecre" element={<InicioSecre />} />
             <Route path="agendasecre" element={<AgendaSecre />} />
             <Route path="clientesecre" element={<ClienteSecre />} />
@@ -64,7 +63,7 @@ const [usuarioLogueado, setUsuarioLogueado] = useState(JSON.parse(usuarioSession
           </Route>
 
 
- <Route element={<ProteccionRutas usuarioLogueado={usuarioLogueado} roleUsuario="abog" />}>
+ <Route element={<ProteccionRutas  roleUsuario="abog" />}>
             <Route path="inicioabog" element={<InicioAbog />} />
           <Route path="agendaabog" element={<AgendaAbog />} />
           <Route path="clienteabog" element={<ClienteAbog />} />

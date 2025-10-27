@@ -17,8 +17,8 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
       apellido: "",
       email: "",
       telefono: "",
-      contaseña: "",
-      rol: "",
+      formBasicPassword: "",
+      role: "",
     },
   });
 
@@ -168,9 +168,9 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
           <Form.Group className="mb-3" controlId="role">
             <Form.Label>Rol:</Form.Label>
             <Form.Select {...register("role")}>
-              <option value="Admin"> Administrador</option>
-              <option value="Secre"> Secretario/a</option>
-              <option value="Abog"> Abogado</option>
+              <option value="admin"> Administrador</option>
+              <option value="secre"> Secretario/a</option>
+              <option value="abog"> Abogado</option>
             </Form.Select>
           </Form.Group>
           <div className="justify-content-end d-flex">

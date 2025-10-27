@@ -3,11 +3,10 @@ import "../styles/RegistroPage.css";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-export function RegistroPage({setUsuarioLogeado}) {
+export function RegistroPage({ setUsuarioLogeado }) {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm();
 
@@ -15,36 +14,28 @@ export function RegistroPage({setUsuarioLogeado}) {
   const loginUser = (user) => {
     const { formBasicEmail, formBasicPassword } = user;
 
-    if (
-      formBasicEmail === import.meta.env.VITE_ADMIN_EMAIL &&
-      formBasicPassword === import.meta.env.VITE_ADMIN_PASSWORD
-    ) {
-      user.role = "admin";
-      const userString = JSON.stringify(user);
-      sessionStorage.setItem("user", userString);
-      setUsuarioLogeado(user);
+    const usuariosLocalStorage = JSON.parse(localStorage.getItem("usuarios"));
+
+    const usuarioEncontrado = usuariosLocalStorage.find(
+      (usuario) =>
+        usuario.email === formBasicEmail &&
+        usuario.formBasicPassword === formBasicPassword
+    );
+
+
+    sessionStorage.setItem("user", JSON.stringify(usuarioEncontrado));
+    setUsuarioLogeado(usuarioEncontrado);
+
+    const rol = usuarioEncontrado.role?.toLowerCase();
+
+    if (rol === "admin") {
       navegacion("/app/inicioadmi");
-    } else if (
-      formBasicEmail === import.meta.env.VITE_SECRE_EMAIL &&
-      formBasicPassword === import.meta.env.VITE_SECRE_PASSWORD
-    ) {
-      user.role = "secre";
-      const userString = JSON.stringify(user);
-      sessionStorage.setItem("user", userString);
-      setUsuarioLogeado(user);
+    } else if (rol === "secre") {
       navegacion("/app/iniciosecre");
-    } else if (
-      formBasicEmail === import.meta.env.VITE_ABOG_EMAIL &&
-      formBasicPassword === import.meta.env.VITE_ABOG_PASSWORD
-    ) {
-      user.role = "abog";
-      const userString = JSON.stringify(user);
-      sessionStorage.setItem("user", userString);
-      setUsuarioLogeado(user);
+    } else if (rol === "abog") {
       navegacion("/app/inicioabog");
     } else {
-      alert("Usuario o contraseña incorrectos");
-      reset();
+      alert("Rol no reconocido");
     }
   };
 

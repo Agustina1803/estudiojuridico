@@ -57,7 +57,7 @@ const Menu = ({ role }) => {
     }
 
     const menuItems = menus();
-
+console.log("Rol recibido en Menu:", role);
 
     return (
 
