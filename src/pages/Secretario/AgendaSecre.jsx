@@ -38,17 +38,6 @@ const AgendaSecre = () => {
     setMostrarModal(true);
   };
 
-  const agregarCita = (nuevaCita) => {
-   let nuevasFilas;
-     if (itemEditar) {
-    nuevasFilas = filas.map((fila) => (fila.id === nuevaCita.id ? nuevaCita : fila));
-  } else {
-     nuevasFilas = [...filas, nuevaCita];
-  }
-    setFilas(nuevasFilas);
-    localStorage.setItem("citas", JSON.stringify(nuevaCita));
-    cerrarModal();
-  };
 
     const eliminar = (id) => {
     const cliente = filas.find((item) => item.id === id);
