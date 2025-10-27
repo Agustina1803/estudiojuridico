@@ -4,6 +4,7 @@ export const ver = () => {
 
 export const editar = () => {
   alert(`Editar registro con ID: `);
+ 
 };
 
 export const eliminar = () => {

@@ -1,7 +1,6 @@
 import { Table } from "react-bootstrap";
 
-
-const Tablageneral = ({ columnas,filas,acciones }) => {
+const Tablageneral = ({ columnas, claves, filas, acciones }) => {
   return (
     <>
       <Table striped bordered hover responsive>
@@ -14,17 +13,16 @@ const Tablageneral = ({ columnas,filas,acciones }) => {
           </tr>
         </thead>
         <tbody className="text-center">
-          
-            {filas.map((fila, indicefila) => (
-              <tr key={indicefila}>
-                {fila.map((celda, indicecelda) => (
-                  <td key={indicecelda}>{celda}</td>
-                ))}
-                {acciones && <td>{acciones(fila)}</td>} 
-              </tr>
-            ))}
-          </tbody>
-        
+          {filas.map((fila, indicefila) => (
+            <tr key={fila.id || indicefila}>
+              <td>{indicefila + 1}</td>
+              {claves.map((clave, indicecelda) => (
+                <td key={indicecelda}>{fila[clave]}</td>
+              ))}
+              {acciones && <td>{acciones(fila)}</td>}
+            </tr>
+          ))}
+        </tbody>
       </Table>
     </>
   );

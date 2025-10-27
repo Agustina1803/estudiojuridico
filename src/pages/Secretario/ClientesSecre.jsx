@@ -1,18 +1,18 @@
 import Tablageneral from "../../components/tablageneral";
 import Boton from "../../components/Boton";
-import { ver, editar, eliminar } from "../../utils/AccionesBoton";
 import FormNuevoCliente from "../../components/FormNuevoCliente";
 import Buscador from "../../components/Buscador";
 import { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 
 const ClientesSecre = () => {
   const columnas = ["Nº", "Nombre", "DNI / CUIT", "Email", "Teléfono", "Estado"];
+  const claves = ["nombre", "identificador", "email", "telefono", "prioridad"];
+  const tipo = "clientes";
   const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [itemEditar, setItemEditar] = useState(null);
   const [busqueda, setBusqueda] = useState("");
-
-  const abrirModal = () => setMostrarModal(true);
-  const cerrarModal = () => setMostrarModal(false);
 
   useEffect(() => {
     const clientesGuardados = localStorage.getItem("clientes");
@@ -21,32 +21,79 @@ const ClientesSecre = () => {
     }
   }, []);
 
-  const agregarCliente = (nuevoCliente) => {
-    const nuevasFilas = [...filas, nuevoCliente];
-    setFilas(nuevasFilas);
-    localStorage.setItem("clientes", JSON.stringify(nuevasFilas));
-    cerrarModal();
+   const abrirModal = () => {
+    setItemEditar(null);
+    setMostrarModal(true);
   };
 
-  const filasFiltradas = filas.filter(
-    (fila) =>
-      fila[1]?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      fila[2]?.toLowerCase().includes(busqueda.toLowerCase()) ||
-      fila[3]?.toLowerCase().includes(busqueda.toLowerCase())
-  );
+  const cerrarModal = () => {
+    setItemEditar(null);
+    setMostrarModal(false);
+  };
 
-  return (
+
+    const editar = (id) => {
+    const cliente = filas.find((item) => item.id === id);
+    setItemEditar(cliente);
+    setMostrarModal(true);
+  };
+
+const agregarCliente = (cliente) => {
+  let actualizadas;
+  if (itemEditar) {
+    actualizadas = filas.map((fila) => (fila.id === cliente.id ? cliente : fila));
+  } else {
+    actualizadas = [...filas, cliente];
+  }
+  setFilas(actualizadas);
+  localStorage.setItem(tipo, JSON.stringify(actualizadas));
+  cerrarModal();
+};
+
+    const eliminar = (id) => {
+    const cliente = filas.find((item) => item.id === id);
+    Swal.fire({
+      title: `¿Eliminar al ${cliente.nombre}?`,
+      text: "Este cambio no se puede revertir",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const actualizadas = filas.filter((item) => item.id !== id);
+        setFilas(actualizadas);
+        localStorage.setItem(tipo, JSON.stringify(actualizadas));
+        Swal.fire({
+          title: "Eliminado",
+          text: "El cliente fue eliminada correctamente.",
+          icon: "success",
+        });
+      }
+    });
+  };
+
+const filasFiltradas = filas.filter(
+  (fila) =>
+    fila.nombre?.toLowerCase().includes(busqueda.toLowerCase()) ||
+    fila.identificador?.toLowerCase().includes(busqueda.toLowerCase()) ||
+    fila.email?.toLowerCase().includes(busqueda.toLowerCase())
+);
+
+ return (
     <>
       <Buscador onSearch={setBusqueda} />
 
       <Tablageneral
         columnas={columnas}
         filas={filasFiltradas}
+        claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">
-            <Boton action="ver" onClick={() => ver(fila[0])} />
-            <Boton action="editar" onClick={() => editar(fila[0])} />
-            <Boton action="eliminar" onClick={() => eliminar(fila[0])} />
+            <Boton action="editar" onClick={() => editar(fila.id)} />
+            <Boton action="eliminar" onClick={() => eliminar(fila.id)} />
           </div>
         )}
       />
@@ -56,9 +103,10 @@ const ClientesSecre = () => {
       </div>
 
       <FormNuevoCliente
-        mostrar={mostrarModal}
-        cerrar={cerrarModal}
+        show={mostrarModal}
+        onHide={cerrarModal}
         onGuardar={agregarCliente}
+        itemEditar={itemEditar}
       />
     </>
   );
