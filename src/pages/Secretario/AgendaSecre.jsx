@@ -42,7 +42,7 @@ const AgendaSecre = () => {
     const eliminar = (id) => {
     const cliente = filas.find((item) => item.id === id);
     Swal.fire({
-      title: `¿Eliminar la ${cliente.tipoEvento} de ${cliente.cliente}?`,
+      title: `¿Eliminar la ${cliente.tipoEvento} del cliente ${cliente.cliente}?`,
       text: "Este cambio no se puede revertir",
       icon: "warning",
       showCancelButton: true,
@@ -57,13 +57,14 @@ const AgendaSecre = () => {
         localStorage.setItem(tipo, JSON.stringify(actualizadas));
         Swal.fire({
           title: "Eliminado",
-          text: "La cita fue eliminada correctamente.",
+          text: "La cita  fue eliminada correctamente.",
           icon: "success",
         });
       }
     });
   };
-  const manejarGuardarCita = (cita) => {
+
+  const agegarCita = (cita) => {
     let actualizadas;
     if (itemEditar) {
       actualizadas = filas.map((fila) => (fila.id === cita.id ? cita : fila));
@@ -95,7 +96,7 @@ const AgendaSecre = () => {
       <FormAgregarCita
         show={mostrarModal}
         onHide={cerrarModal}
-        onGuardar={manejarGuardarCita}
+        onGuardar={agegarCita }
         itemEditar={itemEditar}
       />
     </>
