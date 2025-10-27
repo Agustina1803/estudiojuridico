@@ -77,9 +77,9 @@ const agregarCliente = (cliente) => {
 
 const filasFiltradas = filas.filter(
   (fila) =>
-    fila.nombre?.toLowerCase().includes(busqueda.toLowerCase()) ||
-    fila.identificador?.toLowerCase().includes(busqueda.toLowerCase()) ||
-    fila.email?.toLowerCase().includes(busqueda.toLowerCase())
+    fila.nombre?.trim().toLowerCase().includes(busqueda.trim().toLowerCase()) || 
+    fila.identificador?.trim().toLowerCase().includes(busqueda.trim().toLowerCase()) ||
+    fila.email?.trim().toLowerCase().includes(busqueda.trim().toLowerCase())
 );
 
  return (
