@@ -65,7 +65,8 @@ const AgendaSecre = () => {
       tipoEvento:"eliminarCita"
     });
   };
-  const agregarCita = (cita) => {
+
+  const agegarCita = (cita) => {
     let actualizadas;
     const tipoEvento = itemEditar ? "edicionCita" : "agregarCita";
     if (itemEditar) {
@@ -102,7 +103,7 @@ const AgendaSecre = () => {
       <FormAgregarCita
         show={mostrarModal}
         onHide={cerrarModal}
-        onGuardar={agregarCita}
+        onGuardar={agegarCita }
         itemEditar={itemEditar}
       />
     </>

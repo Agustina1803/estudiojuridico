@@ -85,18 +85,12 @@ const ClientesSecre = () => {
     });
   };
 
-  const filasFiltradas = filas.filter(
-    (fila) =>
-      fila.nombre
-        ?.trim()
-        .toLowerCase()
-        .includes(busqueda.trim().toLowerCase()) ||
-      fila.identificador
-        ?.trim()
-        .toLowerCase()
-        .includes(busqueda.trim().toLowerCase()) ||
-      fila.email?.trim().toLowerCase().includes(busqueda.trim().toLowerCase())
-  );
+const filasFiltradas = filas.filter(
+  (fila) =>
+    fila.nombre?.trim().toLowerCase().includes(busqueda.trim().toLowerCase()) ||
+    fila.identificador?.trim().toLowerCase().includes(busqueda.trim().toLowerCase()) ||
+    fila.email?.trim().toLowerCase().includes(busqueda.trim().toLowerCase())
+);
 
   return (
     <>
