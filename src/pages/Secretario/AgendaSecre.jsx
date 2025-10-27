@@ -35,19 +35,6 @@ const AgendaSecre = () => {
     setMostrarModal(true);
   };
 
-  const registrar = ({ id, nombre, tipoEvento }) =>{
-    const usuario = JSON.parse(localStorage.getItem("usuarioActivo")) || {};
-    const registro = {
-      id,
-      nombre,
-      rol: usuario.role,
-      tipoEvento,
-      fecha: new Date().toLocaleString("es-AR"),
-    }
-    const movimientos = JSON.parse(localStorage.getItem("movimientosSecreAgenda")) || [];
-    movimientos.push(registro);
-    localStorage.setItem("movimientosSecreAgenda", JSON.stringify(movimientos));
-  }
 
   const eliminar = (id) => {
     const cliente = filas.find((item) => item.id === id);
