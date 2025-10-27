@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
@@ -37,7 +37,7 @@ const FormAgregarDocumento = ({ show, onHide, onGuardar, itemEditar = null }) =>
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "Por favor selecciona un archivo antes de subir.",
+        text: "Por favor selecciona un archivo antes de guardar.",
       });
       return;
     }
@@ -77,31 +77,49 @@ const FormAgregarDocumento = ({ show, onHide, onGuardar, itemEditar = null }) =>
     }
   };
 
-  const modalTitle = itemEditar ? "Editar Documento" : "Subir Nuevo Documento";
-  const submitButtonText = itemEditar ? "Actualizar" : "Subir documento";
+  const modalTitle = itemEditar ? "Editar Documento" : "Nuevo Documento";
+  const submitButtonText = itemEditar ? "Actualizar" : "Guardar";
 
   return (
     <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton>
-        <Modal.Title>📤 {modalTitle}</Modal.Title>
+        <Modal.Title>{modalTitle}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <Form.Group className="mb-3">
-            <Form.Label>Nombre del documento</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Ej: Contrato_Laboral.pdf"
-              {...register("nombre", {
-                required: "El nombre del documento es obligatorio",
-              })}
-            />
-            {errors.nombre && (
-              <small className="text-danger">{errors.nombre.message}</small>
-            )}
-          </Form.Group>
+          <Row>
+            <Col md={6}>
+              <Form.Group controlId="nombre">
+                <Form.Label>Nombre del documento</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Ej: Contrato_Laboral.pdf"
+                  {...register("nombre", {
+                    required: "El nombre del documento es obligatorio",
+                  })}
+                />
+                {errors.nombre && (
+                  <small className="text-danger">{errors.nombre.message}</small>
+                )}
+              </Form.Group>
+            </Col>
+            <Col md={6}>
+              <Form.Group controlId="fecha">
+                <Form.Label>Fecha</Form.Label>
+                <Form.Control
+                  type="date"
+                  {...register("fecha", {
+                    required: "La fecha es obligatoria",
+                  })}
+                />
+                {errors.fecha && (
+                  <small className="text-danger">{errors.fecha.message}</small>
+                )}
+              </Form.Group>
+            </Col>
+          </Row>
 
-          <Form.Group className="mb-3">
+          <Form.Group controlId="cliente" className="mt-3">
             <Form.Label>Cliente</Form.Label>
             <Form.Control
               type="text"
@@ -115,7 +133,7 @@ const FormAgregarDocumento = ({ show, onHide, onGuardar, itemEditar = null }) =>
             )}
           </Form.Group>
 
-          <Form.Group className="mb-3">
+          <Form.Group controlId="tipo" className="mt-3">
             <Form.Label>Tipo de documento</Form.Label>
             <Form.Select {...register("tipo")}>
               <option value="Demanda">Demanda</option>
@@ -127,20 +145,7 @@ const FormAgregarDocumento = ({ show, onHide, onGuardar, itemEditar = null }) =>
             </Form.Select>
           </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Fecha</Form.Label>
-            <Form.Control
-              type="date"
-              {...register("fecha", {
-                required: "La fecha es obligatoria",
-              })}
-            />
-            {errors.fecha && (
-              <small className="text-danger">{errors.fecha.message}</small>
-            )}
-          </Form.Group>
-
-          <Form.Group className="mb-3">
+          <Form.Group controlId="archivo" className="mt-3">
             <Form.Label>Seleccionar archivo</Form.Label>
             <Form.Control
               type="file"
