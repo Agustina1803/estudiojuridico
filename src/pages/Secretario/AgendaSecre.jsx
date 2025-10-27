@@ -5,15 +5,15 @@ import FormAgregarCita from '../../components/formAgregarCita'
 import { useState, useEffect } from 'react'
 
 const AgendaSecre = () => {
-  const columnas = ['Nº','Fecha', 'Hora', 'Cliente', 'Abogado', 'Tipo de Evento', 'Notas'];
-   const claves = ["fecha", "hora", "cliente", "abogado", "tipoEvento", "notas"];
+  const columnas = ['Nº', 'Fecha', 'Hora', 'Cliente', 'Abogado', 'Tipo de Evento', 'Notas'];
+  const claves = ["fecha", "hora", "cliente", "abogado", "tipoEvento", "notas"];
   const tipo = "citas";
- const [filas, setFilas] = useState([]);
+  const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
 
 
-   useEffect(() => {
+  useEffect(() => {
     const citasGuardadas = localStorage.getItem("citas");
     if (citasGuardadas) {
       setFilas(JSON.parse(citasGuardadas));
@@ -32,25 +32,13 @@ const AgendaSecre = () => {
 
 
 
-    const editar = (id) => {
+  const editar = (id) => {
     const cliente = filas.find((item) => item.id === id);
     setItemEditar(cliente);
     setMostrarModal(true);
   };
 
-  const agregarCita = (nuevaCita) => {
-   let nuevasFilas;
-     if (itemEditar) {
-    nuevasFilas = filas.map((fila) => (fila.id === nuevaCita.id ? nuevaCita : fila));
-  } else {
-     nuevasFilas = [...filas, nuevaCita];
-  }
-    setFilas(nuevasFilas);
-    localStorage.setItem("citas", JSON.stringify(nuevaCita));
-    cerrarModal();
-  };
-
-    const eliminar = (id) => {
+  const eliminar = (id) => {
     const cliente = filas.find((item) => item.id === id);
     Swal.fire({
       title: `¿Eliminar la ${cliente.tipoEvento} de ${cliente.cliente}?`,
@@ -74,7 +62,8 @@ const AgendaSecre = () => {
       }
     });
   };
-  const manejarGuardarCita = (cita) => {
+
+  const agregarCita = (cita) => {
     let actualizadas;
     if (itemEditar) {
       actualizadas = filas.map((fila) => (fila.id === cita.id ? cita : fila));
@@ -106,7 +95,7 @@ const AgendaSecre = () => {
       <FormAgregarCita
         show={mostrarModal}
         onHide={cerrarModal}
-        onGuardar={manejarGuardarCita}
+        onGuardar={agregarCita}
         itemEditar={itemEditar}
       />
     </>
