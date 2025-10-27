@@ -38,17 +38,7 @@ const AgendaSecre = () => {
     setMostrarModal(true);
   };
 
-  const agregarCita = (nuevaCita) => {
-   let nuevasFilas;
-     if (itemEditar) {
-    nuevasFilas = filas.map((fila) => (fila.id === nuevaCita.id ? nuevaCita : fila));
-  } else {
-     nuevasFilas = [...filas, nuevaCita];
-  }
-    setFilas(nuevasFilas);
-    localStorage.setItem("citas", JSON.stringify(nuevaCita));
-    cerrarModal();
-  };
+  
 
     const eliminar = (id) => {
     const cliente = filas.find((item) => item.id === id);
@@ -74,7 +64,7 @@ const AgendaSecre = () => {
       }
     });
   };
-  const manejarGuardarCita = (cita) => {
+  const agregarCita = (cita) => {
     let actualizadas;
     if (itemEditar) {
       actualizadas = filas.map((fila) => (fila.id === cita.id ? cita : fila));
@@ -106,7 +96,7 @@ const AgendaSecre = () => {
       <FormAgregarCita
         show={mostrarModal}
         onHide={cerrarModal}
-        onGuardar={manejarGuardarCita}
+        onGuardar={agregarCita}
         itemEditar={itemEditar}
       />
     </>
