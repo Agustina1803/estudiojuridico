@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Tablageneral from "../../components/tablageneral";
 import Boton from "../../components/Boton";
 import Swal from "sweetalert2";
-import FormAgregarDocumento from "../../components/FormAgregarDocumento";
+import FormSubirArchivo from "../../components/FormSubirArchivo";
 import Buscador from "../../components/Buscador";
 
 const DocumentosSecre = () => {
@@ -12,7 +12,6 @@ const DocumentosSecre = () => {
 
   const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
-  const [itemEditar, setItemEditar] = useState(null);
   const [busqueda, setBusqueda] = useState("");
 
   useEffect(() => {
@@ -23,19 +22,16 @@ const DocumentosSecre = () => {
   }, []);
 
   const abrirModal = () => {
-    setItemEditar(null);
     setMostrarModal(true);
   };
 
   const cerrarModal = () => {
-    setItemEditar(null);
     setMostrarModal(false);
-  };
-
-  const editar = (id) => {
-    const documento = filas.find((item) => item.id === id);
-    setItemEditar(documento);
-    setMostrarModal(true);
+    // Recargar datos después de cerrar el modal
+    const docsGuardados = localStorage.getItem(tipo);
+    if (docsGuardados) {
+      setFilas(JSON.parse(docsGuardados));
+    }
   };
 
   const eliminar = (id) => {
@@ -74,20 +70,6 @@ const DocumentosSecre = () => {
     });
   };
 
-  const agregarDocumento = (documento) => {
-    let actualizadas;
-    if (itemEditar) {
-      actualizadas = filas.map((fila) =>
-        fila.id === documento.id ? documento : fila
-      );
-    } else {
-      actualizadas = [...filas, documento];
-    }
-    setFilas(actualizadas);
-    localStorage.setItem(tipo, JSON.stringify(actualizadas));
-    cerrarModal();
-  };
-
   const filasFiltradas = filas.filter(
     (fila) =>
       fila.nombre?.trim().toLowerCase().includes(busqueda.trim().toLowerCase()) ||
@@ -112,7 +94,6 @@ const DocumentosSecre = () => {
               action="descargar"
               onClick={() => descargarDocumento(fila.id)}
             />
-            <Boton action="editar" onClick={() => editar(fila.id)} />
             <Boton action="eliminar" onClick={() => eliminar(fila.id)} />
           </div>
         )}
@@ -122,12 +103,7 @@ const DocumentosSecre = () => {
         <Boton action="agregar" onClick={abrirModal} />
       </div>
 
-      <FormAgregarDocumento
-        show={mostrarModal}
-        onHide={cerrarModal}
-        onGuardar={agregarDocumento}
-        itemEditar={itemEditar}
-      />
+      <FormSubirArchivo mostrar={mostrarModal} cerrar={cerrarModal} />
     </>
   );
 };
