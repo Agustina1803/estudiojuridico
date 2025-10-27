@@ -35,7 +35,8 @@ const AgendaSecre = () => {
     setMostrarModal(true);
   };
 
-  const eliminar = (id) => {
+
+    const eliminar = (id) => {
     const cliente = filas.find((item) => item.id === id);
     Swal.fire({
       title: `¿Eliminar la ${cliente.tipoEvento} del cliente ${cliente.cliente}?`,
