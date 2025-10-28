@@ -1,8 +1,10 @@
-import React from 'react'
+
 
 const InicioAdmi = () => {
   return (
-    <div>InicioAdmi</div>
+    <>
+    
+    </>
   )
 }
 
