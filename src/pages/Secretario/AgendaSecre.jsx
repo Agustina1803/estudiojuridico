@@ -1,19 +1,26 @@
-import Tablageneral from '../../components/tablageneral'
-import Boton from '../../components/Boton'
+import Tablageneral from "../../components/tablageneral";
+import Boton from "../../components/Boton";
 import Swal from "sweetalert2";
-import FormAgregarCita from '../../components/formAgregarCita'
-import { useState, useEffect } from 'react'
+import FormAgregarCita from "../../components/formAgregarCita";
+import { useState, useEffect } from "react";
 
 const AgendaSecre = () => {
-  const columnas = ['Nº','Fecha', 'Hora', 'Cliente', 'Abogado', 'Tipo de Evento', 'Notas'];
-   const claves = ["fecha", "hora", "cliente", "abogado", "tipoEvento", "notas"];
+  const columnas = [
+    "Nº",
+    "Fecha",
+    "Hora",
+    "Cliente",
+    "Abogado",
+    "Tipo de Evento",
+    "Notas",
+  ];
+  const claves = ["fecha", "hora", "cliente", "abogado", "tipoEvento", "notas"];
   const tipo = "citas";
- const [filas, setFilas] = useState([]);
+  const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
 
-
-   useEffect(() => {
+  useEffect(() => {
     const citasGuardadas = localStorage.getItem("citas");
     if (citasGuardadas) {
       setFilas(JSON.parse(citasGuardadas));
@@ -30,16 +37,18 @@ const AgendaSecre = () => {
     setMostrarModal(false);
   };
 
-
-
-    const editar = (id) => {
+  const editar = (id) => {
     const cliente = filas.find((item) => item.id === id);
     setItemEditar(cliente);
     setMostrarModal(true);
   };
 
+<<<<<<< HEAD
 
     const eliminar = (id) => {
+=======
+  const eliminar = (id) => {
+>>>>>>> 63a3d74c6614466d0df97a7aab22696b8d1fc003
     const cliente = filas.find((item) => item.id === id);
     Swal.fire({
       title: `¿Eliminar la ${cliente.tipoEvento} del cliente ${cliente.cliente}?`,
@@ -63,8 +72,12 @@ const AgendaSecre = () => {
       }
     });
   };
+<<<<<<< HEAD
 
   const agegarCita = (cita) => {
+=======
+  const agregarCita = (cita) => {
+>>>>>>> 63a3d74c6614466d0df97a7aab22696b8d1fc003
     let actualizadas;
     if (itemEditar) {
       actualizadas = filas.map((fila) => (fila.id === cita.id ? cita : fila));
@@ -75,7 +88,6 @@ const AgendaSecre = () => {
     localStorage.setItem(tipo, JSON.stringify(actualizadas));
     cerrarModal();
   };
-
 
   return (
     <>
@@ -96,7 +108,11 @@ const AgendaSecre = () => {
       <FormAgregarCita
         show={mostrarModal}
         onHide={cerrarModal}
+<<<<<<< HEAD
         onGuardar={agegarCita }
+=======
+        onGuardar={agregarCita}
+>>>>>>> 63a3d74c6614466d0df97a7aab22696b8d1fc003
         itemEditar={itemEditar}
       />
     </>

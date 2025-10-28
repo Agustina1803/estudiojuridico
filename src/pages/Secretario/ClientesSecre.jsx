@@ -82,6 +82,7 @@ const filasFiltradas = filas.filter(
     fila.email?.trim().toLowerCase().includes(busqueda.trim().toLowerCase())
 );
 
+
  return (
     <>
       <Buscador onSearch={setBusqueda} />
