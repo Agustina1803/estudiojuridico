@@ -43,12 +43,7 @@ const AgendaSecre = () => {
     setMostrarModal(true);
   };
 
-<<<<<<< HEAD
-
-    const eliminar = (id) => {
-=======
   const eliminar = (id) => {
->>>>>>> 63a3d74c6614466d0df97a7aab22696b8d1fc003
     const cliente = filas.find((item) => item.id === id);
     Swal.fire({
       title: `¿Eliminar la ${cliente.tipoEvento} del cliente ${cliente.cliente}?`,
@@ -72,12 +67,7 @@ const AgendaSecre = () => {
       }
     });
   };
-<<<<<<< HEAD
-
-  const agegarCita = (cita) => {
-=======
   const agregarCita = (cita) => {
->>>>>>> 63a3d74c6614466d0df97a7aab22696b8d1fc003
     let actualizadas;
     if (itemEditar) {
       actualizadas = filas.map((fila) => (fila.id === cita.id ? cita : fila));
@@ -108,11 +98,7 @@ const AgendaSecre = () => {
       <FormAgregarCita
         show={mostrarModal}
         onHide={cerrarModal}
-<<<<<<< HEAD
-        onGuardar={agegarCita }
-=======
         onGuardar={agregarCita}
->>>>>>> 63a3d74c6614466d0df97a7aab22696b8d1fc003
         itemEditar={itemEditar}
       />
     </>
