@@ -1,19 +1,26 @@
-import Tablageneral from '../../components/tablageneral'
-import Boton from '../../components/Boton'
+import Tablageneral from "../../components/tablageneral";
+import Boton from "../../components/Boton";
 import Swal from "sweetalert2";
-import FormAgregarCita from '../../components/formAgregarCita'
-import { useState, useEffect } from 'react'
+import FormAgregarCita from "../../components/formAgregarCita";
+import { useState, useEffect } from "react";
 
 const AgendaSecre = () => {
-  const columnas = ['Nº','Fecha', 'Hora', 'Cliente', 'Abogado', 'Tipo de Evento', 'Notas'];
-   const claves = ["fecha", "hora", "cliente", "abogado", "tipoEvento", "notas"];
+  const columnas = [
+    "Nº",
+    "Fecha",
+    "Hora",
+    "Cliente",
+    "Abogado",
+    "Tipo de Evento",
+    "Notas",
+  ];
+  const claves = ["fecha", "hora", "cliente", "abogado", "tipoEvento", "notas"];
   const tipo = "citas";
- const [filas, setFilas] = useState([]);
+  const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
 
-
-   useEffect(() => {
+  useEffect(() => {
     const citasGuardadas = localStorage.getItem("citas");
     if (citasGuardadas) {
       setFilas(JSON.parse(citasGuardadas));
@@ -30,20 +37,16 @@ const AgendaSecre = () => {
     setMostrarModal(false);
   };
 
-
-
-    const editar = (id) => {
+  const editar = (id) => {
     const cliente = filas.find((item) => item.id === id);
     setItemEditar(cliente);
     setMostrarModal(true);
   };
 
-  
-
-    const eliminar = (id) => {
+  const eliminar = (id) => {
     const cliente = filas.find((item) => item.id === id);
     Swal.fire({
-      title: `¿Eliminar la ${cliente.tipoEvento} de ${cliente.cliente}?`,
+      title: `¿Eliminar la ${cliente.tipoEvento} del cliente ${cliente.cliente}?`,
       text: "Este cambio no se puede revertir",
       icon: "warning",
       showCancelButton: true,
@@ -58,7 +61,7 @@ const AgendaSecre = () => {
         localStorage.setItem(tipo, JSON.stringify(actualizadas));
         Swal.fire({
           title: "Eliminado",
-          text: "La cita fue eliminada correctamente.",
+          text: "La cita  fue eliminada correctamente.",
           icon: "success",
         });
       }
@@ -75,7 +78,6 @@ const AgendaSecre = () => {
     localStorage.setItem(tipo, JSON.stringify(actualizadas));
     cerrarModal();
   };
-
 
   return (
     <>

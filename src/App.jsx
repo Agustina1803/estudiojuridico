@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
-import {  useState } from "react";
+import { useState } from "react";
 import { LoginPages } from "./pages/LoginPages";
 import LayoutsUser from "./layouts/LayoutsUser";
 import ErrorPages from "./pages/ErrorPages";
@@ -29,21 +29,12 @@ import InformesSecre from "./pages/Secretario/InformesSecre";
 import ProteccionRutas from "./routers/ProteccionRutas";
 
 function App() {
-
-const usuarioSessionStorage = sessionStorage.getItem("user");
-const [usuarioLogueado, setUsuarioLogueado] = useState(JSON.parse(usuarioSessionStorage))
   return (
     <BrowserRouter>
       <Routes>
-        <Route
-          path="/"
-          element={<LoginPages setUsuarioLogeado={setUsuarioLogueado} />}
-        />
-        <Route
-          path="app"
-          element={<LayoutsUser  usuarioLogueado={usuarioLogueado} />}
-        >
-          <Route element={<ProteccionRutas usuarioLogueado={usuarioLogueado} roleUsuario="admin" />}>
+        <Route path="/" element={<LoginPages />} />
+        <Route path="app" element={<LayoutsUser />}>
+          <Route element={<ProteccionRutas roleUsuario="admin" />}>
             <Route path="inicioadmi" element={<InicioAdmi />} />
             <Route path="usuariosadmi" element={<UsuariosAdmi />} />
             <Route path="abogadosadmi" element={<AbogadosAdmi />} />
@@ -53,28 +44,26 @@ const [usuarioLogueado, setUsuarioLogueado] = useState(JSON.parse(usuarioSession
             <Route path="configuracionadmi" element={<ConfiguracionAdmi />} />
           </Route>
 
-          <Route element={<ProteccionRutas usuarioLogueado={usuarioLogueado} roleUsuario="secre" />}>
+          <Route element={<ProteccionRutas roleUsuario="secre" />}>
             <Route path="iniciosecre" element={<InicioSecre />} />
             <Route path="agendasecre" element={<AgendaSecre />} />
             <Route path="clientesecre" element={<ClienteSecre />} />
             <Route path="documentossecre" element={<DocumentosSecre />} />
             <Route path="tareassecre" element={<TareasSecre />} />
             <Route path="facturacionsecre" element={<FacturacionSecre />} />
-              <Route path="informessecre" element={<InformesSecre />} />
+            <Route path="informessecre" element={<InformesSecre />} />
           </Route>
 
-
- <Route element={<ProteccionRutas usuarioLogueado={usuarioLogueado} roleUsuario="abog" />}>
+          <Route element={<ProteccionRutas roleUsuario="abog" />}>
             <Route path="inicioabog" element={<InicioAbog />} />
-          <Route path="agendaabog" element={<AgendaAbog />} />
-          <Route path="clienteabog" element={<ClienteAbog />} />
-          <Route path="documentoabog" element={<DocumentoAbog />} />
-          <Route path="tareasabog" element={<TareasAbog />} />
-          <Route path="facturacionabog" element={<FacturacionAbog />} />
-          <Route path="informeabog" element={<InformeAbog />} />
-          <Route path="juiciosabog" element={<JuiciosAbog />} />
+            <Route path="agendaabog" element={<AgendaAbog />} />
+            <Route path="clienteabog" element={<ClienteAbog />} />
+            <Route path="documentoabog" element={<DocumentoAbog />} />
+            <Route path="tareasabog" element={<TareasAbog />} />
+            <Route path="facturacionabog" element={<FacturacionAbog />} />
+            <Route path="informeabog" element={<InformeAbog />} />
+            <Route path="juiciosabog" element={<JuiciosAbog />} />
           </Route>
-        
         </Route>
         <Route path="*" element={<ErrorPages />} />
       </Routes>

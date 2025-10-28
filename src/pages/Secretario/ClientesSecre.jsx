@@ -53,7 +53,7 @@ const agregarCliente = (cliente) => {
     const eliminar = (id) => {
     const cliente = filas.find((item) => item.id === id);
     Swal.fire({
-      title: `¿Eliminar al ${cliente.nombre}?`,
+      title: `¿Eliminar al cliente ${cliente.nombre}?`,
       text: "Este cambio no se puede revertir",
       icon: "warning",
       showCancelButton: true,
