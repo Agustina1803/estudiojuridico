@@ -13,14 +13,16 @@ export function RegistroPage() {
 
   const navegacion = useNavigate();
   const loginUser = (user) => {
-    
     const { formBasicEmail, formBasicPassword } = user;
-if(formBasicEmail === import.meta.env.VITE_ADMIN_EMAIL && formBasicPassword === import.meta.env.VITE_ADMIN_PASSWORD){
-  user.role = "admin"
-  sessionStorage.setItem("user",JSON.stringify(user))
-  navegacion("/app/inicioadmi");
-  return;
-}
+    if (
+      formBasicEmail === import.meta.env.VITE_ADMIN_EMAIL &&
+      formBasicPassword === import.meta.env.VITE_ADMIN_PASSWORD
+    ) {
+      user.role = "admin";
+      sessionStorage.setItem("user", JSON.stringify(user));
+      navegacion("/app/inicioadmi");
+      return;
+    }
     const usuariosLocalStorage = JSON.parse(localStorage.getItem("usuarios"));
 
     const usuarioEncontrado = usuariosLocalStorage.find(

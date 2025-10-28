@@ -3,12 +3,10 @@ import Menu from "../components/Menu";
 import Footer from "../shared/footer";
 import { NavBarHeader } from "../components/NavBarHeader";
 import { Outlet } from "react-router-dom";
-import '../styles/layoutsAdmi.css';
-
-
+import "../styles/layoutsAdmi.css";
 
 const LayoutsAdmi = () => {
-  const usuarioLogueado= JSON.parse(sessionStorage.getItem("user"));
+  const usuarioLogueado = JSON.parse(sessionStorage.getItem("user"));
   const role = usuarioLogueado?.role.toLowerCase();
   return (
     <div className="d-flex flex-column vh-100">
@@ -17,7 +15,7 @@ const LayoutsAdmi = () => {
         <Container fluid className="my-4">
           <Row>
             <Col md={3} lg={3} className="d-flex flex-column">
-              <Menu role={role} className="menu"/>
+              <Menu role={role} className="menu" />
             </Col>
             <Col md={9} lg={9}>
               <Outlet></Outlet>

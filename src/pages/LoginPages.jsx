@@ -1,21 +1,16 @@
 import NavBarHeaderLogin from "../components/NavBarHeaderLogin";
-import { RegistroPage } from "../components/RegistroPage"
+import { RegistroPage } from "../components/RegistroPage";
 import Footer from "../shared/footer";
 import "../styles/loginPage.css";
 
 export const LoginPages = ({ setUsuarioLogeado }) => {
- return (
+  return (
     <div className="app-layout">
       <NavBarHeaderLogin />
       <main className="main-content">
-  <RegistroPage setUsuarioLogeado={setUsuarioLogeado} />
+        <RegistroPage setUsuarioLogeado={setUsuarioLogeado} />
       </main>
-
-      <Footer/>
+      <Footer />
     </div>
   );
 };
-
-
-
-
