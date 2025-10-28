@@ -61,7 +61,7 @@ const Menu = ({ role }) => {
   };
 
   const menuItems = menus();
-  console.log("Rol recibido en Menu:", role);
+
 
   return (
     <Card className=" border-primary shadow h-100">

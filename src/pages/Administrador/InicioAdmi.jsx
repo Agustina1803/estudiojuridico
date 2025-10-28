@@ -1,8 +1,13 @@
 import { Row, Col, Card } from "react-bootstrap";
 import UsuariosAdmi from "./UsuariosAdmi";
+import { useEffect, useState } from "react";
 
 const InicioAdmi = () => {
-  const usuariosGuardadas = JSON.parse(localStorage.getItem("usuarios"));
+  {/* const usuariosGuardadas = [] || JSON.parse(localStorage.getItem("usuarios") );*/}
+  const [usuariosGuardadas, setUsuariosGuardadas] = useState([]);
+useEffect(()=>{
+    setUsuariosGuardadas(JSON.parse(localStorage.getItem("usuarios") ))
+},[])
 
   const contarUusuario = () => {
     let abogados = 0;
