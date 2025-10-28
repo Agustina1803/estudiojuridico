@@ -155,6 +155,6 @@ const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
         </Form>
       </Modal.Body>
     </Modal>
-  )
-}
-  export default FormAgregarCita;
+  );
+};
+export default FormAgregarCita;

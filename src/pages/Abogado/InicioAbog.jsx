@@ -1,9 +1,13 @@
-import React from 'react'
+import ChatCentral from '../../components/ChatCentral'
+import "bootstrap/dist/css/bootstrap.min.css";
+
 
 const InicioAbog = () => {
   return (
-    <div>InicioAbog</div>
+    <div className='vh-70'>
+      <ChatCentral></ChatCentral>
+    </div>
   )
 }
 
-export default InicioAbog
+export default InicioAbog;
