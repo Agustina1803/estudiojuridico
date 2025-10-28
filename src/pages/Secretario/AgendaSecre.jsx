@@ -35,7 +35,6 @@ const AgendaSecre = () => {
     setMostrarModal(true);
   };
 
-
   const eliminar = (id) => {
     const cliente = filas.find((item) => item.id === id);
     Swal.fire({
@@ -65,8 +64,7 @@ const AgendaSecre = () => {
       tipoEvento:"eliminarCita"
     });
   };
-
-  const agegarCita = (cita) => {
+  const agregarCita = (cita) => {
     let actualizadas;
     const tipoEvento = itemEditar ? "edicionCita" : "agregarCita";
     if (itemEditar) {
@@ -103,7 +101,7 @@ const AgendaSecre = () => {
       <FormAgregarCita
         show={mostrarModal}
         onHide={cerrarModal}
-        onGuardar={agegarCita }
+        onGuardar={agregarCita}
         itemEditar={itemEditar}
       />
     </>
