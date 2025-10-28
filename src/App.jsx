@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
-import { useState } from "react";
 import { LoginPages } from "./pages/LoginPages";
 import LayoutsUser from "./layouts/LayoutsUser";
 import ErrorPages from "./pages/ErrorPages";
@@ -8,8 +7,6 @@ import InicioAdmi from "./pages/Administrador/InicioAdmi";
 import InicioAbog from "./pages/Abogado/InicioAbog";
 import InicioSecre from "./pages/Secretario/InicioSecre";
 import UsuariosAdmi from "./pages/Administrador/UsuariosAdmi";
-import AbogadosAdmi from "./pages/Administrador/AbogadosAdmi";
-import SecretarioAdmi from "./pages/Administrador/SecretarioAdmi";
 import DocumentosAdmi from "./pages/Administrador/DocumentosAdmi";
 import ReportesAdmi from "./pages/Administrador/ReportesAdmi";
 import ConfiguracionAdmi from "./pages/Administrador/ConfiguracionAdmi";
@@ -37,8 +34,6 @@ function App() {
           <Route element={<ProteccionRutas roleUsuario="admin" />}>
             <Route path="inicioadmi" element={<InicioAdmi />} />
             <Route path="usuariosadmi" element={<UsuariosAdmi />} />
-            <Route path="abogadosadmi" element={<AbogadosAdmi />} />
-            <Route path="secretarioadmi" element={<SecretarioAdmi />} />
             <Route path="documentosadmi" element={<DocumentosAdmi />} />
             <Route path="reportesadmi" element={<ReportesAdmi />} />
             <Route path="configuracionadmi" element={<ConfiguracionAdmi />} />
