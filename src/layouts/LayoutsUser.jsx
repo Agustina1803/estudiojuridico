@@ -8,7 +8,8 @@ import '../styles/layoutsAdmi.css';
 
 
 const LayoutsAdmi = () => {
-  const usuarioParseado= JSON.parse(sessionStorage.getItem("user"));
+  const usuarioLogueado= JSON.parse(sessionStorage.getItem("user"));
+  const role = usuarioLogueado?.role;
   return (
     <div className="d-flex flex-column vh-100">
       <NavBarHeader></NavBarHeader>
@@ -16,7 +17,7 @@ const LayoutsAdmi = () => {
         <Container fluid className="my-4">
           <Row>
             <Col md={3} lg={3} className="d-flex flex-column">
-              <Menu role={usuarioParseado?.role} className="menu"/>
+              <Menu role={role} className="menu"/>
             </Col>
             <Col md={9} lg={9}>
               <Outlet></Outlet>

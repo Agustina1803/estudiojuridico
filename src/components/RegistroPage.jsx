@@ -3,10 +3,11 @@ import "../styles/RegistroPage.css";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
-export function RegistroPage({ setUsuarioLogeado }) {
+export function RegistroPage() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
 
@@ -22,9 +23,12 @@ export function RegistroPage({ setUsuarioLogeado }) {
         usuario.formBasicPassword === formBasicPassword
     );
 
+    if (!usuarioEncontrado) {
+      reset();
+      return;
+    }
 
     sessionStorage.setItem("user", JSON.stringify(usuarioEncontrado));
-    setUsuarioLogeado(usuarioEncontrado);
 
     const rol = usuarioEncontrado.role?.toLowerCase();
 
@@ -35,7 +39,8 @@ export function RegistroPage({ setUsuarioLogeado }) {
     } else if (rol === "abog") {
       navegacion("/app/inicioabog");
     } else {
-      alert("Rol no reconocido");
+      alert("Usuario o contraseña incorrectos");
+      reset();
     }
   };
 
