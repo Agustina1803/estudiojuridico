@@ -9,7 +9,7 @@ import '../styles/layoutsAdmi.css';
 
 const LayoutsAdmi = () => {
   const usuarioLogueado= JSON.parse(sessionStorage.getItem("user"));
-  const role = usuarioLogueado?.role;
+  const role = usuarioLogueado?.role.toLowerCase();
   return (
     <div className="d-flex flex-column vh-100">
       <NavBarHeader></NavBarHeader>
