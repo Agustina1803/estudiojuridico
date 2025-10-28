@@ -22,8 +22,6 @@ const Menu = ({ role }) => {
         return [
           { to: "inicioadmi", label: "Inicio", icon: <FaHome /> },
           { to: "usuariosadmi", label: "Usuarios", icon: <FaUsers /> },
-          { to: "abogadosadmi", label: "Abogados", icon: <FaBalanceScale /> },
-          { to: "secretarioadmi", label: "Secretario/a", icon: <FaFileAlt /> },
           { to: "documentosadmi", label: "Documentos", icon: <FaFolder /> },
           { to: "reportesadmi", label: "Reportes", icon: <FaChartBar /> },
           { to: "configuracionadmi", label: "Configuración", icon: <FaCog /> },
@@ -63,7 +61,7 @@ const Menu = ({ role }) => {
   };
 
   const menuItems = menus();
-  console.log("Rol recibido en Menu:", role);
+
 
   return (
     <Card className=" border-primary shadow h-100">
