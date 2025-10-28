@@ -1,12 +1,16 @@
-import { Modal, Button, Form } from "react-bootstrap";
+import { useEffect } from "react";
+import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
+import Swal from "sweetalert2";
 
-const FormNuevaTarea = ({ mostrar, cerrar }) => {
+const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
+ 
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -17,19 +21,51 @@ const FormNuevaTarea = ({ mostrar, cerrar }) => {
     },
   });
 
-  const crearNuevaTarea = (data) => {
-    data.id = uuidv4();
-    console.log(data);
+  useEffect(() => {
+    if (itemEditar) {
+      Object.entries(itemEditar).forEach(([key, value]) => {
+        setValue(key, value || "");
+      });
+    } else {
+      reset();
+    }
+  }, [itemEditar, setValue, reset]);
+
+  const onSubmit = (data) => {
+    const tarea = {
+      id: itemEditar ? itemEditar.id : uuidv4(),
+      ...data,
+    };
+
+    Swal.fire({
+      icon: "success",
+      title: itemEditar ? "¡Tarea actualizada!" : "¡Tarea agregada!",
+      text: itemEditar
+        ? "La tarea fue actualizada exitosamente."
+        : "La tarea fue agregada exitosamente.",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+
     reset();
+    onHide();
+    onGuardar(tarea);
   };
 
+  const handleCancel = () => {
+    reset();
+    onHide();
+  };
+  const modalTitle = itemEditar ? "Editar tarea" : "Nueva tarea";
+  const submitButtonText = itemEditar ? "Actualizar" : "Guardar";
+
   return (
-    <Modal show={mostrar} onHide={cerrar}>
+    <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Nueva Tarea</Modal.Title>
+        <Modal.Title>{modalTitle}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={handleSubmit(crearNuevaTarea)}>
+        <Form onSubmit={handleSubmit(onSubmit)}>
           <Form.Group className="mb-3" controlId="descripcion">
             <Form.Label>Descripcion</Form.Label>
             <Form.Control
@@ -64,9 +100,9 @@ const FormNuevaTarea = ({ mostrar, cerrar }) => {
           <Form.Group className="mb-3" controlId="prioridad">
             <Form.Label>Prioridad</Form.Label>
             <Form.Select {...register("prioridad")}>
-              <option value="alta"> Alta</option>
-              <option value="alta"> Media</option>
-              <option value="alta"> Baja</option>
+              <option value="alta">Alta</option>
+              <option value="media">Media</option>
+              <option value="baja">Baja</option>
             </Form.Select>
           </Form.Group>
 
@@ -82,14 +118,14 @@ const FormNuevaTarea = ({ mostrar, cerrar }) => {
               {errors.fecha?.message}
             </Form.Text>
           </Form.Group>
-                  <div className="justify-content-end d-flex">
-          <Button variant="success" type="submit" className="me-2">
-            Guardar
-          </Button>
-          <Button variant="secondary" onClick={cerrar}>
-            Cancelar
-          </Button>
-        </div>
+          <div className="justify-content-end d-flex">
+            <Button variant="secondary" onClick={handleCancel} className="me-2">
+              Cancelar
+            </Button>
+            <Button variant="primary" type="submit">
+              {submitButtonText}
+            </Button>
+          </div>
         </Form>
       </Modal.Body>
       <Modal.Footer></Modal.Footer>
