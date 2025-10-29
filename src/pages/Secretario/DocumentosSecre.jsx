@@ -11,9 +11,13 @@ const DocumentosSecre = () => {
     "Cliente",
     "Tipo de Evento",
     "Fecha",
-
-      ];
-  const claves = ["seleccionarArchivo", "nombreCliente", "tipodearchivo", "fecha" ];
+  ];
+  const claves = [
+    "seleccionarArchivo",
+    "nombreCliente",
+    "tipodearchivo",
+    "fecha",
+  ];
   const tipo = "documentos";
   const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -36,7 +40,7 @@ const DocumentosSecre = () => {
     setMostrarModal(false);
   };
 
-    const eliminar = (id) => {
+  const eliminar = (id) => {
     const cliente = filas.find((item) => item.id === id);
     Swal.fire({
       title: `¿Eliminar ${cliente.seleccionarArchivo}? `,
@@ -63,7 +67,9 @@ const DocumentosSecre = () => {
   const agregarDocumento = (documentos) => {
     let actualizadas;
     if (itemEditar) {
-      actualizadas = filas.map((fila) => (fila.id === documentos.id ? documentos : fila));
+      actualizadas = filas.map((fila) =>
+        fila.id === documentos.id ? documentos : fila
+      );
     } else {
       actualizadas = [...filas, documentos];
     }
@@ -98,4 +104,4 @@ const DocumentosSecre = () => {
   );
 };
 
-export default DocumentosSecre
+export default DocumentosSecre;
