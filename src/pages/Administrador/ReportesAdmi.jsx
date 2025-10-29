@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { jsPDF } from "jspdf";
 import Tablageneral from "../../components/tablageneral";
+
 const RegistroAdmin = () => {
   const columnas = [
     "Nº",
@@ -13,18 +14,11 @@ const RegistroAdmin = () => {
   const claves = ["nombre", "rol", "tipoEvento", "fecha"];
   const [filas, setFilas] = useState([]);
   useEffect(() => {
-    const movimientos = localStorage.getItem("movimientosSecreAgenda");
-    if (movimientos) {
-      setFilas(JSON.parse(movimientos));
-    }
+    const agenda =
+      JSON.parse(localStorage.getItem("movimientosSecreAgenda")) || [];
+    setFilas(agenda);
   }, []);
-   useEffect(() => {
-    const movimientos = localStorage.getItem("movimientoClienteSecre");
-    if (movimientos) {
-      setFilas(JSON.parse(movimientos));
-    }
-  }, []);
-  
+
   const generarPDF = () => {
     const doc = new jsPDF();
     doc.setFontSize(14);
@@ -35,33 +29,34 @@ const RegistroAdmin = () => {
     doc.text("Registrado por", 80, 30);
     doc.text("Tipo de Evento", 130, 30);
     doc.text("Fecha", 170, 30);
+
     let y = 40;
     filas.forEach((mov, index) => {
       doc.text(`${index + 1}`, 20, y);
       doc.text(mov.nombre, 30, y);
-      doc.text(mov.rol, 80, y);
       doc.text(mov.tipoEvento, 130, y);
       doc.text(mov.fecha, 170, y);
       y += 10;
+
       if (y > 280) {
         doc.addPage();
         y = 20;
       }
     });
+
     doc.save("movimientos_agenda.pdf");
   };
   return (
     <>
-      {" "}
-      <h3 className="text-center my-3">Registro de Movimientos</h3>{" "}
-      <Tablageneral columnas={columnas} filas={filas} claves={claves} />{" "}
+      <div className="tabla-scroll">
+        <Tablageneral columnas={columnas} filas={filas} claves={claves} />
+      </div>
+
       <div className="d-flex justify-content-end mt-3">
-        {" "}
         <Button variant="info" onClick={generarPDF}>
-          {" "}
-          Descargar PDF{" "}
-        </Button>{" "}
-      </div>{" "}
+          Descargar PDF
+        </Button>
+      </div>
     </>
   );
 };

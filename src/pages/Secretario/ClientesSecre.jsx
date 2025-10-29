@@ -44,19 +44,7 @@ const ClientesSecre = () => {
     setMostrarModal(true);
   };
 
-  const registrar = ({ id, nombre, tipoEvento }) => {
-    const registro = {
-      id,
-      nombre,
-      rol: usuario.role,
-      tipoEvento,
-      fecha: new Date().toLocaleString("es-AR"),
-    };
-    const movimientos =
-      JSON.parse(localStorage.getItem("movimientoClienteSecre")) || [];
-    movimientos.push(registro);
-    localStorage.setItem("movimientoClienteSecre", JSON.stringify(movimientos));
-  };
+
 
   const agregarCliente = (cliente) => {
     let actualizadas;
@@ -67,11 +55,6 @@ const ClientesSecre = () => {
     } else {
       actualizadas = [...filas, cliente];
     }
-    registrar({
-      id: cliente.id,
-      nombre: cliente.nombre,
-      tipoEvento: itemEditar ? "edicionCliente" : "agregarCliente",
-    });
     setFilas(actualizadas);
     localStorage.setItem(tipo, JSON.stringify(actualizadas));
     cerrarModal();
@@ -99,11 +82,6 @@ const ClientesSecre = () => {
           icon: "success",
         });
       }
-    });
-    registrar({
-      id: cliente.id,
-      nombre: cliente.nombre,
-      tipoEvento: "eliminarCita",
     });
   };
 

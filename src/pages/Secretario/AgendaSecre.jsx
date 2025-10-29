@@ -36,7 +36,7 @@ const AgendaSecre = () => {
   };
 
   const registrar = ({ id, nombre, tipoEvento }) =>{
-    const usuario = JSON.parse(localStorage.getItem("usuarios")) || {};
+    const usuario = JSON.parse(localStorage.getItem("usuarioActivo")) || {};
     const registro = {
       id,
       nombre,
@@ -92,7 +92,7 @@ const AgendaSecre = () => {
       tipoEvento,
     });
     setFilas(actualizadas);
-    localStorage.setItem(cita, JSON.stringify(actualizadas));
+    localStorage.setItem(tipo, JSON.stringify(actualizadas));
     cerrarModal();
   };
 
