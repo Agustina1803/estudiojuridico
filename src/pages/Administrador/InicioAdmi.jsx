@@ -3,17 +3,19 @@ import UsuariosAdmi from "./UsuariosAdmi";
 import { useEffect, useState } from "react";
 
 const InicioAdmi = () => {
-  {/* const usuariosGuardadas = [] || JSON.parse(localStorage.getItem("usuarios") );*/}
+  {
+    /* const usuariosGuardadas = [] || JSON.parse(localStorage.getItem("usuarios") );*/
+  }
   const [usuariosGuardadas, setUsuariosGuardadas] = useState([]);
-useEffect(()=>{
-    setUsuariosGuardadas(JSON.parse(localStorage.getItem("usuarios") ))
-},[])
+  useEffect(() => {
+    setUsuariosGuardadas(JSON.parse(localStorage.getItem("usuarios")));
+  }, []);
 
   const contarUusuario = () => {
     let abogados = 0;
     let secretaria = 0;
     let admin = 0;
-    let usuariosTotales =usuariosGuardadas.length;
+    let usuariosTotales = usuariosGuardadas.length;
 
     usuariosGuardadas.forEach((usuario) => {
       if (usuario.role === "abog") {
@@ -39,8 +41,8 @@ useEffect(()=>{
             </Card.Body>
           </Card>
         </Col>
-        </Row>
-        <Row>
+      </Row>
+      <Row>
         <Col md={4}>
           <Card className="mt-3 text-center fs-1 bg-secondary text-light">
             <Card.Body>
