@@ -35,6 +35,20 @@ const AgendaSecre = () => {
     setMostrarModal(true);
   };
 
+  const registrar = ({ id, nombre, tipoEvento }) =>{
+    const usuario = JSON.parse(localStorage.getItem("usuarios")) || {};
+    const registro = {
+      id,
+      nombre,
+      rol: usuario.role,
+      tipoEvento,
+      fecha: new Date().toLocaleString("es-AR"),
+    }
+    const movimientos = JSON.parse(localStorage.getItem("movimientosSecreAgenda")) || [];
+    movimientos.push(registro);
+    localStorage.setItem("movimientosSecreAgenda", JSON.stringify(movimientos));
+  }
+
   const eliminar = (id) => {
     const cliente = filas.find((item) => item.id === id);
     Swal.fire({
@@ -58,16 +72,27 @@ const AgendaSecre = () => {
         });
       }
     });
+    registrar({
+      id: cliente.id,
+      nombre: cliente.cliente,
+      tipoEvento:"eliminarCita"
+    });
   };
   const agregarCita = (cita) => {
     let actualizadas;
+    const tipoEvento = itemEditar ? "edicionCita" : "agregarCita";
     if (itemEditar) {
       actualizadas = filas.map((fila) => (fila.id === cita.id ? cita : fila));
     } else {
       actualizadas = [...filas, cita];
     }
+    registrar({
+      id: cita.id,
+      nombre: cita.cliente,
+      tipoEvento,
+    });
     setFilas(actualizadas);
-    localStorage.setItem(tipo, JSON.stringify(actualizadas));
+    localStorage.setItem(cita, JSON.stringify(actualizadas));
     cerrarModal();
   };
 
