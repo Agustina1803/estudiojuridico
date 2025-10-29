@@ -39,6 +39,7 @@ const AgendaSecre = () => {
     const cliente = filas.find((item) => item.id === id);
     Swal.fire({
       title: `¿Eliminar la ${cliente.tipoEvento} del cliente ${cliente.cliente}?`,
+      title: `¿Eliminar la ${cliente.tipoEvento} del cliente ${cliente.cliente}?`,
       text: "Este cambio no se puede revertir",
       icon: "warning",
       showCancelButton: true,
@@ -53,6 +54,7 @@ const AgendaSecre = () => {
         localStorage.setItem(tipo, JSON.stringify(actualizadas));
         Swal.fire({
           title: "Eliminado",
+          text: "La cita  fue eliminada correctamente.",
           text: "La cita  fue eliminada correctamente.",
           icon: "success",
         });

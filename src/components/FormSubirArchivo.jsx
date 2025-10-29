@@ -14,7 +14,7 @@ const FormSubirArchivo = ({ show, onHide, onGuardar, itemEditar = null }) => {
   } = useForm({
     defaultValues: {
       nombreCliente: "",
-      tipo: "",
+      tipodearchivo: "",
       fecha: "",
       seleccionarArchivo: "",
     },
@@ -85,7 +85,7 @@ const FormSubirArchivo = ({ show, onHide, onGuardar, itemEditar = null }) => {
               })}
             />
             <Form.Text className="text-danger">
-              {errors.nombre?.message}
+              {errors.nombreCliente?.message}
             </Form.Text>
           </Form.Group>
           <Form.Group className="mb-3" controlId="tipodearchivo">
