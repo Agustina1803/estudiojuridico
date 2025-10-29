@@ -11,9 +11,13 @@ const DocumentosSecre = () => {
     "Cliente",
     "Tipo de Evento",
     "Fecha",
-
-      ];
-  const claves = ["seleccionarArchivo", "nombreCliente", "tipodearchivo", "fecha" ];
+  ];
+  const claves = [
+    "seleccionarArchivo",
+    "nombreCliente",
+    "tipodearchivo",
+    "fecha",
+  ];
   const tipo = "documentos";
   const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -36,7 +40,13 @@ const DocumentosSecre = () => {
     setMostrarModal(false);
   };
 
-    const eliminar = (id) => {
+  const editar = (id) => {
+    const cliente = filas.find((item) => item.id === id);
+    setItemEditar(cliente);
+    setMostrarModal(true);
+  };
+
+  const eliminar = (id) => {
     const cliente = filas.find((item) => item.id === id);
     Swal.fire({
       title: `¿Eliminar ${cliente.seleccionarArchivo}? `,
@@ -63,7 +73,9 @@ const DocumentosSecre = () => {
   const agregarDocumento = (documentos) => {
     let actualizadas;
     if (itemEditar) {
-      actualizadas = filas.map((fila) => (fila.id === documentos.id ? documentos : fila));
+      actualizadas = filas.map((fila) =>
+        fila.id === documentos.id ? documentos : fila
+      );
     } else {
       actualizadas = [...filas, documentos];
     }
@@ -72,6 +84,15 @@ const DocumentosSecre = () => {
     cerrarModal();
   };
 
+  const descargar = (id) => {
+    const cliente = filas.find((item) => item.id === id);
+    Swal.fire({
+    icon: "success",
+    title: `¡${cliente.seleccionarArchivo} descargado!`,
+    timer: 2000,
+    showConfirmButton: false,
+  });
+  };
   return (
     <>
       <Tablageneral
@@ -82,6 +103,7 @@ const DocumentosSecre = () => {
           <div className="d-flex gap-2 align-items-center justify-content-center">
             <Boton action="editar" onClick={() => editar(fila.id)} />
             <Boton action="eliminar" onClick={() => eliminar(fila.id)} />
+            <Boton action="descargar" onClick={() => descargar(fila.id)} />
           </div>
         )}
       />
@@ -98,4 +120,4 @@ const DocumentosSecre = () => {
   );
 };
 
-export default DocumentosSecre
+export default DocumentosSecre;

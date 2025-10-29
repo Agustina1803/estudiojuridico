@@ -19,7 +19,7 @@ const actionMap = {
   enviar: { icon: <FaPaperPlane />, variant: 'primary', label: 'Enviar' },
   cerrar: { icon: <FaSignOutAlt />, variant: 'danger', label: 'Cerrar sesión' },
   iniciar: { icon: <FaSignOutAlt />, variant: 'success', label: 'Iniciar sesión' },
-  descargar: { icon: <FaDownload />, variant: 'secondary', label: 'Descargar' },
+  descargar: { icon: <FaDownload />, variant: 'success' },
   buscar: { icon: <FaSearch />, variant: 'info', label: 'Buscar' },
   registrarse: { icon: <FaUserPlus />, variant: 'success', label: 'Registrarse' }
 };
