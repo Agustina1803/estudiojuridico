@@ -1,5 +1,4 @@
 import { Row, Col, Card } from "react-bootstrap";
-import UsuariosAdmi from "./UsuariosAdmi";
 import { useEffect, useState } from "react";
 
 const InicioAdmi = () => {

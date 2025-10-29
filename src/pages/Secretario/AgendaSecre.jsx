@@ -35,10 +35,23 @@ const AgendaSecre = () => {
     setMostrarModal(true);
   };
 
+  const registrar = ({ id, nombre, tipoEvento }) =>{
+    const usuario = JSON.parse(localStorage.getItem("usuarioActivo")) || {};
+    const registro = {
+      id,
+      nombre,
+      rol: usuario.role,
+      tipoEvento,
+      fecha: new Date().toLocaleString("es-AR"),
+    }
+    const movimientos = JSON.parse(localStorage.getItem("movimientosSecreAgenda")) || [];
+    movimientos.push(registro);
+    localStorage.setItem("movimientosSecreAgenda", JSON.stringify(movimientos));
+  }
+
   const eliminar = (id) => {
     const cliente = filas.find((item) => item.id === id);
     Swal.fire({
-      title: `¿Eliminar la ${cliente.tipoEvento} del cliente ${cliente.cliente}?`,
       title: `¿Eliminar la ${cliente.tipoEvento} del cliente ${cliente.cliente}?`,
       text: "Este cambio no se puede revertir",
       icon: "warning",
@@ -55,19 +68,29 @@ const AgendaSecre = () => {
         Swal.fire({
           title: "Eliminado",
           text: "La cita  fue eliminada correctamente.",
-          text: "La cita  fue eliminada correctamente.",
           icon: "success",
         });
       }
     });
+    registrar({
+      id: cliente.id,
+      nombre: cliente.cliente,
+      tipoEvento:"eliminarCita"
+    });
   };
   const agregarCita = (cita) => {
     let actualizadas;
+    const tipoEvento = itemEditar ? "edicionCita" : "agregarCita";
     if (itemEditar) {
       actualizadas = filas.map((fila) => (fila.id === cita.id ? cita : fila));
     } else {
       actualizadas = [...filas, cita];
     }
+    registrar({
+      id: cita.id,
+      nombre: cita.cliente,
+      tipoEvento,
+    });
     setFilas(actualizadas);
     localStorage.setItem(tipo, JSON.stringify(actualizadas));
     cerrarModal();

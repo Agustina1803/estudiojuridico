@@ -6,7 +6,14 @@ import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
 const ClientesSecre = () => {
-  const columnas = ["Nº", "Nombre", "DNI / CUIT", "Email", "Teléfono", "Estado"];
+  const columnas = [
+    "Nº",
+    "Nombre",
+    "DNI / CUIT",
+    "Email",
+    "Teléfono",
+    "Estado",
+  ];
   const claves = ["nombre", "identificador", "email", "telefono", "prioridad"];
   const tipo = "clientes";
   const [filas, setFilas] = useState([]);
@@ -21,7 +28,7 @@ const ClientesSecre = () => {
     }
   }, []);
 
-   const abrirModal = () => {
+  const abrirModal = () => {
     setItemEditar(null);
     setMostrarModal(true);
   };
@@ -31,26 +38,29 @@ const ClientesSecre = () => {
     setMostrarModal(false);
   };
 
-
-    const editar = (id) => {
+  const editar = (id) => {
     const cliente = filas.find((item) => item.id === id);
     setItemEditar(cliente);
     setMostrarModal(true);
   };
 
-const agregarCliente = (cliente) => {
-  let actualizadas;
-  if (itemEditar) {
-    actualizadas = filas.map((fila) => (fila.id === cliente.id ? cliente : fila));
-  } else {
-    actualizadas = [...filas, cliente];
-  }
-  setFilas(actualizadas);
-  localStorage.setItem(tipo, JSON.stringify(actualizadas));
-  cerrarModal();
-};
 
-    const eliminar = (id) => {
+
+  const agregarCliente = (cliente) => {
+    let actualizadas;
+    if (itemEditar) {
+      actualizadas = filas.map((fila) =>
+        fila.id === cliente.id ? cliente : fila
+      );
+    } else {
+      actualizadas = [...filas, cliente];
+    }
+    setFilas(actualizadas);
+    localStorage.setItem(tipo, JSON.stringify(actualizadas));
+    cerrarModal();
+  };
+
+  const eliminar = (id) => {
     const cliente = filas.find((item) => item.id === id);
     Swal.fire({
       title: `¿Eliminar al cliente ${cliente.nombre}?`,
@@ -75,15 +85,20 @@ const agregarCliente = (cliente) => {
     });
   };
 
-const filasFiltradas = filas.filter(
-  (fila) =>
-    fila.nombre?.trim().toLowerCase().includes(busqueda.trim().toLowerCase()) ||
-    fila.identificador?.trim().toLowerCase().includes(busqueda.trim().toLowerCase()) ||
-    fila.email?.trim().toLowerCase().includes(busqueda.trim().toLowerCase())
-);
+  const filasFiltradas = filas.filter(
+    (fila) =>
+      fila.nombre
+        ?.trim()
+        .toLowerCase()
+        .includes(busqueda.trim().toLowerCase()) ||
+      fila.identificador
+        ?.trim()
+        .toLowerCase()
+        .includes(busqueda.trim().toLowerCase()) ||
+      fila.email?.trim().toLowerCase().includes(busqueda.trim().toLowerCase())
+  );
 
-
- return (
+  return (
     <>
       <Buscador onSearch={setBusqueda} />
 
