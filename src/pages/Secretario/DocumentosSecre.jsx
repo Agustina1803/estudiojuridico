@@ -40,6 +40,12 @@ const DocumentosSecre = () => {
     setMostrarModal(false);
   };
 
+  const editar = (id) => {
+    const cliente = filas.find((item) => item.id === id);
+    setItemEditar(cliente);
+    setMostrarModal(true);
+  };
+
   const eliminar = (id) => {
     const cliente = filas.find((item) => item.id === id);
     Swal.fire({
@@ -78,6 +84,15 @@ const DocumentosSecre = () => {
     cerrarModal();
   };
 
+  const descargar = (id) => {
+    const cliente = filas.find((item) => item.id === id);
+    Swal.fire({
+    icon: "success",
+    title: `¡${cliente.seleccionarArchivo} descargado!`,
+    timer: 2000,
+    showConfirmButton: false,
+  });
+  };
   return (
     <>
       <Tablageneral
@@ -88,6 +103,7 @@ const DocumentosSecre = () => {
           <div className="d-flex gap-2 align-items-center justify-content-center">
             <Boton action="editar" onClick={() => editar(fila.id)} />
             <Boton action="eliminar" onClick={() => eliminar(fila.id)} />
+            <Boton action="descargar" onClick={() => descargar(fila.id)} />
           </div>
         )}
       />

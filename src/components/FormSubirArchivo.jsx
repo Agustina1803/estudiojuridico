@@ -2,21 +2,33 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
+import { useState, useEffect } from "react";
 
-const FormSubirArchivo = ({ show, onHide, onGuardar }) => {
+const FormSubirArchivo = ({ show, onHide, onGuardar, itemEditar = null }) => {
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      nombreArchivo: "",
       nombreCliente: "",
       tipo: "",
       fecha: "",
+      seleccionarArchivo: "",
     },
   });
+
+  useEffect(() => {
+    if (itemEditar) {
+      Object.entries(itemEditar).forEach(([key, value]) => {
+        setValue(key, value || "");
+      });
+    } else {
+      reset();
+    }
+  }, [itemEditar, setValue, reset]);
 
   const onSubmit = (data) => {
     const documento = {
@@ -43,10 +55,13 @@ const FormSubirArchivo = ({ show, onHide, onGuardar }) => {
     onHide();
   };
 
+  const modalTitle = itemEditar ? "Editar documento" : "Nuevo documento";
+  const submitButtonText = itemEditar ? "Actualizar" : "Guardar";
+
   return (
     <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Subir Archivo</Modal.Title>
+        <Modal.Title>{modalTitle}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit(onSubmit)}>
@@ -114,7 +129,7 @@ const FormSubirArchivo = ({ show, onHide, onGuardar }) => {
               Cancelar
             </Button>
             <Button variant="primary" type="submit">
-              Subir Archivo
+              {submitButtonText}
             </Button>
           </div>
         </Form>
