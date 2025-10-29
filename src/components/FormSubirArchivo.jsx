@@ -1,57 +1,68 @@
-import { Modal, Button, Form, Stack } from "react-bootstrap";
+import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import React, { useState } from "react";
 
-
-const FormSubirArchivo = ({ mostrar, cerrar }) => {
+const FormSubirArchivo = ({ show, onHide, onGuardar }) => {
     const {
         register,
         handleSubmit,
         reset,
         formState: { errors },
-
     } = useForm({
         defaultValues: {
-            nombre: "",
-            identificador: "",
-            email: "",
-            telefono: "",
-            prioridad: "alta"
+            nombreArchivo: "",
+            nombreCliente: "",
+            tipo: "",
+            fecha: "",
         }
     });
 
-    const SubirArchivo = (data) => {
-        data.id = uuidv4();
-        console.log(data);
-        reset();
+    const onSubmit = (data) => {
+        const informes = {
+            id: itemEditar ? itemEditar.id : uuidv4(),
+            ...data,
+        };
+        Swal.fire({
+            icon: "success",
+            title: "¡Archivo agregado!",
+            text: "El archivo fue agregado exitosamente.",
+            timer: 2000,
+            showConfirmButton: false,
+        });
 
+        reset();
+        onHide();
+        onGuardar(informes);
+    };
+    const handleCancel = () => {
+        reset();
+        onHide();
     };
 
     return (
-
-        <Modal show={mostrar} onHide={cerrar} >
+        <Modal show={show} onHide={onHide} centered>
             <Modal.Header closeButton>
-                <Modal.Title>Cliente</Modal.Title>
+                <Modal.Title>Subir Archivo</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form onSubmit={handleSubmit(SubirArchivo)}>
-                    <Form.Group className="mb-3" controlId="nombre">
-                        <Form.Label>Cliente:: </Form.Label>
+                <Form onSubmit={handleSubmit(onSubmit)}>
+                    <Form.Group className="mb-3" controlId="nombreCliente">
+                        <Form.Label>Cliente:</Form.Label>
                         <Form.Control
                             type="text"
                             placeholder="Nombre del cliente"
-                            {...register("nombre", {
+                            {...register("nombreCliente", {
                                 required: "El nombre del cliente es obligatorio",
                                 minLength: {
                                     value: 10,
                                     message:
-                                        "El nombre del cliente debe tener como minimo 10 caracteres",
+                                        "El nombre del cliente debe tener como mínimo 10 caracteres",
                                 },
                                 maxLength: {
                                     value: 50,
                                     message:
-                                        "El nombre del cliente debe tener como maximo 50 caracteres",
+                                        "El nombre del cliente debe tener como máximo 50 caracteres",
                                 },
 
                             })}
@@ -60,27 +71,50 @@ const FormSubirArchivo = ({ mostrar, cerrar }) => {
                             {errors.nombre?.message}
                         </Form.Text>
                     </Form.Group>
-
                     <Form.Group className="mb-3" controlId="tipodearchivo">
                         <Form.Label>Formato de archivo</Form.Label>
                         <Form.Select {...register("tipodearchivo")}>
-                            <option value="alta"> .JPG</option>
-                            <option value="alta"> .PNG</option>
-                            <option value="alta"> .PDF</option>
+                            <option value="demanda"> Demanda </option>
+                            <option value="contrato"> Contrato</option>
+                            <option value="escrito"> Escrito</option>
+                            <option value="poder"> Poder</option>
+                            <option value="notificacion"> Notificación</option>
                         </Form.Select>
                     </Form.Group>
-
-                    <Stack direction="horizontal" gap={3}>
-                        <Form.Control className="me-auto" placeholder="Añade aquí tu archivo" />
-                        <Button variant="success" type="submit" className="me-2">Subir</Button>
-                        <div className="vr" />
-                        <Button variant="danger" onClick={cerrar}>Cancelar</Button>
-                    </Stack>
-
+                    <Form.Group controlId="fecha">
+                        <Form.Label>Fecha</Form.Label>
+                        <Form.Control
+                            type="date"
+                            {...register("fecha", {
+                                required: "La fecha es obligatoria",
+                            })}
+                        />
+                        {errors.fecha && (
+                            <small className="text-danger">{errors.fecha.message}</small>
+                        )}
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="seleccionarArchivo">
+                        <Form.Label>Seleccionar archivo</Form.Label>
+                        <Form.Control
+                            type="file"
+                            {...register("seleccionarArchivo", {
+                                required: "El archivo es obligatorio",
+                            })}
+                        />
+                        {errors.seleccionarArchivo && (
+                            <small className="text-danger">{errors.seleccionarArchivo.message}</small>
+                        )}
+                    </Form.Group>
+                    <div className="d-flex justify-content-end mt-4">
+                        <Button variant="secondary" onClick={handleCancel} className="me-2">
+                            Cancelar
+                        </Button>
+                        <Button variant="primary" type="submit">
+                            Subir Archivo
+                        </Button>
+                    </div>
                 </Form>
-
             </Modal.Body>
-            <Modal.Footer></Modal.Footer>
         </Modal>
     )
 };
