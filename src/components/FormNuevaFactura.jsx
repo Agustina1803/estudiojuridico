@@ -16,6 +16,7 @@ const FormNuevaFactura = ({ show, onHide, onGuardar }) => {
       concepto: "",
       monto: "",
       seleccionarArchivo: "Factura.pdf",
+       pagada: false,
     },
   });
 

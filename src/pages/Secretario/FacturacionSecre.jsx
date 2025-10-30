@@ -3,20 +3,20 @@ import Boton from "../../components/Boton";
 import Swal from "sweetalert2";
 import { useState, useEffect } from "react";
 import FormNuevaFactura from "../../components/FormNuevaFactura";
+import { Form } from "react-bootstrap";
 
 const FacturacionSecre = () => {
-  const columnas = ["Nº", "Fecha", "Cliente", "Concepto", "Monto"];
+  const columnas = ["Nº", "Fecha", "Cliente", "Concepto", "Factura","Monto", "Estado"];
   const claves = [
     "fecha",
-   "nombreCliente",
+    "nombreCliente",
     "concepto",
     "seleccionarArchivo",
-    "monto"
+    "monto",
   ];
   const tipo = "facturas";
   const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
-
 
   useEffect(() => {
     const facturasGuardadas = localStorage.getItem("facturas");
@@ -26,12 +26,10 @@ const FacturacionSecre = () => {
   }, []);
 
   const abrirModal = () => {
-   
     setMostrarModal(true);
   };
 
   const cerrarModal = () => {
-
     setMostrarModal(false);
   };
 
@@ -61,7 +59,12 @@ const FacturacionSecre = () => {
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">
-            <Boton action="descargar" onClick={() => descargar(fila.id)} />
+            <Form.Check
+              type="checkbox"
+              label="Pagada"
+              checked={fila.pagada}
+              onChange={() => togglePagada(fila.id)}
+            />
           </div>
         )}
       />
