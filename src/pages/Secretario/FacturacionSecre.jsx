@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import FormNuevaFactura from "../../components/FormNuevaFactura";
 import SearchBar from "../../components/SearchBar";
 import SearchDate from "../../components/SearchDate";
+import SearchState from "../../components/searchState";
 
 const FacturacionSecre = () => {
   const columnas = [
@@ -28,7 +29,9 @@ const FacturacionSecre = () => {
   const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
-  const [busqueda, setBusqueda] = useState("");
+  const [busquedaNombreMonto, setNombreMonto] = useState("");
+  const [busquedaEstado, setEstado] = useState("");
+  const [busquedaFecha, setFecha] = useState("");
 
   useEffect(() => {
     const facturasGuardadas = localStorage.getItem("facturas");
@@ -78,17 +81,16 @@ const FacturacionSecre = () => {
     });
   };
 
-  const filasFiltradas = filas.filter(
-    (fila) =>
-      fila.nombreCliente
-        ?.trim()
-        .toLowerCase()
-        .includes(busqueda.trim().toLowerCase()) ||
-      fila.monto
-        ?.trim()
-        .toLowerCase()
-        .includes(busqueda.trim().toLowerCase()) ||
-      fila.fecha?.trim().toLowerCase().includes(busqueda.trim().toLowerCase())
+const filasFiltradas = filas.filter((fila) =>
+    busquedaNombreMonto === "" ||
+    fila.nombreCliente?.toLowerCase().includes(busquedaNombreMonto.toLowerCase()) ||
+    fila.monto?.toString().includes(busquedaNombreMonto)
+  )
+  .filter((fila) =>
+    busquedaFecha === "" || fila.fecha?.startsWith(busquedaFecha)
+  )
+  .filter((fila) =>
+    busquedaEstado === "" || fila.estado?.toLowerCase() === busquedaEstado.toLowerCase()
   );
 
   const agregarFactura = (factura) => {
@@ -117,8 +119,11 @@ const FacturacionSecre = () => {
 
   return (
     <>
-      <SearchBar onSearch={setBusqueda} />
-      <SearchDate onDateChange ={setBusqueda}/>
+      <div className="d-flex justify-content-evenly">
+        <SearchBar onSearch={setNombreMonto} />
+        <SearchState onEstadoChange={setEstado} />
+        <SearchDate onDateChange={setFecha} />
+      </div>
       <Tablageneral
         columnas={columnas}
         filas={filasFiltradas}
