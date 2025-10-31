@@ -11,7 +11,7 @@ function SearchState({ onEstadoChange }) {
       <Form.Select onChange={handleChange}>
         <option value="">Todos los estados</option>
         <option value="pagada">Pagada</option>
-        <option value="rechazada">Rechazada</option>
+        <option value="Pendiente">Pendiente</option>
         <option value="anulada">Anulada</option>
       </Form.Select>
     </Form>

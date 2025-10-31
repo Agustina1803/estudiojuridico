@@ -87,17 +87,17 @@ const FacturacionSecre = () => {
       (fila) =>
         busquedaNombreMonto === "" ||
         fila.nombreCliente
-          ?.toLowerCase()
+          ?.toLowerCase().trim()
           .includes(busquedaNombreMonto.toLowerCase()) ||
-        fila.monto?.toString().includes(busquedaNombreMonto)
+        fila.monto?.toString().trim().includes(busquedaNombreMonto)
     )
     .filter(
-      (fila) => busquedaFecha === "" || fila.fecha?.startsWith(busquedaFecha)
+      (fila) => busquedaFecha === "" || fila.fecha?.trim().startsWith(busquedaFecha)
     )
     .filter(
       (fila) =>
         busquedaEstado === "" ||
-        fila.estado?.toLowerCase() === busquedaEstado.toLowerCase()
+        fila.estado?.trim().toLowerCase() === busquedaEstado.toLowerCase()
     );
 
   const agregarFactura = (factura) => {
