@@ -32,7 +32,7 @@ const FormSubirArchivo = ({ show, onHide, onGuardar, itemEditar = null }) => {
 
   const onSubmit = (data) => {
     const documento = {
-      id: uuidv4(),
+       id: itemEditar ? itemEditar.id : uuidv4(),
       seleccionarArchivo: "archivo_simulado.pdf",
       nombreCliente: data.nombreCliente,
       tipodearchivo: data.tipodearchivo,

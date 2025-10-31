@@ -3,20 +3,32 @@ import Boton from "../../components/Boton";
 import Swal from "sweetalert2";
 import { useState, useEffect } from "react";
 import FormNuevaFactura from "../../components/FormNuevaFactura";
-import { Form } from "react-bootstrap";
+import SearchBar from "../../components/SearchBar";
+import SearchDate from "../../components/SearchDate";
 
 const FacturacionSecre = () => {
-  const columnas = ["Nº", "Fecha", "Cliente", "Concepto", "Factura","Monto", "Estado"];
+  const columnas = [
+    "Nº",
+    "Fecha",
+    "Cliente",
+    "Concepto",
+    "Factura",
+    "Monto",
+    "Estado",
+  ];
   const claves = [
     "fecha",
     "nombreCliente",
     "concepto",
     "seleccionarArchivo",
     "monto",
+    "estado",
   ];
   const tipo = "facturas";
   const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [itemEditar, setItemEditar] = useState(null);
+  const [busqueda, setBusqueda] = useState("");
 
   useEffect(() => {
     const facturasGuardadas = localStorage.getItem("facturas");
@@ -26,16 +38,68 @@ const FacturacionSecre = () => {
   }, []);
 
   const abrirModal = () => {
+    setItemEditar(null);
     setMostrarModal(true);
   };
 
   const cerrarModal = () => {
+    setItemEditar(null);
     setMostrarModal(false);
   };
 
-  const agregarFactura = (facturas) => {
+  const editar = (id) => {
+    const cliente = filas.find((item) => item.id === id);
+    setItemEditar(cliente);
+    setMostrarModal(true);
+  };
+
+  const eliminar = (id) => {
+    const cliente = filas.find((item) => item.id === id);
+    Swal.fire({
+      title: `¿Eliminar la ${cliente.seleccionarArchivo} del cliente ${cliente.nombreCliente}?`,
+      text: "Este cambio no se puede revertir",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const actualizadas = filas.filter((item) => item.id !== id);
+        setFilas(actualizadas);
+        localStorage.setItem(tipo, JSON.stringify(actualizadas));
+        Swal.fire({
+          title: "Eliminado",
+          text: `La ${cliente.factura} fue eliminada correctamente.`,
+          icon: "success",
+        });
+      }
+    });
+  };
+
+  const filasFiltradas = filas.filter(
+    (fila) =>
+      fila.nombreCliente
+        ?.trim()
+        .toLowerCase()
+        .includes(busqueda.trim().toLowerCase()) ||
+      fila.monto
+        ?.trim()
+        .toLowerCase()
+        .includes(busqueda.trim().toLowerCase()) ||
+      fila.fecha?.trim().toLowerCase().includes(busqueda.trim().toLowerCase())
+  );
+
+  const agregarFactura = (factura) => {
     let actualizadas;
-    actualizadas = [...filas, facturas];
+    if (itemEditar) {
+      actualizadas = filas.map((fila) =>
+        fila.id === factura.id ? factura : fila
+      );
+    } else {
+      actualizadas = [...filas, factura];
+    }
     setFilas(actualizadas);
     localStorage.setItem(tipo, JSON.stringify(actualizadas));
     cerrarModal();
@@ -53,18 +117,17 @@ const FacturacionSecre = () => {
 
   return (
     <>
+      <SearchBar onSearch={setBusqueda} />
+      <SearchDate onDateChange ={setBusqueda}/>
       <Tablageneral
         columnas={columnas}
-        filas={filas}
+        filas={filasFiltradas}
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">
-            <Form.Check
-              type="checkbox"
-              label="Pagada"
-              checked={fila.pagada}
-              onChange={() => togglePagada(fila.id)}
-            />
+            <Boton action="editar" onClick={() => editar(fila.id)} />
+            <Boton action="eliminar" onClick={() => eliminar(fila.id)} />
+            <Boton action="descargar" onClick={() => descargar(fila.id)} />
           </div>
         )}
       />
@@ -75,6 +138,7 @@ const FacturacionSecre = () => {
         show={mostrarModal}
         onHide={cerrarModal}
         onGuardar={agregarFactura}
+        itemEditar={itemEditar}
       />
     </>
   );

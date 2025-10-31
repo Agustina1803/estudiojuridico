@@ -2,12 +2,14 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
+import { useEffect } from "react";
 
-const FormNuevaFactura = ({ show, onHide, onGuardar }) => {
+const FormNuevaFactura = ({ show, onHide, onGuardar, itemEditar = null }) => {
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -15,25 +17,34 @@ const FormNuevaFactura = ({ show, onHide, onGuardar }) => {
       nombreCliente: "",
       concepto: "",
       monto: "",
-      seleccionarArchivo: "Factura.pdf",
-       pagada: false,
+      seleccionarArchivo: "",
+      estado: "",
     },
   });
 
+  useEffect(() => {
+    if (itemEditar) {
+      Object.entries(itemEditar).forEach(([key, value]) => {
+        setValue(key, value || "");
+      });
+    } else {
+      reset();
+    }
+  }, [itemEditar, setValue, reset]);
+
   const onSubmit = (data) => {
-    const archivo = data.seleccionarArchivo[0]?.name || "factura.pdf";
     const factura = {
-      id: uuidv4(),
+       id: itemEditar ? itemEditar.id : uuidv4(),
       fecha: data.fecha,
       nombreCliente: data.nombreCliente,
       concepto: data.concepto,
       monto: data.monto,
       seleccionarArchivo: "Factura.pdf",
+      estado: data.estado,
     };
-
     Swal.fire({
       icon: "success",
-      title: `¡Factura ${archivo} agregada!`,
+      title: `¡${factura.seleccionarArchivo} agregada!`,
       text: "La factura fue agregada exitosamente.",
       timer: 2000,
       showConfirmButton: false,
@@ -49,10 +60,13 @@ const FormNuevaFactura = ({ show, onHide, onGuardar }) => {
     onHide();
   };
 
+  const modalTitle = itemEditar ? "Editar factura" : "Nueva factura";
+  const submitButtonText = itemEditar ? "Actualizar" : "Guardar";
+
   return (
     <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Agregar factura</Modal.Title>
+        <Modal.Title>{modalTitle}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit(onSubmit)}>
@@ -91,8 +105,7 @@ const FormNuevaFactura = ({ show, onHide, onGuardar }) => {
               {errors.nombreCliente?.message}
             </Form.Text>
           </Form.Group>
-
-      <Form.Group className="mb-3" controlId="concepto">
+          <Form.Group className="mb-3" controlId="concepto">
             <Form.Label>Concepto</Form.Label>
             <Form.Control
               type="text"
@@ -115,7 +128,6 @@ const FormNuevaFactura = ({ show, onHide, onGuardar }) => {
               {errors.concepto?.message}
             </Form.Text>
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="seleccionarArchivo">
             <Form.Label>Seleccionar archivo</Form.Label>
             <Form.Control
@@ -147,12 +159,22 @@ const FormNuevaFactura = ({ show, onHide, onGuardar }) => {
               <small className="text-danger">{errors.monto.message}</small>
             )}
           </Form.Group>
+          <Form.Group className="mb-3" controlId="estado">
+            <Form.Label>Estado</Form.Label>
+            <Form.Select {...register("estado")}>
+              <option value="pagada" className="bg-secondary">
+                Pagada
+              </option>
+              <option value="rechazada">Rechazada</option>
+              <option value="anulada">Anulada</option>
+            </Form.Select>
+          </Form.Group>
           <div className="d-flex justify-content-end mt-4">
             <Button variant="secondary" onClick={handleCancel} className="me-2">
               Cancelar
             </Button>
             <Button variant="primary" type="submit">
-              Agregar
+              {submitButtonText}
             </Button>
           </div>
         </Form>

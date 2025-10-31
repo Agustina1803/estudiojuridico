@@ -1,7 +1,7 @@
 import Tablageneral from "../../components/tablageneral";
 import Boton from "../../components/Boton";
 import FormNuevoCliente from "../../components/FormNuevoCliente";
-import Buscador from "../../components/Buscador";
+import SearchBar from "../../components/SearchBar";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
@@ -94,7 +94,7 @@ const filasFiltradas = filas.filter(
 
   return (
     <>
-      <Buscador onSearch={setBusqueda} />
+      <SearchBar onSearch={setBusqueda} />
 
       <Tablageneral
         columnas={columnas}
