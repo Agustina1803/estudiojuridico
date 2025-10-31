@@ -6,6 +6,7 @@ import FormNuevaFactura from "../../components/FormNuevaFactura";
 import SearchBar from "../../components/SearchBar";
 import SearchDate from "../../components/SearchDate";
 import SearchState from "../../components/searchState";
+import "../../styles/estadoFactura.css";
 
 const FacturacionSecre = () => {
   const columnas = [
@@ -81,17 +82,23 @@ const FacturacionSecre = () => {
     });
   };
 
-const filasFiltradas = filas.filter((fila) =>
-    busquedaNombreMonto === "" ||
-    fila.nombreCliente?.toLowerCase().includes(busquedaNombreMonto.toLowerCase()) ||
-    fila.monto?.toString().includes(busquedaNombreMonto)
-  )
-  .filter((fila) =>
-    busquedaFecha === "" || fila.fecha?.startsWith(busquedaFecha)
-  )
-  .filter((fila) =>
-    busquedaEstado === "" || fila.estado?.toLowerCase() === busquedaEstado.toLowerCase()
-  );
+  const filasFiltradas = filas
+    .filter(
+      (fila) =>
+        busquedaNombreMonto === "" ||
+        fila.nombreCliente
+          ?.toLowerCase()
+          .includes(busquedaNombreMonto.toLowerCase()) ||
+        fila.monto?.toString().includes(busquedaNombreMonto)
+    )
+    .filter(
+      (fila) => busquedaFecha === "" || fila.fecha?.startsWith(busquedaFecha)
+    )
+    .filter(
+      (fila) =>
+        busquedaEstado === "" ||
+        fila.estado?.toLowerCase() === busquedaEstado.toLowerCase()
+    );
 
   const agregarFactura = (factura) => {
     let actualizadas;
@@ -117,6 +124,15 @@ const filasFiltradas = filas.filter((fila) =>
     });
   };
 
+  const filasConColores = filasFiltradas.map((fila) => ({
+    ...fila,
+    estado: (
+      <span className={`estado-${fila.estado?.toLowerCase()}`}>
+        {fila.estado}
+      </span>
+    ),
+  }));
+
   return (
     <>
       <div className="d-flex justify-content-evenly">
@@ -126,7 +142,7 @@ const filasFiltradas = filas.filter((fila) =>
       </div>
       <Tablageneral
         columnas={columnas}
-        filas={filasFiltradas}
+        filas={filasConColores}
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">

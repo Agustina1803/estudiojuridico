@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
 import { useEffect } from "react";
 
+
 const FormNuevaFactura = ({ show, onHide, onGuardar, itemEditar = null }) => {
   const {
     register,
@@ -162,11 +163,11 @@ const FormNuevaFactura = ({ show, onHide, onGuardar, itemEditar = null }) => {
           <Form.Group className="mb-3" controlId="estado">
             <Form.Label>Estado</Form.Label>
             <Form.Select {...register("estado")}>
-              <option value="pagada" className="bg-secondary">
+              <option value="Pagada">
                 Pagada
               </option>
-              <option value="rechazada">Rechazada</option>
-              <option value="anulada">Anulada</option>
+              <option value="Pendiente">Pendiente</option>
+              <option value="Anulada">Anulada</option>
             </Form.Select>
           </Form.Group>
           <div className="d-flex justify-content-end mt-4">
