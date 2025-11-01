@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { Form, FormControl } from 'react-bootstrap';
 
 function SearchBar({ onSearch }) {
   const [search, setSearch] = useState('');
+  
   const handleSearchChange = (e) => {
     const value = e.target.value;
     setSearch(value);
