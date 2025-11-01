@@ -1,9 +1,9 @@
 import Tablageneral from "../../components/tablageneral";
 import Boton from "../../components/Boton";
 import FormNuevoCliente from "../../components/FormNuevoCliente";
-import Buscador from "../../components/Buscador";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import SearchBar from "../../components/SearchBar";
 
 const ClientesAbog = () => {
   const columnas = [
@@ -98,7 +98,7 @@ const ClientesAbog = () => {
 
   return (
     <>
-      <Buscador onSearch={setBusqueda} />
+      <SearchBar onSearch={setBusqueda} />
 
       <Tablageneral
         columnas={columnas}

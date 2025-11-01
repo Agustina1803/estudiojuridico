@@ -1,7 +1,7 @@
 import Tablageneral from "../../components/tablageneral";
 import Boton from "../../components/Boton";
 import FormNuevoCliente from "../../components/FormNuevoCliente";
-import Buscador from "../../components/Buscador";
+import SearchBar from "../../components/SearchBar";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
@@ -85,22 +85,16 @@ const ClientesSecre = () => {
     });
   };
 
-  const filasFiltradas = filas.filter(
-    (fila) =>
-      fila.nombre
-        ?.trim()
-        .toLowerCase()
-        .includes(busqueda.trim().toLowerCase()) ||
-      fila.identificador
-        ?.trim()
-        .toLowerCase()
-        .includes(busqueda.trim().toLowerCase()) ||
-      fila.email?.trim().toLowerCase().includes(busqueda.trim().toLowerCase())
-  );
+const filasFiltradas = filas.filter(
+  (fila) =>
+    fila.nombre?.trim().toLowerCase().includes(busqueda.trim().toLowerCase()) ||
+    fila.identificador?.trim().toLowerCase().includes(busqueda.trim().toLowerCase()) ||
+    fila.email?.trim().toLowerCase().includes(busqueda.trim().toLowerCase())
+);
 
   return (
     <>
-      <Buscador onSearch={setBusqueda} />
+      <SearchBar onSearch={setBusqueda} />
 
       <Tablageneral
         columnas={columnas}

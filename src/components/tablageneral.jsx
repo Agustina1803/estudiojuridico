@@ -15,11 +15,11 @@ const Tablageneral = ({ columnas, claves, filas, acciones }) => {
         <tbody className="text-center">
           {filas.map((fila, indicefila) => (
             <tr key={fila.id || indicefila}>
-              <td>{indicefila + 1}</td>
+              <td className="text-center align-middle">{indicefila + 1}</td>
               {claves.map((clave, indicecelda) => (
-                <td key={indicecelda}>{fila[clave]}</td>
+                <td className="text-center align-middle" key={indicecelda}>{fila[clave]}</td>
               ))}
-              {acciones && <td>{acciones(fila)}</td>}
+              {acciones && <td className="text-center align-middle">{acciones(fila)}</td>}
             </tr>
           ))}
         </tbody>
