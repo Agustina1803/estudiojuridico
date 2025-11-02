@@ -1,9 +1,9 @@
 import Tablageneral from "../../components/tablageneral";
 import Boton from "../../components/Boton";
-import FormNuevoCliente from "../../components/FormNuevoCliente";
-import Buscador from "../../components/Buscador";
+import FormNuevoJuicio from "../../components/FormNuevoJuicio";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import SearchBar from "../../components/SearchBar";
 
 const JuiciosAbog = () => {
   const columnas = [
@@ -102,7 +102,7 @@ const JuiciosAbog = () => {
 
   return (
     <>
-      <Buscador onSearch={setBusqueda} />
+      <SearchBar onSearch={setBusqueda} />
 
       <Tablageneral
         columnas={columnas}
@@ -120,7 +120,7 @@ const JuiciosAbog = () => {
         <Boton action="agregar" onClick={abrirModal} />
       </div>
 
-      <FormNuevoCliente
+      <FormNuevoJuicio
         show={mostrarModal}
         onHide={cerrarModal}
         onGuardar={agregarJuicios}
