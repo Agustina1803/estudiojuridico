@@ -9,20 +9,17 @@ import InicioSecre from "./pages/Secretario/InicioSecre";
 import UsuariosAdmi from "./pages/Administrador/UsuariosAdmi";
 import DocumentosAdmi from "./pages/Administrador/DocumentosAdmi";
 import ReportesAdmi from "./pages/Administrador/ReportesAdmi";
-import ConfiguracionAdmi from "./pages/Administrador/ConfiguracionAdmi";
 import AgendaAbog from "./pages/Abogado/AgendaAbog";
 import ClienteAbog from "./pages/Abogado/ClientesAbog";
 import DocumentoAbog from "./pages/Abogado/DocumentosAbog";
 import TareasAbog from "./pages/Abogado/TareasAbog";
 import FacturacionAbog from "./pages/Abogado/FacturacionAbog";
-import InformeAbog from "./pages/Abogado/InformesAbog";
 import JuiciosAbog from "./pages/Abogado/JuiciosAbog";
 import AgendaSecre from "./pages/Secretario/AgendaSecre";
 import ClienteSecre from "./pages/Secretario/ClientesSecre";
 import DocumentosSecre from "./pages/Secretario/DocumentosSecre";
 import TareasSecre from "./pages/Secretario/TareasSecre";
 import FacturacionSecre from "./pages/Secretario/FacturacionSecre";
-import InformesSecre from "./pages/Secretario/InformesSecre";
 import ProteccionRutas from "./routers/ProteccionRutas";
 
 function App() {
@@ -36,7 +33,6 @@ function App() {
             <Route path="usuariosadmi" element={<UsuariosAdmi />} />
             <Route path="documentosadmi" element={<DocumentosAdmi />} />
             <Route path="reportesadmi" element={<ReportesAdmi />} />
-            <Route path="configuracionadmi" element={<ConfiguracionAdmi />} />
           </Route>
 
           <Route element={<ProteccionRutas roleUsuario="secre" />}>
@@ -46,7 +42,6 @@ function App() {
             <Route path="documentossecre" element={<DocumentosSecre />} />
             <Route path="tareassecre" element={<TareasSecre />} />
             <Route path="facturacionsecre" element={<FacturacionSecre />} />
-            <Route path="informessecre" element={<InformesSecre />} />
           </Route>
 
           <Route element={<ProteccionRutas roleUsuario="abog" />}>
@@ -56,7 +51,6 @@ function App() {
             <Route path="documentoabog" element={<DocumentoAbog />} />
             <Route path="tareasabog" element={<TareasAbog />} />
             <Route path="facturacionabog" element={<FacturacionAbog />} />
-            <Route path="informeabog" element={<InformeAbog />} />
             <Route path="juiciosabog" element={<JuiciosAbog />} />
           </Route>
         </Route>
