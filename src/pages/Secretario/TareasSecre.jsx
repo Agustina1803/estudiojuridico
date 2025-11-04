@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react'
 
 const TareasSecre = () => {
   const columnas = ['Nº','Descripcion','Responsable', 'Prioridad', 'Fecha limite', 'Estado' ];
-  const claves = ['descripcion','responsable', 'prioridad', 'fecha', 'estado'];
+  const claves = ['descripcion','abogado', 'prioridad', 'fecha', 'estado'];
   const tipo = "tareas";
   const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);

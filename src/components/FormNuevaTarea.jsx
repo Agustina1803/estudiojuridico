@@ -1,11 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
 
 const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
- 
   const {
     register,
     handleSubmit,
@@ -15,7 +14,7 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
   } = useForm({
     defaultValues: {
       descripcion: "",
-      responsable: "Dr.Gómez",
+      abogado: "",
       prioridad: "alta",
       fecha: "",
     },
@@ -59,6 +58,18 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
   const modalTitle = itemEditar ? "Editar tarea" : "Nueva tarea";
   const submitButtonText = itemEditar ? "Actualizar" : "Guardar";
 
+  const [abogados, setAbogados] = useState([]);
+  useEffect(() => {
+    const usuariosGuardados = localStorage.getItem("usuarios");
+    if (usuariosGuardados) {
+      const usuariosTotales = JSON.parse(usuariosGuardados);
+      const abogadosTotales = usuariosTotales.filter(
+        (usuarios) => usuarios.role === "abog"
+      );
+      setAbogados(abogadosTotales);
+    }
+  }, []);
+
   return (
     <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton>
@@ -90,11 +101,18 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
             </Form.Text>
           </Form.Group>
 
-          <Form.Group className="mb-3" controlId="responsable">
+          <Form.Group className="mb-3" controlId="abogado">
             <Form.Label>Responsable</Form.Label>
-            <Form.Select {...register("responsable")}>
-              <option value="Dr.Gómez">Dr.Gómez</option>
-            </Form.Select>
+            <Form.Group controlId="abogado" className="mt-3">
+              <Form.Label>Abogado asignado</Form.Label>
+              <Form.Select {...register("abogado")}>
+                {abogados.map((abogado) => (
+                  <option key={abogado.id} value={`Dr. ${abogado.apellido}`}>
+                    {`Dr. ${abogado.apellido}`}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="prioridad">
