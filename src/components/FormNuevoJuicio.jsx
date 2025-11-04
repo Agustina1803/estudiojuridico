@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
 
 
+
 const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
     const {
         register,
@@ -14,11 +15,13 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
         formState: { errors },
     } = useForm({
         defaultValues: {
-            nombre: "",
-            identificador: "",
-            email: "",
-            telefono: "",
-            estado: "inactivo",
+            nombreDeJuicio: "",
+            numeroExpediente: "",
+            nombreCliente: "",
+            juzgado: "",
+            fecha: "",
+            seleccionarArchivo: "",
+
         },
     });
 
@@ -35,12 +38,17 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
     const onSubmit = (data) => {
         const juicio = {
             id: itemEditar ? itemEditar.id : uuidv4(),
-            ...data,
+           numeroExpediente: data.numeroExpediente,
+           nombreDeJuicio: data.nombreDeJuicio,
+           nombreCliente: data.nombreCliente,
+           juzgado: data.juzgado,
+           fecha: data.fecha,
+           seleccionarArchivo: "ArchivoJuicio.pdf",
         };
 
         Swal.fire({
             icon: "success",
-            title: itemEditar ? `¡juicio ${juicio.nombre} fue actualizado!` : "¡juicio agregado!",
+            title: itemEditar ? `¡juicio ${juicio.nombreDeJuicio} fue actualizado!` : "¡juicio agregado!",
             text: itemEditar
                 ? `El juicio  fue actualizado  exitosamente.`
                 : "El juicio fue agregado exitosamente.",
@@ -68,12 +76,12 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
             </Modal.Header>
             <Modal.Body>
                 <Form onSubmit={handleSubmit(onSubmit)}>
-                    <Form.Group className="mb-3" controlId="nombre">
+                    <Form.Group className="mb-3" controlId="nombreDeJuicio">
                         <Form.Label>Nombre de Juicio: </Form.Label>
                         <Form.Control
                             type="text"
-                            placeholder="Ej: Juan Perez"
-                            {...register("nombre", {
+                            placeholder="Ej: Demanda por accidente de tráfico"
+                            {...register("nombreDeJuicio", {
                                 required: "El nombre del juicio es obligatorio",
                                 minLength: {
                                     value: 10,
@@ -81,7 +89,7 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
                                         "El nombre del juicio debe tener como mínimo 10 caracteres",
                                 },
                                 maxLength: {
-                                    value: 50,
+                                    value: 100,
                                     message:
                                         "El nombre del juicio debe tener como máximo 50 caracteres",
                                 },
@@ -92,12 +100,12 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
                         </Form.Text>
                     </Form.Group>
 
-                    <Form.Group className="mb-3" controlId="identificador">
+                    <Form.Group className="mb-3" controlId="numeroExpediente">
                         <Form.Label>Numero de expediente :</Form.Label>
                         <Form.Control
-                            type="text"
+                            type="number"
                             placeholder="Ej: 2030/234567"
-                            {...register("identificador", {
+                            {...register("numeroExpediente", {
                                 required: "Este campo es obligatorio",
                                 validate: (value) => {
                                     const limpio = value.replace(/-/g, "");
@@ -110,10 +118,10 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
                                     return true;
                                 },
                             })}
-                            isInvalid={!!errors.identificador}
+                            isInvalid={!!errors.numeroExpediente}
                         />
                         <Form.Text className="text-danger">
-                            {errors.identificador?.message}
+                            {errors.numeroExpediente?.message}
                         </Form.Text>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="nombreCliente">
@@ -140,67 +148,66 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
                         </Form.Text>
                     </Form.Group>
 
-              
-                <Form.Group className="mb-3" controlId="Juzgado">
-                    <Form.Label>Juzgado</Form.Label>
-                    <Form.Control
-                        type="text"
-                        placeholder="Juzgado..."
-                        {...register("Juzgado", {
-                            required: "El juzgado es obligatorio es obligatorio",
-                            minLength: {
-                                value: 15,
-                                message:
-                                    "El nombre de juzgado debe tener como mínimo 10 caracteres",
-                            },
-                            maxLength: {
-                                value: 50,
-                                message:
-                                    "El juzgado debe tener como máximo 50 caracteres",
-                            },
-                        })}
-                    />
-                    <Form.Text className="text-danger">
-                        {errors.concepto?.message}
-                    </Form.Text>
-                </Form.Group>
 
-                <Form.Group className="mb-3" controlId="fecha">
-                    <Form.Label>Fecha:</Form.Label>
-                    <Form.Control
-                        type="date"
-                        {...register("fecha", {
-                            required: "La fecha es obligatorio",
-                        })}
-                    ></Form.Control>
-                </Form.Group>
+                    <Form.Group className="mb-3" controlId="juzgado">
+                        <Form.Label>Juzgado</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="juzgado..."
+                            {...register("juzgado", {
+                                required: "El juzgado es obligatorio",
+                                minLength: {
+                                    value: 10,
+                                    message:
+                                        "El nombre de juzgado debe tener como mínimo 10 caracteres",
+                                },
+                                maxLength: {
+                                    value: 50,
+                                    message:
+                                        "El juzgado debe tener como máximo 50 caracteres",
+                                },
+                            })}
+                        />
+                        <Form.Text className="text-danger">
+                            {errors.juzgado?.message}
+                        </Form.Text>
+                    </Form.Group>
 
+                    <Form.Group className="mb-3" controlId="fecha">
+                        <Form.Label>Fecha:</Form.Label>
+                        <Form.Control
+                            type="date"
+                            {...register("fecha", {
+                                required: "La fecha es obligatorio",
+                            })}
+                        ></Form.Control>
+                    </Form.Group>
 
-                <Form.Group className="mb-3" controlId="seleccionarArchivo">
-                    <Form.Label>Seleccionar archivo</Form.Label>
-                    <Form.Control
-                        type="file"
-                        {...register("seleccionarArchivo", {
-                            required: "El archivo es obligatorio",
-                        })}
-                    />
-                    {errors.seleccionarArchivo && (
-                        <small className="text-danger">
-                            {errors.seleccionarArchivo.message}
-                        </small>
-                    )}
-                </Form.Group>
+                    <Form.Group className="mb-3" controlId="seleccionarArchivo">
+                        <Form.Label>Seleccionar archivo</Form.Label>
+                        <Form.Control
+                            type="file"
+                            {...register("seleccionarArchivo", {
+                                required: "El archivo es obligatorio",
+                            })}
+                        />
+                        {errors.seleccionarArchivo && (
+                            <small className="text-danger">
+                                {errors.seleccionarArchivo.message}
+                            </small>
+                        )}
+                    </Form.Group>
 
-                <div className="justify-content-end d-flex">
-                    <Button variant="success" type="submit" className="me-2">
-                        {submitButtonText}
-                    </Button>
-                    <Button variant="secondary" onClick={handleCancel}>
-                        Cancelar
-                    </Button>
-                </div>
-            </Form>
-        </Modal.Body >
+                    <div className="justify-content-end d-flex">
+                        <Button variant="success" type="submit" className="me-2">
+                            {submitButtonText}
+                        </Button>
+                        <Button variant="secondary" onClick={handleCancel}>
+                            Cancelar
+                        </Button>
+                    </div>
+                </Form>
+            </Modal.Body >
         </Modal >
     );
 };

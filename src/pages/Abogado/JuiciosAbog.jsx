@@ -13,15 +13,16 @@ const JuiciosAbog = () => {
     "Cliente",
     "Juzgado",
     "Fecha",
-    "Legajo",
-   
+    "Archivo",
+
   ];
-  const claves = ["nombre", "expediente", "cliente", "juzgado", "fecha", "legajo"];
+  const claves = ["nombreDeJuicio", "numeroExpediente", "nombreCliente", "juzgado", "fecha", "seleccionarArchivo"];
   const tipo = "juicios";
   const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
-  const [busqueda, setBusqueda] = useState("");
+  const [busquedaDeJuicio, setBusquedaDeJuicio] = useState("");
+  
 
   useEffect(() => {
     const juiciosGuardados = localStorage.getItem("juicios");
@@ -41,21 +42,21 @@ const JuiciosAbog = () => {
   };
 
   const editar = (id) => {
-    const juicios = filas.find((item) => item.id === id);
-    setItemEditar(juicios);
+    const juicio = filas.find((item) => item.id === id);
+    setItemEditar(juicio);
     setMostrarModal(true);
   };
 
 
 
-  const agregarJuicios = (juicios) => {
+  const agregarJuicios = (juicio) => {
     let actualizadas;
     if (itemEditar) {
       actualizadas = filas.map((fila) =>
-        fila.id === juicios.id ? juicios : fila
+        fila.id === juicio.id ? juicio : fila
       );
     } else {
-      actualizadas = [...filas, juicios];
+      actualizadas = [...filas, juicio];
     }
     setFilas(actualizadas);
     localStorage.setItem(tipo, JSON.stringify(actualizadas));
@@ -63,9 +64,9 @@ const JuiciosAbog = () => {
   };
 
   const eliminar = (id) => {
-    const juicios = filas.find((item) => item.id === id);
+    const juicio = filas.find((item) => item.id === id);
     Swal.fire({
-      title: `¿Eliminar a jucios ${juicios.nombre}?`,
+      title: `¿Eliminar a jucio ${juicio.nombreDeJuicio}?`,
       text: "Este cambio no se puede revertir",
       icon: "warning",
       showCancelButton: true,
@@ -87,22 +88,19 @@ const JuiciosAbog = () => {
     });
   };
 
-  const filasFiltradas = filas.filter(
-    (fila) =>
-      fila.nombre
-        ?.trim()
-        .toLowerCase()
-        .includes(busqueda.trim().toLowerCase()) ||
-      fila.identificador
-        ?.trim()
-        .toLowerCase()
-        .includes(busqueda.trim().toLowerCase()) ||
-      fila.email?.trim().toLowerCase().includes(busqueda.trim().toLowerCase())
-  );
-
+  const filasFiltradas = filas
+    .filter(
+      (fila) =>
+        busquedaDeJuicio === "" ||
+        fila.nombreDeJuicio
+          ?.toLowerCase().trim()
+          .includes(busquedaDeJuicio.toLowerCase()) ||
+        fila.numeroExpediente?.toString().trim().includes(busquedaDeJuicio)
+    )
+   
   return (
     <>
-      <SearchBar onSearch={setBusqueda} />
+      <SearchBar onSearch={setBusquedaDeJuicio} />
 
       <Tablageneral
         columnas={columnas}
