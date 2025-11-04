@@ -24,7 +24,6 @@ const Menu = ({ role }) => {
           { to: "usuariosadmi", label: "Usuarios", icon: <FaUsers /> },
           { to: "documentosadmi", label: "Documentos", icon: <FaFolder /> },
           { to: "reportesadmi", label: "Reportes", icon: <FaChartBar /> },
-          { to: "configuracionadmi", label: "Configuración", icon: <FaCog /> },
         ];
       case "abog":
         return [
@@ -38,7 +37,6 @@ const Menu = ({ role }) => {
             label: "Facturación",
             icon: <FaMoneyBillWave />,
           },
-          { to: "informeabog", label: "Informe", icon: <FaChartBar /> },
           { to: "juiciosabog", label: "Juicios", icon: <FaBalanceScale /> },
         ];
       case "secre":
@@ -53,7 +51,6 @@ const Menu = ({ role }) => {
             label: "Facturación",
             icon: <FaMoneyBillWave />,
           },
-          { to: "informessecre", label: "Informes", icon: <FaChartBar /> },
         ];
       default:
         return [];
@@ -61,7 +58,6 @@ const Menu = ({ role }) => {
   };
 
   const menuItems = menus();
-
 
   return (
     <Card className=" border-primary shadow h-100">
