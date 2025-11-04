@@ -3,6 +3,8 @@ import Boton from "../../components/Boton";
 import Swal from "sweetalert2";
 import { useState, useEffect } from "react";
 import FormSubirArchivo from "../../components/FormSubirArchivo";
+import SearchBar from "../../components/SearchBar";
+import SearchDate from "../../components/SearchDate";
 
 const DocumentosSecre = () => {
   const columnas = [
@@ -22,6 +24,8 @@ const DocumentosSecre = () => {
   const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
+  const [busquedaNombre, setbusquedaNombre] = useState("");
+  const [busquedaFecha, setbusquedaFecha] = useState("");
 
   useEffect(() => {
     const documentosGuardados = localStorage.getItem("documentos");
@@ -87,17 +91,35 @@ const DocumentosSecre = () => {
   const descargar = (id) => {
     const cliente = filas.find((item) => item.id === id);
     Swal.fire({
-    icon: "success",
-    title: `¡${cliente.seleccionarArchivo} descargado!`,
-    timer: 2000,
-    showConfirmButton: false,
-  });
+      icon: "success",
+      title: `¡${cliente.seleccionarArchivo} descargado!`,
+      timer: 2000,
+      showConfirmButton: false,
+    });
   };
+
+  const filasFiltradas = filas
+    .filter(
+      (fila) =>
+        busquedaNombre === "" ||
+        fila.nombreCliente
+          ?.toLowerCase()
+          .trim()
+          .includes(busquedaNombre.toLowerCase()) )
+    .filter(
+      (fila) =>
+        busquedaFecha === "" || fila.fecha?.trim().startsWith(busquedaFecha)
+    );
+
   return (
     <>
+      <div className="d-flex justify-content-evenly">
+        <SearchBar onSearch={ setbusquedaNombre} />
+        <SearchDate onDateChange={setbusquedaFecha} />
+      </div>
       <Tablageneral
         columnas={columnas}
-        filas={filas}
+        filas={filasFiltradas}
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">

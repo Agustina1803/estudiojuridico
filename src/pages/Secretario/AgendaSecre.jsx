@@ -3,14 +3,27 @@ import Boton from "../../components/Boton";
 import Swal from "sweetalert2";
 import FormAgregarCita from "../../components/formAgregarCita";
 import { useState, useEffect } from "react";
+import SearchBar from "../../components/SearchBar";
+import SearchDate from "../../components/SearchDate";
+
 
 const AgendaSecre = () => {
-  const columnas = ['Nº', 'Fecha', 'Hora', 'Cliente', 'Abogado', 'Tipo de Evento', 'Notas'];
+  const columnas = [
+    "Nº",
+    "Fecha",
+    "Hora",
+    "Cliente",
+    "Abogado",
+    "Tipo de Evento",
+    "Notas",
+  ];
   const claves = ["fecha", "hora", "cliente", "abogado", "tipoEvento", "notas"];
   const tipo = "citas";
   const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
+  const [busquedaNombre, setNombre] = useState("");
+  const [busquedaFecha, setFecha] = useState("");
 
   useEffect(() => {
     const citasGuardadas = localStorage.getItem("citas");
@@ -61,7 +74,7 @@ const AgendaSecre = () => {
     registrar({
       id: cliente.id,
       nombre: cliente.cliente,
-      tipoEvento:"eliminarCita"
+      tipoEvento: "eliminarCita",
     });
   };
   const agregarCita = (cita) => {
@@ -82,11 +95,29 @@ const AgendaSecre = () => {
     cerrarModal();
   };
 
+  const filasFiltradas = filas
+    .filter(
+      (fila) =>
+        busquedaNombre === "" ||
+        fila.cliente?.toLowerCase()
+          .trim()
+          .includes(busquedaNombre.toLowerCase()) ||
+        fila.abogado?.toString().trim().includes(busquedaNombre)
+    )
+    .filter(
+      (fila) =>
+        busquedaFecha === "" || fila.fecha?.trim().startsWith(busquedaFecha)
+    )
+   
   return (
     <>
+      <div className="d-flex justify-content-evenly">
+        <SearchBar onSearch={setNombre} />
+        <SearchDate onDateChange={setFecha} />
+      </div>
       <Tablageneral
         columnas={columnas}
-        filas={filas}
+        filas={filasFiltradas}
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">

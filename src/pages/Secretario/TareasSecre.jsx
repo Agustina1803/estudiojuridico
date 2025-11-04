@@ -1,26 +1,36 @@
-import Tablageneral from '../../components/tablageneral'
-import Boton from '../../components/Boton'
+import Tablageneral from "../../components/tablageneral";
+import Boton from "../../components/Boton";
 import Swal from "sweetalert2";
-import FormNuevaTarea from '../../components/FormNuevaTarea' 
-import { useState, useEffect } from 'react'
+import FormNuevaTarea from "../../components/FormNuevaTarea";
+import { useState, useEffect } from "react";
+import SearchBar from "../../components/SearchBar";
+import SearchDate from "../../components/SearchDate";
 
 const TareasSecre = () => {
-  const columnas = ['Nº','Descripcion','Responsable', 'Prioridad', 'Fecha limite', 'Estado' ];
-  const claves = ['descripcion','abogado', 'prioridad', 'fecha', 'estado'];
+  const columnas = [
+    "Nº",
+    "Descripcion",
+    "Responsable",
+    "Prioridad",
+    "Fecha limite",
+    "Estado",
+  ];
+  const claves = ["descripcion", "abogado", "prioridad", "fecha", "estado"];
   const tipo = "tareas";
   const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
-const [itemEditar, setItemEditar] = useState(null);
+  const [itemEditar, setItemEditar] = useState(null);
+  const [busquedaAbogado, setbusquedaAbogado] = useState("");
+  const [busquedaFecha, setbusquedaFecha] = useState("");
 
-  
-   useEffect(() => {
+  useEffect(() => {
     const tareasGuardadas = localStorage.getItem("tareas");
     if (tareasGuardadas) {
       setFilas(JSON.parse(tareasGuardadas));
     }
   }, []);
 
-   const abrirModal = () => {
+  const abrirModal = () => {
     setItemEditar(null);
     setMostrarModal(true);
   };
@@ -30,19 +40,21 @@ const [itemEditar, setItemEditar] = useState(null);
     setMostrarModal(false);
   };
 
-   const editar = (id) => {
+  const editar = (id) => {
     console.log("Editar tarea con id:", id);
     console.log("Filas actuales:", filas);
     const cliente = filas.find((item) => item.id === id);
-   
+
     setItemEditar(cliente);
     setMostrarModal(true);
   };
 
   const agregarTareas = (nuevatarea) => {
-   let actualizadas;
+    let actualizadas;
     if (itemEditar) {
-      actualizadas = filas.map((fila) => (fila.id === nuevatarea.id ? nuevatarea : fila));
+      actualizadas = filas.map((fila) =>
+        fila.id === nuevatarea.id ? nuevatarea : fila
+      );
     } else {
       actualizadas = [...filas, nuevatarea];
     }
@@ -51,7 +63,7 @@ const [itemEditar, setItemEditar] = useState(null);
     cerrarModal();
   };
 
-const eliminar = (id) => {
+  const eliminar = (id) => {
     const cliente = filas.find((item) => item.id === id);
     Swal.fire({
       title: `¿Eliminar la ${cliente.descripcion} ?`,
@@ -76,16 +88,31 @@ const eliminar = (id) => {
     });
   };
 
+   const filasFiltradas = filas
+    .filter(
+      (fila) =>
+        busquedaAbogado === "" ||
+        fila.abogado
+          ?.toLowerCase()
+          .trim()
+          .includes(busquedaAbogado.toLowerCase()) )
+    .filter(
+      (fila) =>
+        busquedaFecha === "" || fila.fecha?.trim().startsWith(busquedaFecha)
+    );
 
   return (
     <>
+      <div className="d-flex justify-content-evenly">
+        <SearchBar onSearch={ setbusquedaAbogado} />
+        <SearchDate onDateChange={setbusquedaFecha} />
+      </div>
       <Tablageneral
         columnas={columnas}
-        filas={filas}
-           claves={claves}
+        filas={filasFiltradas}
+        claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">
-           
             <Boton action="editar" onClick={() => editar(fila.id)} />
             <Boton action="eliminar" onClick={() => eliminar(fila.id)} />
           </div>
@@ -98,13 +125,10 @@ const eliminar = (id) => {
         show={mostrarModal}
         onHide={cerrarModal}
         onGuardar={agregarTareas}
-       itemEditar={itemEditar}
+        itemEditar={itemEditar}
       />
     </>
-
   );
 };
-
-
 
 export default TareasSecre;
