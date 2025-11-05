@@ -53,7 +53,7 @@ export function RegistroPage() {
   };
 
   return (
-    <Card border="primary" className="FormRegistro">
+    <Card  className="FormRegistro">
       <div>
         <h3 className="text-center">Iniciar Sesión</h3>
       </div>
@@ -105,7 +105,7 @@ export function RegistroPage() {
           </Button>
         </div>
       </Form>
-      <a href="#" className="text-center">
+      <a href="#" className="text-center m-2">
         Olvidé mi contraseña
       </a>
     </Card>
