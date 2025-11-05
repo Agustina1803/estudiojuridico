@@ -14,15 +14,20 @@ const JuiciosAbog = () => {
     "Juzgado",
     "Fecha",
     "Archivo",
-
   ];
-  const claves = ["nombreDeJuicio", "numeroExpediente", "nombreCliente", "juzgado", "fecha", "seleccionarArchivo"];
+  const claves = [
+    "nombreDeJuicio",
+    "numeroExpediente",
+    "nombreCliente",
+    "juzgado",
+    "fecha",
+    "seleccionarArchivo",
+  ];
   const tipo = "juicios";
   const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
   const [busquedaDeJuicio, setBusquedaDeJuicio] = useState("");
-  
 
   useEffect(() => {
     const juiciosGuardados = localStorage.getItem("juicios");
@@ -46,8 +51,6 @@ const JuiciosAbog = () => {
     setItemEditar(juicio);
     setMostrarModal(true);
   };
-
-
 
   const agregarJuicios = (juicio) => {
     let actualizadas;
@@ -88,19 +91,32 @@ const JuiciosAbog = () => {
     });
   };
 
-  const filasFiltradas = filas
-    .filter(
-      (fila) =>
-        busquedaDeJuicio === "" ||
-        fila.nombreDeJuicio
-          ?.toLowerCase().trim()
-          .includes(busquedaDeJuicio.toLowerCase()) ||
-        fila.numeroExpediente?.toString().trim().includes(busquedaDeJuicio)
-    )
-   
+  const descargar = (id) => {
+    const cliente = filas.find((item) => item.id === id);
+    Swal.fire({
+      icon: "success",
+      title: `¡${cliente.seleccionarArchivo} descargado!`,
+      timer: 2000,
+      showConfirmButton: false,
+    });
+  };
+
+  const filasFiltradas = filas.filter(
+    (fila) =>
+      busquedaDeJuicio === "" ||
+      fila.nombreDeJuicio
+        ?.toLowerCase()
+        .trim()
+        .includes(busquedaDeJuicio.toLowerCase()) ||
+      fila.numeroExpediente?.toString().trim().includes(busquedaDeJuicio)
+  );
+
   return (
     <>
-      <SearchBar onSearch={setBusquedaDeJuicio} placeholder="Buscar por  juicio o expediente..."/>
+      <SearchBar
+        onSearch={setBusquedaDeJuicio}
+        placeholder="Buscar por  juicio o expediente..."
+      />
 
       <Tablageneral
         columnas={columnas}
@@ -110,6 +126,7 @@ const JuiciosAbog = () => {
           <div className="d-flex gap-2 align-items-center justify-content-center">
             <Boton action="editar" onClick={() => editar(fila.id)} />
             <Boton action="eliminar" onClick={() => eliminar(fila.id)} />
+            <Boton action="descargar" onClick={() => descargar(fila.id)} />
           </div>
         )}
       />
