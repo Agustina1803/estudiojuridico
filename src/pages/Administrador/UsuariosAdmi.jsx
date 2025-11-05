@@ -1,19 +1,20 @@
-import Tablageneral from '../../components/tablageneral'
-import Boton from '../../components/Boton'
+import Tablageneral from "../../components/tablageneral";
+import Boton from "../../components/Boton";
 import Swal from "sweetalert2";
-import FormAltaUsuario from '../Administrador/FormAltaUsuario'
-import { useState, useEffect } from 'react'
+import FormAltaUsuario from "../Administrador/FormAltaUsuario";
+import { useState, useEffect } from "react";
+import SearchBar from "../../components/SearchBar";
 
 const UsuariosAdmi = () => {
-  const columnas = ['Nº','Nombre', 'Apellido', 'Email','Telefono', 'Rol'];
-   const claves = ["nombre", "apellido", "email", "telefono", "role"];
+  const columnas = ["Nº", "Nombre", "Apellido", "Email", "Telefono", "Rol"];
+  const claves = ["nombre", "apellido", "email", "telefono", "role"];
   const tipo = "usuarios";
- const [filas, setFilas] = useState([]);
+  const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
+  const [busquedaNombreApellido, setNombreApellido] = useState("");
 
-
-   useEffect(() => {
+  useEffect(() => {
     const usuariosGuardadas = localStorage.getItem("usuarios");
     if (usuariosGuardadas) {
       setFilas(JSON.parse(usuariosGuardadas));
@@ -30,13 +31,13 @@ const UsuariosAdmi = () => {
     setMostrarModal(false);
   };
 
-    const editar = (id) => {
+  const editar = (id) => {
     const usuarios = filas.find((item) => item.id === id);
     setItemEditar(usuarios);
     setMostrarModal(true);
   };
 
-    const eliminar = (id) => {
+  const eliminar = (id) => {
     const usuarios = filas.find((item) => item.id === id);
     Swal.fire({
       title: `¿Eliminar al ${usuarios.nombre}?`,
@@ -54,7 +55,7 @@ const UsuariosAdmi = () => {
         localStorage.setItem(tipo, JSON.stringify(actualizadas));
         Swal.fire({
           title: "Eliminado",
-          text: `El ${usuarios.nombre}  fue eliminada correctamente.`,
+          text: `El usuario ${usuarios.nombre}  fue eliminada correctamente.`,
           icon: "success",
         });
       }
@@ -73,12 +74,25 @@ const UsuariosAdmi = () => {
     cerrarModal();
   };
 
-
+  const filasFiltradas = filas.filter(
+    (fila) =>
+      busquedaNombreApellido === "" ||
+      fila.nombre
+        ?.toLowerCase()
+        .trim()
+        .includes(busquedaNombreApellido.toLowerCase()) ||
+      fila.apellido?.trim().includes(busquedaNombreApellido)
+  );
   return (
     <>
+      <SearchBar
+        onSearch={setNombreApellido}
+        placeholder="Buscar por nombre o apellido..."
+      />
+
       <Tablageneral
         columnas={columnas}
-        filas={filas}
+        filas={filasFiltradas}
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">
@@ -99,6 +113,5 @@ const UsuariosAdmi = () => {
     </>
   );
 };
-
 
 export default UsuariosAdmi;

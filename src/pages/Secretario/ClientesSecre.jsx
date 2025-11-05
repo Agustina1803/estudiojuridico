@@ -94,7 +94,7 @@ const filasFiltradas = filas.filter(
 
   return (
     <>
-      <SearchBar onSearch={setBusqueda} />
+      <SearchBar onSearch={setBusqueda} placeholder="Buscar por cliente, DNI/CUIT..."/>
 
       <Tablageneral
         columnas={columnas}
