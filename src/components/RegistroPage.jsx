@@ -2,6 +2,8 @@ import { Form, Button, Card } from "react-bootstrap";
 import "../styles/RegistroPage.css";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export function RegistroPage() {
   const {
@@ -12,6 +14,8 @@ export function RegistroPage() {
   } = useForm();
 
   const navegacion = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const passwordVisibility = () => setShowPassword((prev) => !prev);
   const loginUser = (user) => {
     const { formBasicEmail, formBasicPassword } = user;
     if (
@@ -77,25 +81,37 @@ export function RegistroPage() {
           </Form.Text>
         </Form.Group>
 
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Contraseña</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Contraseña"
-            {...register("formBasicPassword", {
-              required: "La contraseña es obligatorio",
-              pattern: {
-                value:
-                  /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/,
-                message:
-                  "La contraseña debe tener entre 8 y 16 caracteres, al menos un dígito, al menos una minúscula, al menos una mayúscula y al menos un caracter especial.",
-              },
-            })}
-          />
-          <Form.Text className="text-danger">
-            {errors.formBasicPassword?.message}
-          </Form.Text>
-        </Form.Group>
+         <Form.Group className="mb-3" controlId="formBasicPassword">
+                    <div className="input-group">
+                      <Form.Control
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Contraseña"
+                        {...register("formBasicPassword", {
+                          required: "La contraseña es obligatoria",
+                          pattern: {
+                            value:
+                              /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/,
+                            message:
+                              "Debe tener entre 8 y 16 caracteres, al menos un dígito, una minúscula, una mayúscula y un caracter especial.",
+                          },
+                        })}
+                      />
+                      <Button
+                        variant="outline-secondary"
+                        type="button"
+                        onClick={passwordVisibility}
+                        aria-label={
+                          showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+                        }
+                      >
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                      </Button>
+                    </div>
+                    <Form.Text className="text-danger">
+                      {errors.formBasicPassword?.message}
+                    </Form.Text>
+                    
+                  </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicCheckbox">
           <Form.Check type="checkbox" label="Recuérdame" />
         </Form.Group>
@@ -105,7 +121,7 @@ export function RegistroPage() {
           </Button>
         </div>
       </Form>
-      <a href="#" className="text-center m-2">
+      <a href="*" className="text-center m-2">
         Olvidé mi contraseña
       </a>
     </Card>

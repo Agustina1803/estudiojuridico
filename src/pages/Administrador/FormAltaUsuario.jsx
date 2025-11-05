@@ -183,27 +183,41 @@ const passwordVisibility = () => setShowPassword((prev) => !prev);
             <Form.Text className="text-danger">
               {errors.formBasicPassword?.message}
             </Form.Text>
+            
           </Form.Group>
-           {itemEditar && (
-            <Form.Group className="mb-3" controlId="newPassword">
-              <Form.Label>Nueva contraseña</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Nueva contraseña"
-                {...register("newPassword", {
-                  pattern: {
-                    value:
-                      /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/,
-                    message:
-                      "Debe tener entre 8 y 16 caracteres, al menos un dígito, una minúscula, una mayúscula y un caracter especial.",
-                  },
-                })}
-              />
-              <Form.Text className="text-danger">
-                {errors.newPassword?.message}
-              </Form.Text>
-            </Form.Group>
-          )}
+
+          {itemEditar && (
+  <Form.Group className="mb-3" controlId="newPassword">
+    <Form.Label>Nueva contraseña</Form.Label>
+    <div className="input-group">
+      <Form.Control
+        type={setShowPassword ? "text" : "password"}
+        placeholder="Nueva contraseña"
+        {...register("newPassword", {
+          pattern: {
+            value:
+              /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/,
+            message:
+              "Debe tener entre 8 y 16 caracteres, al menos un dígito, una minúscula, una mayúscula y un caracter especial.",
+          },
+        })}
+      />
+      <Button
+        variant="outline-secondary"
+        type="button"
+        onClick={passwordVisibility}
+        aria-label={
+          setShowPassword ? "Ocultar nueva contraseña" : "Mostrar nueva contraseña"
+        }
+      >
+        {setShowPassword ? <FaEyeSlash /> : <FaEye />}
+      </Button>
+    </div>
+    <Form.Text className="text-danger">
+      {errors.newPassword?.message}
+    </Form.Text>
+  </Form.Group>
+)}
           <Form.Group className="mb-3" controlId="role">
             <Form.Label>Rol:</Form.Label>
             <Form.Select {...register("role")}>
