@@ -55,7 +55,7 @@ const UsuariosAdmi = () => {
         localStorage.setItem(tipo, JSON.stringify(actualizadas));
         Swal.fire({
           title: "Eliminado",
-          text: `El ${usuarios.nombre}  fue eliminada correctamente.`,
+          text: `El usuario ${usuarios.nombre}  fue eliminada correctamente.`,
           icon: "success",
         });
       }
