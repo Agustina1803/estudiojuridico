@@ -6,7 +6,7 @@ import FormNuevaFactura from "../../components/FormNuevaFactura";
 import SearchBar from "../../components/SearchBar";
 import SearchDate from "../../components/SearchDate";
 import SearchState from "../../components/searchState";
-import "../../styles/estadoFactura.css";
+import "../../styles/estados.css";
 
 const FacturacionSecre = () => {
   const columnas = [

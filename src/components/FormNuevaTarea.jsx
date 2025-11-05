@@ -17,6 +17,7 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
       abogado: "",
       prioridad: "alta",
       fecha: "",
+      estado: "",
     },
   });
 
@@ -114,16 +115,6 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
               </Form.Select>
             </Form.Group>
           </Form.Group>
-
-          <Form.Group className="mb-3" controlId="prioridad">
-            <Form.Label>Prioridad</Form.Label>
-            <Form.Select {...register("prioridad")}>
-              <option value="alta">Alta</option>
-              <option value="media">Media</option>
-              <option value="baja">Baja</option>
-            </Form.Select>
-          </Form.Group>
-
           <Form.Group className="mb-3" controlId="fecha">
             <Form.Label>Fecha:</Form.Label>
             <Form.Control
@@ -135,6 +126,24 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
             <Form.Text className="text-danger">
               {errors.fecha?.message}
             </Form.Text>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="prioridad">
+            <Form.Label>Prioridad</Form.Label>
+            <Form.Select {...register("prioridad")}>
+              <option value="alta">Alta</option>
+              <option value="media">Media</option>
+              <option value="baja">Baja</option>
+            </Form.Select>
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="estado">
+            <Form.Label>Estado</Form.Label>
+            <Form.Select {...register("estado")}>
+              <option value="Pendiente">Pendiente</option>
+              <option value="Proceso">En proceso</option>
+              <option value="Completada">Completada</option>
+              <option value="Cancelada">Cancelada</option>
+              <option value="Reprogramada">Reprogramada</option>
+            </Form.Select>
           </Form.Group>
           <div className="justify-content-end d-flex">
             <Button variant="secondary" onClick={handleCancel} className="me-2">

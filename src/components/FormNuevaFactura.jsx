@@ -143,7 +143,6 @@ const FormNuevaFactura = ({ show, onHide, onGuardar, itemEditar = null }) => {
               </small>
             )}
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="monto">
             <Form.Label>Monto</Form.Label>
             <Form.Control
