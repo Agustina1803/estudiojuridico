@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Button } from "react-bootstrap";
+import Boton from "../../components/Boton";
 import { jsPDF } from "jspdf";
 import Tablageneral from "../../components/tablageneral";
+
 
 
 const RegistroAdmin = () => {
@@ -37,6 +38,7 @@ const RegistroAdmin = () => {
     filas.forEach((mov, index) => {
       doc.text(`${index + 1}`, 20, y);
       doc.text(mov.nombre, 30, y);
+      doc.text(mov.registradoPor, 80, y);
       doc.text(mov.tipoEvento, 130, y);
       doc.text(mov.fecha, 170, y);
       y += 10;
@@ -62,9 +64,7 @@ const RegistroAdmin = () => {
       </div>
 
       <div className="d-flex justify-content-end mt-3">
-        <Button variant="info" onClick={generarPDF}>
-          Descargar PDF
-        </Button>
+         <Boton action="descargarPdf" onClick={() =>  generarPDF()} />
       </div>
     </>
   );
