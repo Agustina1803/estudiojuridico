@@ -1,7 +1,7 @@
 import  { useState } from 'react';
 import { Form, FormControl } from 'react-bootstrap';
 
-function SearchBar({ onSearch }) {
+function SearchBar({ onSearch, placeholder }) {
   const [search, setSearch] = useState('');
   
   const handleSearchChange = (e) => {
@@ -14,7 +14,7 @@ function SearchBar({ onSearch }) {
     <Form className="d-flex mb-2" onSubmit={handleSearchChange}>
       <FormControl
         type="search"
-        placeholder="Buscar cliente..."
+        placeholder={placeholder}
         className="me-2"
         aria-label="Search"
         value={search}

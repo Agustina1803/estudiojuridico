@@ -115,7 +115,7 @@ const DocumentosAbog = () => {
   return (
     <>
       <div className="d-flex justify-content-evenly">
-        <SearchBar onSearch={setbusquedaNombre} />
+        <SearchBar onSearch={setbusquedaNombre} placeholder="Buscar por cliente..."/>
         <SearchDate onDateChange={setbusquedaFecha} />
       </div>
       <Tablageneral

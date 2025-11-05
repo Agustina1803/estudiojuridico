@@ -136,7 +136,7 @@ const FacturacionAbog = () => {
   return (
     <>
       <div className="d-flex justify-content-evenly">
-        <SearchBar onSearch={setNombreMonto} />
+        <SearchBar onSearch={setNombreMonto}  placeholder="Buscar por cliente o monto..."/>
         <SearchState onEstadoChange={setEstado} />
         <SearchDate onDateChange={setFecha} />
       </div>

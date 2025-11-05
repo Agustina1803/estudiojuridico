@@ -13,9 +13,8 @@ const TareasSecre = () => {
     "Responsable",
     "Prioridad",
     "Fecha limite",
-    "Estado",
   ];
-  const claves = ["descripcion", "abogado", "prioridad", "fecha", "estado"];
+  const claves = ["descripcion", "abogado", "prioridad", "fecha"];
   const tipo = "tareas";
   const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -104,7 +103,7 @@ const TareasSecre = () => {
   return (
     <>
       <div className="d-flex justify-content-evenly">
-        <SearchBar onSearch={ setbusquedaAbogado} />
+        <SearchBar onSearch={ setbusquedaAbogado} placeholder="Buscar por responsable..." />
         <SearchDate onDateChange={setbusquedaFecha} />
       </div>
       <Tablageneral

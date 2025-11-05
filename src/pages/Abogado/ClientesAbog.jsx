@@ -98,7 +98,7 @@ const ClientesAbog = () => {
 
   return (
     <>
-      <SearchBar onSearch={setBusqueda} />
+      <SearchBar onSearch={setBusqueda} placeholder="Buscar por cliente, DNI/CUIT..." />
 
       <Tablageneral
         columnas={columnas}

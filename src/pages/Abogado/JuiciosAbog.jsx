@@ -100,7 +100,7 @@ const JuiciosAbog = () => {
    
   return (
     <>
-      <SearchBar onSearch={setBusquedaDeJuicio} />
+      <SearchBar onSearch={setBusquedaDeJuicio} placeholder="Buscar por  juicio o expediente..."/>
 
       <Tablageneral
         columnas={columnas}

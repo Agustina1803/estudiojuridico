@@ -101,7 +101,7 @@ const AgendaAbog = () => {
   return (
     <>
       <div className="d-flex justify-content-evenly">
-        <SearchBar onSearch={setNombre} />
+        <SearchBar onSearch={setNombre}  placeholder="Buscar por cliente o abogado..."/>
         <SearchDate onDateChange={setFecha} />
       </div>
       <Tablageneral
