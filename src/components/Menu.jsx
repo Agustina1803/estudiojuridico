@@ -1,6 +1,7 @@
-import { Nav, Card } from "react-bootstrap";
+import {Navbar, Nav, Card, Container} from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import "../styles/Menu.css";
+import { useState } from "react";
 
 import {
   FaHome,
@@ -60,7 +61,7 @@ const Menu = ({ role }) => {
   const menuItems = menus();
 
   return (
-    <Card className=" border-primary shadow h-100">
+    <Card className=" border-primary shadow h-100" >
       <Card.Header className="text-center ">
         <h3 className="fw-bold h4">Menu</h3>
       </Card.Header>

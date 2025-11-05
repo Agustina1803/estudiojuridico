@@ -1,6 +1,6 @@
 import { Container, Row, Col } from "react-bootstrap";
 import Menu from "../components/Menu";
-import Footer from "../shared/footer";
+import Footer from "../shared/Footer";
 import { NavBarHeader } from "../components/NavBarHeader";
 import { Outlet } from "react-router-dom";
 import "../styles/layoutsAdmi.css";
@@ -11,11 +11,13 @@ const LayoutsAdmi = () => {
   return (
     <div className="d-flex flex-column vh-100">
       <NavBarHeader></NavBarHeader>
-      <main className="flex-grow-1">
-        <Container fluid className="my-4">
-          <Row>
+      <main className="d-flex flex-column">
+        <Container fluid className="my-4 flex-grow-1">
+          <Row className="h-100">
             <Col md={3} lg={3} className="d-flex flex-column">
-              <Menu role={role} className="menu" />
+              <div className="menu">
+                <Menu role={role} />
+              </div>
             </Col>
             <Col md={9} lg={9}>
               <Outlet></Outlet>
