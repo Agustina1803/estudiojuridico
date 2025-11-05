@@ -1,10 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
+const [showPassword, setShowPassword] = useState(false);
+const passwordVisibility = () => setShowPassword((prev) => !prev);
+
   const {
     register,
     handleSubmit,
@@ -36,6 +40,10 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
     const usuario = {
       id: itemEditar ? itemEditar.id : uuidv4(),
       ...data,
+      formBasicPassword:
+        itemEditar && data.newPassword
+          ? data.newPassword
+          : data.formBasicPassword,
     };
 
     Swal.fire({
@@ -147,24 +155,55 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
             </Form.Text>
           </Form.Group>
           <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Contraseña</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Contraseña"
-              {...register("formBasicPassword", {
-                required: "La contraseña es obligatorio",
-                pattern: {
-                  value:
-                    /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/,
-                  message:
-                    "La contraseña debe tener entre 8 y 16 caracteres, al menos un dígito, al menos una minúscula, al menos una mayúscula y al menos un caracter especial.",
-                },
-              })}
-            />
+            <div className="input-group">
+              <Form.Control
+                type={showPassword ? "text" : "password"}
+                placeholder="Contraseña"
+                {...register("formBasicPassword", {
+                  required: "La contraseña es obligatoria",
+                  pattern: {
+                    value:
+                      /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/,
+                    message:
+                      "Debe tener entre 8 y 16 caracteres, al menos un dígito, una minúscula, una mayúscula y un caracter especial.",
+                  },
+                })}
+              />
+              <Button
+                variant="outline-secondary"
+                type="button"
+                onClick={passwordVisibility}
+                aria-label={
+                  showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+                }
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </Button>
+            </div>
             <Form.Text className="text-danger">
               {errors.formBasicPassword?.message}
             </Form.Text>
           </Form.Group>
+           {itemEditar && (
+            <Form.Group className="mb-3" controlId="newPassword">
+              <Form.Label>Nueva contraseña</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Nueva contraseña"
+                {...register("newPassword", {
+                  pattern: {
+                    value:
+                      /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/,
+                    message:
+                      "Debe tener entre 8 y 16 caracteres, al menos un dígito, una minúscula, una mayúscula y un caracter especial.",
+                  },
+                })}
+              />
+              <Form.Text className="text-danger">
+                {errors.newPassword?.message}
+              </Form.Text>
+            </Form.Group>
+          )}
           <Form.Group className="mb-3" controlId="role">
             <Form.Label>Rol:</Form.Label>
             <Form.Select {...register("role")}>
