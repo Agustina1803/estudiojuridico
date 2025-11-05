@@ -21,7 +21,8 @@ const actionMap = {
   iniciar: { icon: <FaSignOutAlt />, variant: 'success', label: 'Iniciar sesión' },
   descargar: { icon: <FaDownload />, variant: 'success' },
   buscar: { icon: <FaSearch />, variant: 'info', label: 'Buscar' },
-  registrarse: { icon: <FaUserPlus />, variant: 'success', label: 'Registrarse' }
+  registrarse: { icon: <FaUserPlus />, variant: 'success', label: 'Registrarse' },
+  descargarPdf: {icon: <FaDownload />, variant: 'success', label:'Descargar Pdf' },
 };
 
 const Boton = ({

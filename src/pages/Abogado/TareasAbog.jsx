@@ -5,16 +5,18 @@ import FormNuevaTarea from "../../components/FormNuevaTarea";
 import { useState, useEffect } from "react";
 import SearchBar from "../../components/SearchBar";
 import SearchDate from "../../components/SearchDate";
+import "../../styles/estados.css";
 
 const TareasAbog = () => {
   const columnas = [
     "Nº",
     "Descripcion",
     "Responsable",
-    "Prioridad",
     "Fecha limite",
+    "Prioridad",
+    "Estado",
   ];
-  const claves = ["descripcion", "responsable", "prioridad", "fecha"];
+  const claves = ["descripcion", "responsable", "fecha", "prioridad", "estado"];
   const tipo = "tareas";
   const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -101,15 +103,27 @@ const TareasAbog = () => {
         busquedaFecha === "" || fila.fecha?.trim().startsWith(busquedaFecha)
     );
 
+  const filasConColores = filasFiltradas.map((fila) => ({
+    ...fila,
+    estado: (
+      <span className={`estado-${fila.estado?.toLowerCase()}`}>
+        {fila.estado}
+      </span>
+    ),
+  }));
+
   return (
     <>
       <div className="d-flex justify-content-evenly">
-        <SearchBar onSearch={setbusquedaAbogado} placeholder="Buscar por responsable..."/>
+        <SearchBar
+          onSearch={setbusquedaAbogado}
+          placeholder="Buscar por responsable..."
+        />
         <SearchDate onDateChange={setbusquedaFecha} />
       </div>
       <Tablageneral
         columnas={columnas}
-        filas={filasFiltradas}
+        filas={filasConColores}
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">

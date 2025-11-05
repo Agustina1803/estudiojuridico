@@ -6,6 +6,21 @@ import { useState, useEffect } from "react";
 import SearchBar from "../../components/SearchBar";
 import SearchDate from "../../components/SearchDate";
 
+const registrar = ({ id, nombre, tipoEvento }) => {
+  const historial = JSON.parse(
+    localStorage.getItem("movimientosSecreAgenda") || "[]"
+  );
+  const nuevoRegistro = {
+    id,
+    nombre,
+    tipoEvento,
+    fecha: new Date().toLocaleString("es-AR"),
+  };
+  localStorage.setItem(
+    "movimientosSecreAgenda",
+    JSON.stringify([...historial, nuevoRegistro])
+  );
+};
 
 const AgendaSecre = () => {
   const columnas = [
@@ -77,6 +92,7 @@ const AgendaSecre = () => {
       tipoEvento: "eliminarCita",
     });
   };
+
   const agregarCita = (cita) => {
     let actualizadas;
     const tipoEvento = itemEditar ? "edicionCita" : "agregarCita";
@@ -99,7 +115,8 @@ const AgendaSecre = () => {
     .filter(
       (fila) =>
         busquedaNombre === "" ||
-        fila.cliente?.toLowerCase()
+        fila.cliente
+          ?.toLowerCase()
           .trim()
           .includes(busquedaNombre.toLowerCase()) ||
         fila.abogado?.toString().trim().includes(busquedaNombre)
@@ -107,12 +124,15 @@ const AgendaSecre = () => {
     .filter(
       (fila) =>
         busquedaFecha === "" || fila.fecha?.trim().startsWith(busquedaFecha)
-    )
-   
+    );
+
   return (
     <>
       <div className="d-flex justify-content-evenly">
-        <SearchBar onSearch={setNombre} placeholder="Buscar por cliente o abogado..."/>
+        <SearchBar
+          onSearch={setNombre}
+          placeholder="Buscar por cliente o abogado..."
+        />
         <SearchDate onDateChange={setFecha} />
       </div>
       <Tablageneral

@@ -71,6 +71,7 @@ const AgendaAbog = () => {
       }
     });
   };
+  
   const agregarCita = (cita) => {
     let actualizadas;
     if (itemEditar) {
