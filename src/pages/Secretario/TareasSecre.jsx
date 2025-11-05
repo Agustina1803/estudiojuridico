@@ -5,16 +5,19 @@ import FormNuevaTarea from "../../components/FormNuevaTarea";
 import { useState, useEffect } from "react";
 import SearchBar from "../../components/SearchBar";
 import SearchDate from "../../components/SearchDate";
+import SearchState from "../../components/searchState";
+import "../../styles/estados.css";
 
 const TareasSecre = () => {
   const columnas = [
     "Nº",
     "Descripcion",
     "Responsable",
-    "Prioridad",
     "Fecha limite",
+    "Prioridad",
+    "Estado",
   ];
-  const claves = ["descripcion", "abogado", "prioridad", "fecha"];
+  const claves = ["descripcion", "abogado", "fecha", "prioridad", "estado"];
   const tipo = "tareas";
   const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -87,28 +90,41 @@ const TareasSecre = () => {
     });
   };
 
-   const filasFiltradas = filas
+  const filasFiltradas = filas
     .filter(
       (fila) =>
         busquedaAbogado === "" ||
         fila.abogado
           ?.toLowerCase()
           .trim()
-          .includes(busquedaAbogado.toLowerCase()) )
+          .includes(busquedaAbogado.toLowerCase())
+    )
     .filter(
       (fila) =>
         busquedaFecha === "" || fila.fecha?.trim().startsWith(busquedaFecha)
     );
 
+  const filasConColores = filasFiltradas.map((fila) => ({
+    ...fila,
+    estado: (
+      <span className={`estado-${fila.estado?.toLowerCase()}`}>
+        {fila.estado}
+      </span>
+    ),
+  }));
+  
   return (
     <>
       <div className="d-flex justify-content-evenly">
-        <SearchBar onSearch={ setbusquedaAbogado} placeholder="Buscar por responsable..." />
+        <SearchBar
+          onSearch={setbusquedaAbogado}
+          placeholder="Buscar por responsable..."
+        />
         <SearchDate onDateChange={setbusquedaFecha} />
       </div>
       <Tablageneral
         columnas={columnas}
-        filas={filasFiltradas}
+        filas={filasConColores}
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">
