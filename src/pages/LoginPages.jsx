@@ -1,6 +1,6 @@
 import NavBarHeaderLogin from "../components/NavBarHeaderLogin";
 import { RegistroPage } from "../components/RegistroPage";
-import Footer from "../shared/footer";
+import Footer from "../shared/Footer";
 import "../styles/loginPage.css";
 
 export const LoginPages = ({ setUsuarioLogeado }) => {

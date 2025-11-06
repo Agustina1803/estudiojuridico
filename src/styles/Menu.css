@@ -6,11 +6,10 @@ color: #fff;
 
 .navhover:active{
 background-color: #162E4A;
-
 }
-.menu {
-  height: 100%;
+
+.menu:hover {
+  max-height: 100vh;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
+position: sticky;
 }

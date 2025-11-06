@@ -1,7 +1,7 @@
 import { Container, Row, Col } from "react-bootstrap";
 import Menu from "../components/Menu";
-import Footer from "../shared/footer";
-import { NavBarHeader } from "../components/NavBarHeader";
+import Footer from "../shared/Footer";
+import NavBarHeaderLogin from "../components/NavBarHeaderLogin";
 import { Outlet } from "react-router-dom";
 import "../styles/layoutsAdmi.css";
 
@@ -9,13 +9,15 @@ const LayoutsAdmi = () => {
   const usuarioLogueado = JSON.parse(sessionStorage.getItem("user"));
   const role = usuarioLogueado?.role.toLowerCase();
   return (
-    <div className="d-flex flex-column vh-100">
-      <NavBarHeader></NavBarHeader>
-      <main className="flex-grow-1">
-        <Container fluid className="my-4">
-          <Row>
-            <Col md={3} lg={3}>
-              <Menu role={role} className="menu" />
+    <div className="app-layout">
+      <NavBarHeaderLogin></NavBarHeaderLogin>
+      <main className="d-flex flex-column">
+        <Container  className="my-4 flex-grow-1">
+          <Row className="h-100">
+            <Col md={3} lg={3} className="d-flex" >
+              <div className="menu">
+                <Menu role={role} />
+              </div>
             </Col>
             <Col md={9} lg={9}>
               <Outlet></Outlet>
