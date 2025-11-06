@@ -1,4 +1,4 @@
-import { Nav, Card } from "react-bootstrap";
+import { Navbar, Nav, Card, Container, Button } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import "../styles/Menu.css";
 
@@ -7,12 +7,11 @@ import {
   FaUser,
   FaBalanceScale,
   FaUsers,
-  FaFileAlt,
   FaChartBar,
-  FaCog,
   FaCalendarAlt,
   FaMoneyBillWave,
   FaFolder,
+  FaSignOutAlt
 } from "react-icons/fa";
 
 const Menu = ({ role }) => {
@@ -24,6 +23,7 @@ const Menu = ({ role }) => {
           { to: "usuariosadmi", label: "Usuarios", icon: <FaUsers /> },
           { to: "documentosadmi", label: "Documentos", icon: <FaFolder /> },
           { to: "reportesadmi", label: "Reportes", icon: <FaChartBar /> },
+          { to: "/", label: "Cerrar Sesion", icon: <FaSignOutAlt/> },
         ];
       case "abog":
         return [
@@ -38,6 +38,7 @@ const Menu = ({ role }) => {
             icon: <FaMoneyBillWave />,
           },
           { to: "juiciosabog", label: "Juicios", icon: <FaBalanceScale /> },
+          { to: "/", label: "Cerrar Sesion", icon: <FaSignOutAlt/> },
         ];
       case "secre":
         return [
@@ -51,6 +52,7 @@ const Menu = ({ role }) => {
             label: "Facturación",
             icon: <FaMoneyBillWave />,
           },
+          { to: "/", label: "Cerrar Sesion", icon: <FaSignOutAlt/> },
         ];
       default:
         return [];
@@ -60,25 +62,32 @@ const Menu = ({ role }) => {
   const menuItems = menus();
 
   return (
-    <Card className=" border-primary shadow h-100">
-      <Card.Header className="text-center ">
-        <h3 className="fw-bold h4">Menu</h3>
-      </Card.Header>
-      <Card.Body className="p-0">
-        <Nav className="flex-column p-0 m-0">
-          {menuItems.map((item) => (
-            <NavLink
-              to={item.to}
-              key={item.to}
-              className="align-items-center py-3 px-4 border-bottom text-decoration-none navhover"
-            >
-              <span className="me-3">{item.icon}</span>
-              {item.label}
-            </NavLink>
-          ))}
-        </Nav>
-      </Card.Body>
-    </Card>
+    <Navbar expand="lg" className="h-100 flex-column">
+      <Container className="mb-3">
+        <Navbar.Toggle aria-controls="menu-collapse" className="my-2" />
+        <Navbar.Collapse id="menu-collapse">
+          <Card className="border-primary shadow w-100">
+            <Card.Header className="text-center">
+              <h3 className="fw-bold h4">Menu</h3>
+            </Card.Header>
+            <Card.Body className="p-0">
+              <Nav className="flex-column p-0 m-0 w-100">
+                {menuItems.map((item) => (
+                  <NavLink
+                    to={item.to}
+                    key={item.to}
+                    className="align-items-center py-3 px-4 border-bottom text-decoration-none navhover d-flex w-100"
+                  >
+                    <span className="me-3">{item.icon}</span>
+                    {item.label}
+                  </NavLink>
+                ))}
+              </Nav>
+            </Card.Body>
+          </Card>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 };
 export default Menu;

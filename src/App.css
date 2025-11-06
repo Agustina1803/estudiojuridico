@@ -2,6 +2,7 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100%;
+  width: 100%;
   font-family: "Poppins", sans-serif;
   font-weight: 400;
   font-style: normal;
@@ -14,11 +15,9 @@ html, body {
 }
 
 .main-content {
-  flex: 1;
+  flex-grow: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
 }
-
-
