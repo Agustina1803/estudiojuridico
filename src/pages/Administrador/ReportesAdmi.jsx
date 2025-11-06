@@ -3,15 +3,8 @@ import { jsPDF } from "jspdf";
 import Tablageneral from "../../components/tablageneral";
 import Boton from "../../components/Boton";
 
-
-
 const RegistroAdmin = () => {
-  const columnas = [
-    "Nº",
-    "Nombre Cliente",
-    "Tipo de Evento",
-    "Fecha",
-  ];
+  const columnas = ["Nº", "Nombre Cliente", "Tipo de Evento", "Fecha"];
   const claves = ["nombre", "tipoEvento", "fecha"];
   const [filas, setFilas] = useState([]);
   useEffect(() => {
@@ -19,8 +12,6 @@ const RegistroAdmin = () => {
       JSON.parse(localStorage.getItem("movimientosSecreAgenda")) || [];
     setFilas(agenda);
   }, []);
-
-
 
   const generarPDF = () => {
     const doc = new jsPDF();
@@ -49,19 +40,14 @@ const RegistroAdmin = () => {
     doc.save("movimientos_agenda.pdf");
   };
 
-
   return (
     <>
       <div className="tabla-scroll">
-        <Tablageneral
-          columnas={columnas}
-          filas={filas}
-          claves={claves}
-        />
+        <Tablageneral columnas={columnas} filas={filas} claves={claves} />
       </div>
 
       <div className="d-flex justify-content-end mt-3">
-         <Boton action="descargarPdf" onClick={() =>  generarPDF()} />
+        <Boton action="descargarPdf" onClick={() => generarPDF()} />
       </div>
     </>
   );
