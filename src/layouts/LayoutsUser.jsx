@@ -9,12 +9,12 @@ const LayoutsAdmi = () => {
   const usuarioLogueado = JSON.parse(sessionStorage.getItem("user"));
   const role = usuarioLogueado?.role.toLowerCase();
   return (
-    <div className="d-flex flex-column vh-100">
+    <div className="d-flex flex-column">
       <NavBarHeader></NavBarHeader>
       <main className="d-flex flex-column">
-        <Container fluid className="my-4 flex-grow-1">
+        <Container  className="my-4 flex-grow-1">
           <Row className="h-100">
-            <Col md={3} lg={3} className="d-flex flex-column">
+            <Col md={3} lg={3} className="d-flex" >
               <div className="menu">
                 <Menu role={role} />
               </div>
