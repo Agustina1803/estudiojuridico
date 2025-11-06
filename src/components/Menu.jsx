@@ -1,6 +1,8 @@
 import { Navbar, Nav, Card, Container, Button } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "../styles/Menu.css";
+import "../styles/navBarHeader.css";
+
 
 import {
   FaHome,
@@ -11,10 +13,16 @@ import {
   FaCalendarAlt,
   FaMoneyBillWave,
   FaFolder,
-  FaSignOutAlt
+  FaSignOutAlt,
 } from "react-icons/fa";
 
 const Menu = ({ role }) => {
+  const navigate = useNavigate();
+  const cerrarSesion = () => {
+    sessionStorage.removeItem("user");
+    navigate("/");
+  };
+
   const menus = () => {
     switch (role) {
       case "admin":
@@ -23,7 +31,6 @@ const Menu = ({ role }) => {
           { to: "usuariosadmi", label: "Usuarios", icon: <FaUsers /> },
           { to: "documentosadmi", label: "Documentos", icon: <FaFolder /> },
           { to: "reportesadmi", label: "Reportes", icon: <FaChartBar /> },
-          { to: "/", label: "Cerrar Sesion", icon: <FaSignOutAlt/> },
         ];
       case "abog":
         return [
@@ -38,7 +45,6 @@ const Menu = ({ role }) => {
             icon: <FaMoneyBillWave />,
           },
           { to: "juiciosabog", label: "Juicios", icon: <FaBalanceScale /> },
-          { to: "/", label: "Cerrar Sesion", icon: <FaSignOutAlt/> },
         ];
       case "secre":
         return [
@@ -52,7 +58,6 @@ const Menu = ({ role }) => {
             label: "Facturación",
             icon: <FaMoneyBillWave />,
           },
-          { to: "/", label: "Cerrar Sesion", icon: <FaSignOutAlt/> },
         ];
       default:
         return [];
@@ -82,6 +87,16 @@ const Menu = ({ role }) => {
                     {item.label}
                   </NavLink>
                 ))}
+                <Button
+                  variant="link"
+                  className="align-items-center py-3 px-4 border-bottom text-decoration-none navhover d-flex w-100 botonCerrarSesion"
+                  onClick={cerrarSesion}
+                >
+                  <span className="me-3">
+                    <FaSignOutAlt />
+                  </span>
+                  Cerrar sesión
+                </Button>
               </Nav>
             </Card.Body>
           </Card>
