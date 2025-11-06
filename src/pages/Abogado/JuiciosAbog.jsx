@@ -3,7 +3,7 @@ import Boton from "../../components/Boton";
 import FormNuevoJuicio from "../../components/FormNuevoJuicio";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import SearchBar from "../../components/SearchBar";
+import BarraBusqueda from "../../components/BarraBusqueda";
 
 const JuiciosAbog = () => {
   const columnas = [
@@ -113,7 +113,7 @@ const JuiciosAbog = () => {
 
   return (
     <>
-      <SearchBar
+      <BarraBusqueda
         onSearch={setBusquedaDeJuicio}
         placeholder="Buscar por  juicio o expediente..."
       />

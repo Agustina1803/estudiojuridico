@@ -1,7 +1,7 @@
 import  { useState } from 'react';
 import { Form, FormControl } from 'react-bootstrap';
 
-function SearchBar({ onSearch, placeholder }) {
+function BarraBusqueda({ onSearch, placeholder }) {
   const [search, setSearch] = useState('');
   
   const handleSearchChange = (e) => {
@@ -24,4 +24,4 @@ function SearchBar({ onSearch, placeholder }) {
   );
 }
 
-export default SearchBar;
+export default BarraBusqueda;
