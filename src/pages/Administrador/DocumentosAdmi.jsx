@@ -2,8 +2,8 @@ import Tablageneral from "../../components/TablaGeneral";
 import Boton from "../../components/Boton";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import SearchBar from "../../components/SearchBar";
-import SearchDate from "../../components/SearchDate";
+import BarraBusqueda from "../../components/BarraBusqueda";
+import BarraBusquedaFecha from "../../components/BarraBusquedaFecha";
 
 const DocumentosAdmi = () => {
   const columnas = [
@@ -56,8 +56,8 @@ const DocumentosAdmi = () => {
   return (
     <>
         <div className="d-flex justify-content-evenly">
-        <SearchBar onSearch={setbusquedaNombre} placeholder="Buscar por cliente..."/>
-        <SearchDate onDateChange={setbusquedaFecha} />
+        <BarraBusqueda  onSearch={setbusquedaNombre} placeholder="Buscar por cliente..."/>
+        <BarraBusquedaFecha onDateChange={setbusquedaFecha} />
       </div>
       <Tablageneral
         columnas={columnas}
