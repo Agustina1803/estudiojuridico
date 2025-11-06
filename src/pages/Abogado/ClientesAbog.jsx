@@ -3,7 +3,7 @@ import Boton from "../../components/Boton";
 import FormNuevoCliente from "../../components/FormNuevoCliente";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import BarraBusqueda from "../../components/BarraBusqueda";
+import SearchBar from "../../components/SearchBar";
 
 const ClientesAbog = () => {
   const columnas = [
@@ -98,7 +98,7 @@ const ClientesAbog = () => {
 
   return (
     <>
-      <BarraBusqueda onSearch={setBusqueda} placeholder="Buscar por cliente, DNI/CUIT..." />
+      <SearchBar onSearch={setBusqueda} placeholder="Buscar por cliente, DNI/CUIT..." />
 
       <Tablageneral
         columnas={columnas}
