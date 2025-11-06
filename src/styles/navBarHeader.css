@@ -1,7 +1,16 @@
+.logo-header {
+  height: 60px; 
+  width: auto; 
+  max-height: 100%; 
+  object-fit: contain; 
+}
+
 .styloHeader {
   background-color: #1E3A5F;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 0.5rem 1rem;
+   height: 70px; 
+  display: flex;
+  align-items: center;
 }
 
 /* Botón de cerrar sesión */
@@ -32,3 +41,4 @@
 
  
 }
+

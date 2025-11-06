@@ -14,7 +14,7 @@ const LayoutsAdmi = () => {
       <main className="flex-grow-1">
         <Container fluid className="my-4">
           <Row>
-            <Col md={3} lg={3} className="d-flex flex-column">
+            <Col md={3} lg={3}>
               <Menu role={role} className="menu" />
             </Col>
             <Col md={9} lg={9}>
