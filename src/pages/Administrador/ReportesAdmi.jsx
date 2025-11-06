@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import Boton from "../../components/Boton";
 import { jsPDF } from "jspdf";
 import Tablageneral from "../../components/tablageneral";
+import Boton from "../../components/Boton";
 
 
 
