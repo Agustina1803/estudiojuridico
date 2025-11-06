@@ -3,8 +3,8 @@ import Boton from "../../components/Boton";
 import Swal from "sweetalert2";
 import FormAgregarCita from "../../components/formAgregarCita";
 import { useState, useEffect } from "react";
-import SearchBar from "../../components/SearchBar";
-import SearchDate from "../../components/SearchDate";
+import BarraBusqueda from "../../components/BarraBusqueda";
+import BarraBusquedaFecha from "../../components/BarraBusquedaFecha";
 
 const registrar = ({ id, nombre, tipoEvento }) => {
   const historial = JSON.parse(
@@ -129,11 +129,11 @@ const AgendaSecre = () => {
   return (
     <>
       <div className="d-flex justify-content-evenly">
-        <SearchBar
+        <BarraBusqueda
           onSearch={setNombre}
           placeholder="Buscar por cliente o abogado..."
         />
-        <SearchDate onDateChange={setFecha} />
+        <BarraBusquedaFecha onDateChange={setFecha} />
       </div>
       <Tablageneral
         columnas={columnas}
