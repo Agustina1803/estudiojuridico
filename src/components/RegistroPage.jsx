@@ -27,7 +27,7 @@ export function RegistroPage() {
       navegacion("/app/inicioadmi");
       return;
     }
-    const usuariosLocalStorage = JSON.parse(localStorage.getItem("usuarios"));
+    const usuariosLocalStorage = JSON.parse(localStorage.getItem("usuarios")) || [];
 
     const usuarioEncontrado = usuariosLocalStorage.find(
       (usuario) =>

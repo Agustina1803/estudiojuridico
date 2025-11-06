@@ -1,8 +1,9 @@
 .logo-header {
-  height: 60px; 
-  width: auto; 
-  max-height: 100%; 
-  object-fit: contain; 
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+  width: auto;
+  object-fit: contain;
 }
 
 .styloHeader {
@@ -13,32 +14,14 @@
   align-items: center;
 }
 
-/* Botón de cerrar sesión */
-.botonCerrarSesion {
-  color: white;
-  background-color: transparent;
-  border-radius: 10px;
-  padding: 10px 16px;
-  transition: background-color 0.3s ease;
-  border: 2px solid white;
-  font-weight: 500;
-}
-
-/* Hover elegante */
-.botonCerrarSesion:hover {
-  background-color: white;
-  color: #1E3A5F;
-}
-
 
 /* Responsive: centrar botón en pantallas pequeñas */
-@media (max-width: 768px) {
-  .botonCerrarSesion {
-    width: 100%;
-    margin-top: 10px;
-    text-align: center;
-  }
+@media (max-width: 600px) {
 
- 
+
+ .logo-header{
+  height: 120px;
+   
+ }
 }
 

@@ -1,15 +1,12 @@
 import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import Button from "react-bootstrap/Button";
+import { Nav, Navbar, Button } from "react-bootstrap/Nav";
 import "../styles/navBarHeader.css";
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/logo.png";
 
-export const NavBarHeader = () => {
+const NavBarHeader = () => {
   const navigate = useNavigate();
-
-  const cerrarSesion = () => {
+  const cerrarSesion = (e) => {
+    e.preventDefault();
     sessionStorage.removeItem("user");
     navigate("/");
   };
@@ -29,3 +26,5 @@ export const NavBarHeader = () => {
     </Navbar>
   );
 };
+
+export default NavBarHeader;
