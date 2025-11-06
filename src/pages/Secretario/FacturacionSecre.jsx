@@ -3,9 +3,9 @@ import Boton from "../../components/Boton";
 import Swal from "sweetalert2";
 import { useState, useEffect } from "react";
 import FormNuevaFactura from "../../components/FormNuevaFactura";
-import BarraBusqueda from "../../components/BarraBusqueda";
-import BarraBusquedaFecha from "../../components/BarraBusquedaFecha";
-import BarraBusquedaEstado from "../../components/BarraBusquedaEstado";
+import SearchBar from "../../components/SearchBar";
+import SearchDate from "../../components/SearchDate";
+import SearchState from "../../components/searchState";
 import "../../styles/estados.css";
 
 const FacturacionSecre = () => {
@@ -136,9 +136,9 @@ const FacturacionSecre = () => {
   return (
     <>
       <div className="d-flex justify-content-evenly">
-        <BarraBusqueda onSearch={setNombreMonto} placeholder="Buscar por cliente o monto..." />
-        <BarraBusquedaEstado onEstadoChange={setEstado} />
-        <BarraBusquedaFecha onDateChange={setFecha} />
+        <SearchBar onSearch={setNombreMonto} placeholder="Buscar por cliente o monto..." />
+        <SearchState onEstadoChange={setEstado} />
+        <SearchDate onDateChange={setFecha} />
       </div>
       <Tablageneral
         columnas={columnas}
