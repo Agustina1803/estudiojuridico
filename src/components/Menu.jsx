@@ -1,7 +1,6 @@
-import { Navbar, Nav, Card, Container, NavDropdown } from "react-bootstrap";
+import { Navbar, Nav, Card, Container, Button } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import "../styles/Menu.css";
-import { useState } from "react";
 
 import {
   FaHome,
@@ -12,6 +11,7 @@ import {
   FaCalendarAlt,
   FaMoneyBillWave,
   FaFolder,
+  FaSignOutAlt
 } from "react-icons/fa";
 
 const Menu = ({ role }) => {
@@ -23,6 +23,7 @@ const Menu = ({ role }) => {
           { to: "usuariosadmi", label: "Usuarios", icon: <FaUsers /> },
           { to: "documentosadmi", label: "Documentos", icon: <FaFolder /> },
           { to: "reportesadmi", label: "Reportes", icon: <FaChartBar /> },
+          { to: "/", label: "Cerrar Sesion", icon: <FaSignOutAlt/> },
         ];
       case "abog":
         return [
@@ -37,6 +38,7 @@ const Menu = ({ role }) => {
             icon: <FaMoneyBillWave />,
           },
           { to: "juiciosabog", label: "Juicios", icon: <FaBalanceScale /> },
+          { to: "/", label: "Cerrar Sesion", icon: <FaSignOutAlt/> },
         ];
       case "secre":
         return [
@@ -50,6 +52,7 @@ const Menu = ({ role }) => {
             label: "Facturación",
             icon: <FaMoneyBillWave />,
           },
+          { to: "/", label: "Cerrar Sesion", icon: <FaSignOutAlt/> },
         ];
       default:
         return [];
@@ -59,8 +62,8 @@ const Menu = ({ role }) => {
   const menuItems = menus();
 
   return (
- <Navbar expand="lg" className="h-100 flex-column">
-      <Container  className="mb-3">
+    <Navbar expand="lg" className="h-100 flex-column">
+      <Container className="mb-3">
         <Navbar.Toggle aria-controls="menu-collapse" className="my-2" />
         <Navbar.Collapse id="menu-collapse">
           <Card className="border-primary shadow w-100">

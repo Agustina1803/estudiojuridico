@@ -9,7 +9,7 @@ const LayoutsAdmi = () => {
   const usuarioLogueado = JSON.parse(sessionStorage.getItem("user"));
   const role = usuarioLogueado?.role.toLowerCase();
   return (
-    <div className="d-flex flex-column">
+    <div className="app-layout">
       <NavBarHeader></NavBarHeader>
       <main className="d-flex flex-column">
         <Container  className="my-4 flex-grow-1">
