@@ -1,7 +1,7 @@
 import { Container, Row, Col } from "react-bootstrap";
 import Menu from "../components/Menu";
 import Footer from "../shared/Footer";
-import { NavBarHeader } from "../components/NavBarHeader";
+import NavBarHeaderLogin from "../components/NavBarHeaderLogin";
 import { Outlet } from "react-router-dom";
 import "../styles/layoutsAdmi.css";
 
@@ -10,7 +10,7 @@ const LayoutsAdmi = () => {
   const role = usuarioLogueado?.role.toLowerCase();
   return (
     <div className="app-layout">
-      <NavBarHeader></NavBarHeader>
+      <NavBarHeaderLogin></NavBarHeaderLogin>
       <main className="d-flex flex-column">
         <Container  className="my-4 flex-grow-1">
           <Row className="h-100">
