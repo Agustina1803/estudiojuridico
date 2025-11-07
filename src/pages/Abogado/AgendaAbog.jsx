@@ -3,8 +3,8 @@ import Boton from "../../components/Boton";
 import Swal from "sweetalert2";
 import FormAgregarCita from "../../components/FormAgregarCita";
 import { useState, useEffect } from "react";
-import BarraBusqueda from "../../components/BarraBusqueda";
-import BarraBusquedaFecha from "../../components/BarraBusquedaFecha";
+import SearchBar from "../../components/SearchBar";
+import SearchDate from "../../components/SearchDate";
 
 const AgendaAbog = () => {
   const columnas = [
@@ -102,8 +102,8 @@ const AgendaAbog = () => {
   return (
     <>
       <div className="d-flex justify-content-evenly">
-        <BarraBusqueda onSearch={setNombre}  placeholder="Buscar por cliente o abogado..."/>
-        <BarraBusquedaFecha onDateChange={setFecha} />
+        <SearchBar onSearch={setNombre}  placeholder="Buscar por cliente o abogado..."/>
+        <SearchDate onDateChange={setFecha} />
       </div>
       <Tablageneral
         columnas={columnas}
