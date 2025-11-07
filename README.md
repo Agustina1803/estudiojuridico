@@ -8,18 +8,18 @@ Mira el demo del proyecto
 
 ## Tecnologias utilizadas
 
--HTML5
--CSS3
--Bootstrap v5.3
--JavaScript
--React
--React boostrap
--React Hook Form
--React router dom
--Sweetalert2
--Uuid
--Jspdf
--Google/genai
+- HTML5
+- CSS3
+- [Bootstrap v5.3] (https://getbootstrap.com/)
+- JavaScript
+- React
+- React boostrap
+- [React Hook Form] (https://react-hook-form.com/)
+- [React router dom] (https://reactrouter.com/home)
+- [Sweetalert2] (https://sweetalert2.github.io/)
+- [Uuid] (https://www.npmjs.com/package/uuid)
+- [Jspdf] (https://www.npmjs.com/package/jspm)
+- [Google/genai] (https://ai.google.dev/gemini-api/docs?hl=es-419)
 
 ## Como ejecutar el proyecto
 
@@ -27,7 +27,7 @@ Mira el demo del proyecto
 2. Luego abrir el index.html con un navegador
 
 ## Autores 
--Bulacio Agustina 
--Varela Daiana
--Coronel Adrian
+- Bulacio Agustina 👩🏻‍💻
+- Varela Daiana 👩🏻‍💻
+- Coronel Adrian 👨🏻‍💻
 
