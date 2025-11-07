@@ -3,7 +3,7 @@ import Boton from "../../components/Boton";
 import Swal from "sweetalert2";
 import FormAltaUsuario from "../Administrador/FormAltaUsuario";
 import { useState, useEffect } from "react";
-import BarraBusqueda from "../../components/BarraBusqueda";
+import SearchBar from "../../components/SearchBar";
 
 const UsuariosAdmi = () => {
   const columnas = ["Nº", "Nombre", "Apellido", "Email", "Telefono", "Rol"];
@@ -85,7 +85,7 @@ const UsuariosAdmi = () => {
   );
   return (
     <>
-      <BarraBusqueda
+      <SearchBar
         onSearch={setNombreApellido}
         placeholder="Buscar por nombre o apellido..."
       />

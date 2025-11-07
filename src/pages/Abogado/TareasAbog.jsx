@@ -3,8 +3,8 @@ import Boton from "../../components/Boton";
 import Swal from "sweetalert2";
 import FormNuevaTarea from "../../components/FormNuevaTarea";
 import { useState, useEffect } from "react";
-import BarraBusqueda from "../../components/BarraBusqueda";
-import BarraBusquedaFecha from "../../components/BarraBusquedaFecha";
+import SearchBar from "../../components/SearchBar";
+import SearchDate from "../../components/SearchDate";
 import "../../styles/estados.css";
 
 const TareasAbog = () => {
@@ -115,11 +115,11 @@ const TareasAbog = () => {
   return (
     <>
       <div className="d-flex justify-content-evenly">
-        <BarraBusqueda
+        <SearchBar
           onSearch={setbusquedaAbogado}
           placeholder="Buscar por responsable..."
         />
-        <BarraBusquedaFecha onDateChange={setbusquedaFecha} />
+        <SearchDate onDateChange={setbusquedaFecha} />
       </div>
       <Tablageneral
         columnas={columnas}
