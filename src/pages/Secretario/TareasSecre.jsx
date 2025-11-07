@@ -3,9 +3,8 @@ import Boton from "../../components/Boton";
 import Swal from "sweetalert2";
 import FormNuevaTarea from "../../components/FormNuevaTarea";
 import { useState, useEffect } from "react";
-import SearchBar from "../../components/SearchBar";
-import SearchDate from "../../components/SearchDate";
-import SearchState from "../../components/searchState";
+import BarraBusqueda from "../../components/BarraBusqueda";
+import BarraBusquedaFecha from "../../components/BarraBusquedaFecha";
 import "../../styles/estados.css";
 
 const TareasSecre = () => {
@@ -112,15 +111,16 @@ const TareasSecre = () => {
       </span>
     ),
   }));
-  
+
   return (
     <>
       <div className="d-flex justify-content-evenly">
-        <SearchBar
+        <BarraBusqueda
           onSearch={setbusquedaAbogado}
-          placeholder="Buscar por responsable..."
+          placeholder="Buscar por cliente o monto..."
         />
-        <SearchDate onDateChange={setbusquedaFecha} />
+
+        <BarraBusquedaFecha onDateChange={setbusquedaFecha} />
       </div>
       <Tablageneral
         columnas={columnas}

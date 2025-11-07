@@ -1,7 +1,7 @@
 import { Form, FormControl } from 'react-bootstrap';
 import { useState } from 'react';
 
-function SearchDate({ onDateChange }) {
+function BarraBusquedaFecha({ onDateChange }) {
   const [date, setDate] = useState('');
 
   const handleDateChange = (e) => {
@@ -23,4 +23,4 @@ function SearchDate({ onDateChange }) {
   );
 }
 
-export default SearchDate;
+export default BarraBusquedaFecha;

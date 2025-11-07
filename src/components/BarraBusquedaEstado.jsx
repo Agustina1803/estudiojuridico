@@ -1,6 +1,6 @@
 import { Form } from 'react-bootstrap';
 
-function SearchState({ onEstadoChange }) {
+function BarraBusquedaEstado({ onEstadoChange }) {
   const handleChange = (e) => {
     const value = e.target.value;
     onEstadoChange(value);
@@ -18,4 +18,4 @@ function SearchState({ onEstadoChange }) {
   );
 }
 
-export default SearchState;
+export default BarraBusquedaEstado;
