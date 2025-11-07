@@ -1,4 +1,4 @@
-import Tablageneral from "../../components/tablageneral";
+import Tablageneral from "../../components/TablaGeneral";
 import Boton from "../../components/Boton";
 import FormNuevoJuicio from "../../components/FormNuevoJuicio";
 import { useState, useEffect } from "react";

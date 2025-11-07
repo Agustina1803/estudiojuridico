@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { jsPDF } from "jspdf";
-import Tablageneral from "../../components/tablageneral";
+import Tablageneral from "../../components/TablaGeneral";
 import Boton from "../../components/Boton";
 
 const RegistroAdmin = () => {
