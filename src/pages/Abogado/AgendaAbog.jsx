@@ -1,7 +1,7 @@
 import Tablageneral from "../../components/TablaGeneral";
 import Boton from "../../components/Boton";
 import Swal from "sweetalert2";
-import FormAgregarCita from "../../components/formAgregarCita";
+import FormAgregarCita from "../../components/FormAgregarCita";
 import { useState, useEffect } from "react";
 import BarraBusqueda from "../../components/BarraBusqueda";
 import BarraBusquedaFecha from "../../components/BarraBusquedaFecha";
