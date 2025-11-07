@@ -1,4 +1,4 @@
-import Tablageneral from "../../components/tablageneral";
+import Tablageneral from "../../components/TablaGeneral";
 import Boton from "../../components/Boton";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
