@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 export function RegistroPage() {
   const {
@@ -27,7 +28,8 @@ export function RegistroPage() {
       navegacion("/app/inicioadmi");
       return;
     }
-    const usuariosLocalStorage = JSON.parse(localStorage.getItem("usuarios")) || [];
+    const usuariosLocalStorage =
+      JSON.parse(localStorage.getItem("usuarios")) || [];
 
     const usuarioEncontrado = usuariosLocalStorage.find(
       (usuario) =>
@@ -36,6 +38,11 @@ export function RegistroPage() {
     );
 
     if (!usuarioEncontrado) {
+      Swal.fire({
+        icon: "error",
+        title: "Usuario o contraseña incorrectas!",
+        text: "Verifica tus datos e intenta nuevamente.",
+      });
       reset();
       return;
     }
@@ -50,14 +57,11 @@ export function RegistroPage() {
       navegacion("/app/iniciosecre");
     } else if (rol === "abog") {
       navegacion("/app/inicioabog");
-    } else {
-      alert("Usuario o contraseña incorrectos");
-      reset();
     }
   };
 
   return (
-    <Card  className="FormRegistro">
+    <Card className="FormRegistro">
       <div>
         <h3 className="text-center">Iniciar Sesión</h3>
       </div>
@@ -81,37 +85,36 @@ export function RegistroPage() {
           </Form.Text>
         </Form.Group>
 
-         <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <div className="input-group">
-                      <Form.Control
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Contraseña"
-                        {...register("formBasicPassword", {
-                          required: "La contraseña es obligatoria",
-                          pattern: {
-                            value:
-                              /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/,
-                            message:
-                              "Debe tener entre 8 y 16 caracteres, al menos un dígito, una minúscula, una mayúscula y un caracter especial.",
-                          },
-                        })}
-                      />
-                      <Button
-                        variant="outline-secondary"
-                        type="button"
-                        onClick={passwordVisibility}
-                        aria-label={
-                          showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
-                        }
-                      >
-                        {showPassword ? <FaEyeSlash /> : <FaEye />}
-                      </Button>
-                    </div>
-                    <Form.Text className="text-danger">
-                      {errors.formBasicPassword?.message}
-                    </Form.Text>
-                    
-                  </Form.Group>
+        <Form.Group className="mb-3" controlId="formBasicPassword">
+          <div className="input-group">
+            <Form.Control
+              type={showPassword ? "text" : "password"}
+              placeholder="Contraseña"
+              {...register("formBasicPassword", {
+                required: "La contraseña es obligatoria",
+                pattern: {
+                  value:
+                    /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/,
+                  message:
+                    "Debe tener entre 8 y 16 caracteres, al menos un dígito, una minúscula, una mayúscula y un caracter especial.",
+                },
+              })}
+            />
+            <Button
+              variant="outline-secondary"
+              type="button"
+              onClick={passwordVisibility}
+              aria-label={
+                showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+              }
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </Button>
+          </div>
+          <Form.Text className="text-danger">
+            {errors.formBasicPassword?.message}
+          </Form.Text>
+        </Form.Group>
         <Form.Group className="mb-3" controlId="formBasicCheckbox">
           <Form.Check type="checkbox" label="Recuérdame" />
         </Form.Group>
