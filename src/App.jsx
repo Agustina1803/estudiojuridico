@@ -21,6 +21,8 @@ import DocumentosSecre from "./pages/Secretario/DocumentosSecre";
 import TareasSecre from "./pages/Secretario/TareasSecre";
 import FacturacionSecre from "./pages/Secretario/FacturacionSecre";
 import ProteccionRutas from "./routers/ProteccionRutas";
+import Nosotros from "./pages/Nosotros";
+import Contacto from "./pages/Contacto";
 
 
 function App() {
@@ -56,6 +58,9 @@ function App() {
           </Route>
         </Route>
         <Route path="*" element={<ErrorPages />} />
+          <Route path="nosotros" element={<Nosotros />} />  
+            <Route path="contacto" element={<Contacto/>} />
+
       </Routes>  
     </BrowserRouter>
   );
