@@ -12,12 +12,13 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
     setValue,
     formState: { errors },
   } = useForm({
+    mode: "all",
     defaultValues: {
       nombre: "",
       identificador: "",
       email: "",
       telefono: "",
-      estado: "inactivo",
+      estado: "",
     },
   });
 
@@ -39,7 +40,9 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
 
     Swal.fire({
       icon: "success",
-      title: itemEditar ? `¡Cliente ${cliente.nombre} fue actualizado!` : "¡Cliente agregado!",
+      title: itemEditar
+        ? `¡Cliente ${cliente.nombre} fue actualizado!`
+        : "¡Cliente agregado!",
       text: itemEditar
         ? `El cliente  fue actualizado  exitosamente.`
         : "El cliente fue agregado exitosamente.",
@@ -58,7 +61,6 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
   };
   const modalTitle = itemEditar ? "Editar Cliente" : "Nuevo Cliente";
   const submitButtonText = itemEditar ? "Actualizar" : "Guardar";
-
 
   return (
     <Modal show={show} onHide={onHide} centered>
@@ -80,9 +82,9 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
                     "El nombre del cliente debe tener como mínimo 10 caracteres",
                 },
                 maxLength: {
-                  value: 50,
+                  value: 30,
                   message:
-                    "El nombre del cliente debe tener como máximo 50 caracteres",
+                    "El nombre del cliente debe tener como máximo 30 caracteres",
                 },
               })}
             />
@@ -90,7 +92,6 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
               {errors.nombre?.message}
             </Form.Text>
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="identificador">
             <Form.Label>DNI / CUIT :</Form.Label>
             <Form.Control
@@ -109,7 +110,6 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
                   return true;
                 },
               })}
-              isInvalid={!!errors.identificador}
             />
             <Form.Text className="text-danger">
               {errors.identificador?.message}
@@ -136,10 +136,15 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
           <Form.Group className="mb-3" controlId="telefono">
             <Form.Label>Teléfono:</Form.Label>
             <Form.Control
-              type="telefono"
+              type="tel"
+              inputMode="numeric"
               placeholder="3813005896"
               {...register("telefono", {
                 required: "El teléfono es obligatorio",
+                pattern: {
+                  value: /^\d+$/,
+                  message: "Solo se permiten números",
+                },
               })}
             />
             <Form.Text className="text-danger">
@@ -148,10 +153,18 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
           </Form.Group>
           <Form.Group className="mb-3" controlId="prioridad">
             <Form.Label>Estado</Form.Label>
-            <Form.Select {...register("prioridad")}>
+            <Form.Select
+              {...register("prioridad", {
+                required: "La prioridad es obligatorio",
+              })}
+            >
+              <option value="">Seleccionar tipo de evento</option>
               <option value="activo">Activo</option>
               <option value="inactivo">Inactivo</option>
             </Form.Select>
+            {errors.prioridad && (
+              <small className="text-danger">{errors.prioridad.message}</small>
+            )}
           </Form.Group>
           <div className="justify-content-end d-flex">
             <Button variant="success" type="submit" className="me-2">
