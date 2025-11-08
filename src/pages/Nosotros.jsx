@@ -4,19 +4,19 @@ import '../styles/Nosotros.css';
 
 const teamMembers = [
   {
-    name: 'Daiana',
+    name: 'Daiana Varela',
     role: 'Fullstack Developer',
-    description: 'Apasionada por crear interfaces accesibles, responsivas y elegantes.',
+    description: 'Estudiante de programacion apasionada por crear interfaces accesibles, responsivas y elegantes.',
   },
   {
-    name: 'Adrian',
+    name: 'Adrian Coronel',
     role: 'Fullstack Developer',
     description: 'Estudiante de ingenieria en sistemas y programacion, especialista en lógica de servidor, APIs y bases de datos.',
   },
   {
-    name: 'Agustina',
+    name: 'Agustina Bulacio',
     role: 'Fullstack Developer',
-    description: 'Estudiante de ingenieria en sistemas y programacion, apasionada por crear interfaces accesibles, responsivas y elegantes..',
+    description: 'Estudiante de ingenieria en sistemas y programacion, apasionada por crear interfaces accesibles, responsivas y elegantes.',
   },
 ];
 
