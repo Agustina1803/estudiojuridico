@@ -6,8 +6,8 @@ import Swal from "sweetalert2";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
-const [showPassword, setShowPassword] = useState(false);
-const passwordVisibility = () => setShowPassword((prev) => !prev);
+  const [showPassword, setShowPassword] = useState(false);
+  const passwordVisibility = () => setShowPassword((prev) => !prev);
 
   const {
     register,
@@ -16,6 +16,7 @@ const passwordVisibility = () => setShowPassword((prev) => !prev);
     setValue,
     formState: { errors },
   } = useForm({
+    mode: "all",
     defaultValues: {
       nombre: "",
       apellido: "",
@@ -92,7 +93,7 @@ const passwordVisibility = () => setShowPassword((prev) => !prev);
                 maxLength: {
                   value: 30,
                   message:
-                    "El nombre del usuario debe tener como máximo 50 caracteres",
+                    "El nombre del usuario debe tener como máximo 30 caracteres",
                 },
               })}
             />
@@ -115,7 +116,7 @@ const passwordVisibility = () => setShowPassword((prev) => !prev);
                 maxLength: {
                   value: 30,
                   message:
-                    "El apellido del usuario debe tener como máximo 50 caracteres",
+                    "El apellido del usuario debe tener como máximo 30 caracteres",
                 },
               })}
             />
@@ -144,10 +145,15 @@ const passwordVisibility = () => setShowPassword((prev) => !prev);
           <Form.Group className="mb-3" controlId="telefono">
             <Form.Label>Teléfono:</Form.Label>
             <Form.Control
-              type="telefono"
+              type="tel"
+              inputMode="numeric"
               placeholder="3813005896"
               {...register("telefono", {
                 required: "El teléfono es obligatorio",
+                pattern: {
+                  value: /^\d+$/,
+                  message: "Solo se permiten números",
+                },
               })}
             />
             <Form.Text className="text-danger">
@@ -183,48 +189,56 @@ const passwordVisibility = () => setShowPassword((prev) => !prev);
             <Form.Text className="text-danger">
               {errors.formBasicPassword?.message}
             </Form.Text>
-            
           </Form.Group>
-
           {itemEditar && (
-  <Form.Group className="mb-3" controlId="newPassword">
-    <Form.Label>Nueva contraseña</Form.Label>
-    <div className="input-group">
-      <Form.Control
-        type={setShowPassword ? "text" : "password"}
-        placeholder="Nueva contraseña"
-        {...register("newPassword", {
-          pattern: {
-            value:
-              /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/,
-            message:
-              "Debe tener entre 8 y 16 caracteres, al menos un dígito, una minúscula, una mayúscula y un caracter especial.",
-          },
-        })}
-      />
-      <Button
-        variant="outline-secondary"
-        type="button"
-        onClick={passwordVisibility}
-        aria-label={
-          setShowPassword ? "Ocultar nueva contraseña" : "Mostrar nueva contraseña"
-        }
-      >
-        {setShowPassword ? <FaEyeSlash /> : <FaEye />}
-      </Button>
-    </div>
-    <Form.Text className="text-danger">
-      {errors.newPassword?.message}
-    </Form.Text>
-  </Form.Group>
-)}
+            <Form.Group className="mb-3" controlId="newPassword">
+              <Form.Label>Nueva contraseña</Form.Label>
+              <div className="input-group">
+                <Form.Control
+                  type={setShowPassword ? "text" : "password"}
+                  placeholder="Nueva contraseña"
+                  {...register("newPassword", {
+                    pattern: {
+                      value:
+                        /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/,
+                      message:
+                        "Debe tener entre 8 y 16 caracteres, al menos un dígito, una minúscula, una mayúscula y un caracter especial.",
+                    },
+                  })}
+                />
+                <Button
+                  variant="outline-secondary"
+                  type="button"
+                  onClick={passwordVisibility}
+                  aria-label={
+                    setShowPassword
+                      ? "Ocultar nueva contraseña"
+                      : "Mostrar nueva contraseña"
+                  }
+                >
+                  {setShowPassword ? <FaEyeSlash /> : <FaEye />}
+                </Button>
+              </div>
+              <Form.Text className="text-danger">
+                {errors.newPassword?.message}
+              </Form.Text>
+            </Form.Group>
+          )}
           <Form.Group className="mb-3" controlId="role">
             <Form.Label>Rol:</Form.Label>
-            <Form.Select {...register("role")}>
+            <Form.Select
+              {...register("role", {
+                required: "El rol es obligatorio",
+              })}
+            >
+              <option value="">Seleccionar rol...</option>
               <option value="admin"> Administrador</option>
               <option value="secre"> Secretario/a</option>
               <option value="abog"> Abogado</option>
             </Form.Select>
+            <Form.Text className="text-danger">
+              {errors.role?.message}
+            </Form.Text>
           </Form.Group>
           <div className="justify-content-end d-flex">
             <Button variant="success" type="submit" className="me-2">

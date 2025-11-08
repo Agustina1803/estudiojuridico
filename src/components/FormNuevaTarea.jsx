@@ -12,10 +12,11 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
     setValue,
     formState: { errors },
   } = useForm({
+    mode: "all",
     defaultValues: {
       descripcion: "",
       abogado: "",
-      prioridad: "alta",
+      prioridad: "",
       fecha: "",
       estado: "",
     },
@@ -83,7 +84,7 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
             <Form.Control
               as="textarea"
               rows={2}
-              placeholder="Ingrese descripcion"
+              placeholder="Ingrese descripcion..."
               {...register("descripcion", {
                 required: "La descripcion es obligatoria",
                 minLength: {
@@ -101,18 +102,25 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
               {errors.descripcion?.message}
             </Form.Text>
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="abogado">
             <Form.Label>Responsable</Form.Label>
             <Form.Group controlId="abogado" className="mt-3">
               <Form.Label>Abogado asignado</Form.Label>
-              <Form.Select {...register("abogado")}>
+              <Form.Select
+                {...register("abogado", {
+                  required: "El abogado es obligatorio",
+                })}
+              >
+                <option value="">Seleccionar abogado...</option>
                 {abogados.map((abogado) => (
                   <option key={abogado.id} value={`Dr. ${abogado.apellido}`}>
                     {`Dr. ${abogado.apellido}`}
                   </option>
                 ))}
               </Form.Select>
+              {errors.abogado && (
+                <small className="text-danger">{errors.abogado.message}</small>
+              )}
             </Form.Group>
           </Form.Group>
           <Form.Group className="mb-3" controlId="fecha">
@@ -123,27 +131,43 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
                 required: "La fecha es obligatorio",
               })}
             />
-            <Form.Text className="text-danger">
-              {errors.fecha?.message}
-            </Form.Text>
+            {errors.fecha && (
+              <small className="text-danger">{errors.fecha.message}</small>
+            )}
           </Form.Group>
           <Form.Group className="mb-3" controlId="prioridad">
             <Form.Label>Prioridad</Form.Label>
-            <Form.Select {...register("prioridad")}>
+            <Form.Select
+              {...register("prioridad", {
+                required: "La prioridad es obligatorio",
+              })}
+            >
+              <option value="">Seleccionar prioridad...</option>
               <option value="alta">Alta</option>
               <option value="media">Media</option>
               <option value="baja">Baja</option>
             </Form.Select>
+            {errors.prioridad && (
+              <small className="text-danger">{errors.prioridad.message}</small>
+            )}
           </Form.Group>
           <Form.Group className="mb-3" controlId="estado">
             <Form.Label>Estado</Form.Label>
-            <Form.Select {...register("estado")}>
+            <Form.Select
+              {...register("estado", {
+                required: "El estado es obligatorio",
+              })}
+            >
+              <option value="">Seleccionar estado...</option>
               <option value="Pendiente">Pendiente</option>
               <option value="Proceso">En proceso</option>
               <option value="Completada">Completada</option>
               <option value="Cancelada">Cancelada</option>
               <option value="Reprogramada">Reprogramada</option>
             </Form.Select>
+            {errors.estado && (
+              <small className="text-danger">{errors.estado.message}</small>
+            )}
           </Form.Group>
           <div className="justify-content-end d-flex">
             <Button variant="secondary" onClick={handleCancel} className="me-2">

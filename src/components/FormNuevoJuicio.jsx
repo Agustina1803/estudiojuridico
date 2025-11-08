@@ -12,6 +12,7 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
     setValue,
     formState: { errors },
   } = useForm({
+    mode: "all",
     defaultValues: {
       nombreDeJuicio: "",
       numeroExpediente: "",
@@ -66,7 +67,6 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
   };
   const modalTitle = itemEditar ? "Editar juicio" : "Nuevo juicio";
   const submitButtonText = itemEditar ? "Actualizar" : "Guardar";
-
   const juzgadosTucuman = [
     "Juzgado en lo Civil y Comercial Común I",
     "Juzgado en lo Civil y Comercial Común II",
@@ -94,6 +94,7 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
     "Juzgado en lo Penal de Instrucción IV",
     "Juzgado en lo Penal de Instrucción V",
   ];
+
   return (
     <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton>
@@ -105,7 +106,7 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
             <Form.Label>Nombre de Juicio: </Form.Label>
             <Form.Control
               type="text"
-              placeholder="Ej: Demanda por accidente de tráfico"
+              placeholder="Ej: Demanda por accidente de tráfico..."
               {...register("nombreDeJuicio", {
                 required: "El nombre del juicio es obligatorio",
                 minLength: {
@@ -121,17 +122,16 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
               })}
             />
             <Form.Text className="text-danger">
-              {errors.nombre?.message}
+              {errors.nombreDeJuicio?.message}
             </Form.Text>
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="numeroExpediente">
             <Form.Label>Numero de expediente :</Form.Label>
             <Form.Control
               type="number"
               placeholder="Ej: 2030/234567"
               {...register("numeroExpediente", {
-                required: "Este campo es obligatorio",
+                required: "El nº de expediente es obligatorio",
                 validate: (value) => {
                   const limpio = value.replace(/-/g, "");
                   const soloNumeros = /^\d{7,11}$/.test(limpio);
@@ -153,7 +153,7 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
             <Form.Label>Cliente:</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Juan Perez"
+              placeholder="Ej:Juan Perez"
               {...register("nombreCliente", {
                 required: "El nombre del cliente es obligatorio",
                 minLength: {
@@ -162,28 +162,36 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
                     "El nombre del cliente debe tener como mínimo 10 caracteres",
                 },
                 maxLength: {
-                  value: 50,
+                  value: 40,
                   message:
-                    "El nombre del cliente debe tener como máximo 50 caracteres",
+                    "El nombre del cliente debe tener como máximo 40 caracteres",
                 },
               })}
             />
-            <Form.Text className="text-danger">
-              {errors.nombreCliente?.message}
-            </Form.Text>
+            {errors.nombreCliente && (
+              <small className="text-danger">
+                {errors.nombreCliente.message}
+              </small>
+            )}
           </Form.Group>
-
-          <Form.Group controlId="juzgado" className="mt-3">
+          <Form.Group className="mb-3" controlId="juzgado">
             <Form.Label>Juzgado</Form.Label>
-            <Form.Select {...register("juzgado")}>
+            <Form.Select
+              {...register("juzgado", {
+                required: "El juzgado es obligatorio",
+              })}
+            >
+              <option value="">Seleccionar juzgado...</option>
               {juzgadosTucuman.map((juzgado, index) => (
                 <option key={index} value={juzgado}>
                   {juzgado}
                 </option>
               ))}
             </Form.Select>
+            {errors.juzgado && (
+              <small className="text-danger">{errors.juzgado.message}</small>
+            )}
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="fecha">
             <Form.Label>Fecha:</Form.Label>
             <Form.Control
@@ -191,9 +199,11 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
               {...register("fecha", {
                 required: "La fecha es obligatorio",
               })}
-            ></Form.Control>
+            />
+            {errors.fecha && (
+              <small className="text-danger">{errors.fecha.message}</small>
+            )}
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="seleccionarArchivo">
             <Form.Label>Seleccionar archivo</Form.Label>
             <Form.Control
