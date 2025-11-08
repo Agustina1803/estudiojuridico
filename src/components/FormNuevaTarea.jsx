@@ -12,6 +12,7 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
     setValue,
     formState: { errors },
   } = useForm({
+     mode: "all",
     defaultValues: {
       descripcion: "",
       abogado: "",
@@ -101,12 +102,13 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
               {errors.descripcion?.message}
             </Form.Text>
           </Form.Group>
-
           <Form.Group className="mb-3" controlId="abogado">
             <Form.Label>Responsable</Form.Label>
             <Form.Group controlId="abogado" className="mt-3">
               <Form.Label>Abogado asignado</Form.Label>
-              <Form.Select {...register("abogado")}>
+              <Form.Select {...register("abogado", {
+                required: "El abogado es obligatorio",
+              })}>
                 {abogados.map((abogado) => (
                   <option key={abogado.id} value={`Dr. ${abogado.apellido}`}>
                     {`Dr. ${abogado.apellido}`}
@@ -129,7 +131,9 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
           </Form.Group>
           <Form.Group className="mb-3" controlId="prioridad">
             <Form.Label>Prioridad</Form.Label>
-            <Form.Select {...register("prioridad")}>
+            <Form.Select {...register("prioridad", {
+                required: "La prioridad es obligatorio",
+              })}>
               <option value="alta">Alta</option>
               <option value="media">Media</option>
               <option value="baja">Baja</option>
@@ -137,7 +141,9 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
           </Form.Group>
           <Form.Group className="mb-3" controlId="estado">
             <Form.Label>Estado</Form.Label>
-            <Form.Select {...register("estado")}>
+            <Form.Select {...register("estado", {
+                required: "El estado es obligatorio",
+              })}>
               <option value="Pendiente">Pendiente</option>
               <option value="Proceso">En proceso</option>
               <option value="Completada">Completada</option>

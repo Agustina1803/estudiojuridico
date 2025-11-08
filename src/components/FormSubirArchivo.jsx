@@ -4,7 +4,6 @@ import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
 import { useEffect } from "react";
 
-
 const FormSubirArchivo = ({ show, onHide, onGuardar, itemEditar = null }) => {
   const {
     register,
@@ -33,7 +32,7 @@ const FormSubirArchivo = ({ show, onHide, onGuardar, itemEditar = null }) => {
 
   const onSubmit = (data) => {
     const documento = {
-       id: itemEditar ? itemEditar.id : uuidv4(),
+      id: itemEditar ? itemEditar.id : uuidv4(),
       seleccionarArchivo: "archivo_simulado.pdf",
       nombreCliente: data.nombreCliente,
       tipodearchivo: data.tipodearchivo,
@@ -90,14 +89,24 @@ const FormSubirArchivo = ({ show, onHide, onGuardar, itemEditar = null }) => {
             </Form.Text>
           </Form.Group>
           <Form.Group className="mb-3" controlId="tipodearchivo">
-            <Form.Label>Formato de archivo</Form.Label>
-            <Form.Select {...register("tipodearchivo")}>
+            <Form.Label>Tipo de documento legal</Form.Label>
+            <Form.Select
+              {...register("tipodearchivo", {
+                required: "El tipo de documento es obligatorio",
+              })}
+            >
+              <option value="">Seleccioná una opcion</option>
               <option value="demanda"> Demanda </option>
               <option value="contrato"> Contrato</option>
               <option value="escrito"> Escrito</option>
               <option value="poder"> Poder</option>
               <option value="notificacion"> Notificación</option>
             </Form.Select>
+            {errors.tipodearchivo && (
+              <small className="text-danger">
+                {errors.tipodearchivo.message}
+              </small>
+            )}
           </Form.Group>
           <Form.Group controlId="fecha">
             <Form.Label>Fecha</Form.Label>

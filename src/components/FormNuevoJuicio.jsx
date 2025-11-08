@@ -12,6 +12,7 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
     setValue,
     formState: { errors },
   } = useForm({
+     mode: "all",
     defaultValues: {
       nombreDeJuicio: "",
       numeroExpediente: "",
@@ -162,9 +163,9 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
                     "El nombre del cliente debe tener como mínimo 10 caracteres",
                 },
                 maxLength: {
-                  value: 50,
+                  value: 40,
                   message:
-                    "El nombre del cliente debe tener como máximo 50 caracteres",
+                    "El nombre del cliente debe tener como máximo 40 caracteres",
                 },
               })}
             />

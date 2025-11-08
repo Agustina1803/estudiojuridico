@@ -1,9 +1,8 @@
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, InputGroup } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
 import { useEffect } from "react";
-
 
 const FormNuevaFactura = ({ show, onHide, onGuardar, itemEditar = null }) => {
   const {
@@ -14,6 +13,7 @@ const FormNuevaFactura = ({ show, onHide, onGuardar, itemEditar = null }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
+      mode: "all",
       fecha: "",
       nombreCliente: "",
       concepto: "",
@@ -35,7 +35,7 @@ const FormNuevaFactura = ({ show, onHide, onGuardar, itemEditar = null }) => {
 
   const onSubmit = (data) => {
     const factura = {
-       id: itemEditar ? itemEditar.id : uuidv4(),
+      id: itemEditar ? itemEditar.id : uuidv4(),
       fecha: data.fecha,
       nombreCliente: data.nombreCliente,
       concepto: data.concepto,
@@ -96,9 +96,9 @@ const FormNuevaFactura = ({ show, onHide, onGuardar, itemEditar = null }) => {
                     "El nombre del cliente debe tener como mínimo 10 caracteres",
                 },
                 maxLength: {
-                  value: 50,
+                  value: 30,
                   message:
-                    "El nombre del cliente debe tener como máximo 50 caracteres",
+                    "El nombre del cliente debe tener como máximo 30 caracteres",
                 },
               })}
             />
@@ -145,29 +145,38 @@ const FormNuevaFactura = ({ show, onHide, onGuardar, itemEditar = null }) => {
           </Form.Group>
           <Form.Group className="mb-3" controlId="monto">
             <Form.Label>Monto</Form.Label>
-            <Form.Control
-              type="number"
-              {...register("monto", {
-                required: "El monto es obligatorio",
-                min: {
-                  value: 1,
-                  message: "El monto debe ser mayor a 0",
-                },
-              })}
-            />
+            <InputGroup>
+              <InputGroup.Text>$</InputGroup.Text>
+              <Form.Control
+                type="number"
+                step="0.01"
+                {...register("monto", {
+                  required: "El monto es obligatorio",
+                  min: {
+                    value: 1,
+                    message: "El monto debe ser mayor a 0",
+                  },
+                })}
+              />
+            </InputGroup>
             {errors.monto && (
               <small className="text-danger">{errors.monto.message}</small>
             )}
           </Form.Group>
           <Form.Group className="mb-3" controlId="estado">
             <Form.Label>Estado</Form.Label>
-            <Form.Select {...register("estado")}>
-              <option value="Pagada">
-                Pagada
-              </option>
+            <Form.Select
+              {...register("estado",{
+                required: "El estado es obligatorio",
+              })}
+            >
+              <option value="Pagada">Pagada</option>
               <option value="Pendiente">Pendiente</option>
               <option value="Anulada">Anulada</option>
             </Form.Select>
+             {errors.estado && (
+              <small className="text-danger">{errors.estado.message}</small>
+            )}
           </Form.Group>
           <div className="d-flex justify-content-end mt-4">
             <Button variant="secondary" onClick={handleCancel} className="me-2">
