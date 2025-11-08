@@ -1,8 +1,8 @@
 import { Navbar, Nav, Card, Container, Button } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import "../styles/Menu.css";
 import "../styles/navBarHeader.css";
-
 
 import {
   FaHome,
@@ -19,8 +19,21 @@ import {
 const Menu = ({ role }) => {
   const navigate = useNavigate();
   const cerrarSesion = () => {
-    sessionStorage.removeItem("user");
-    navigate("/");
+    Swal.fire({
+      title: `Cerrar sesión`,
+      text: "¿Estás seguro de esto?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Aceptar",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        sessionStorage.removeItem("user");
+        navigate("/");
+      }
+    });
   };
 
   const menus = () => {

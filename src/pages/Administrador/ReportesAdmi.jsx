@@ -14,11 +14,9 @@ const RegistroAdmin = () => {
   const claves = ["nombre", "tipoEvento", "fecha"];
   const [filas, setFilas] = useState([]);
   useEffect(() => {
-    const agenda =
-      JSON.parse(localStorage.getItem("movimientosSecreAgenda")) || [];
+    const agenda = JSON.parse(localStorage.getItem("movimientosSecreAgenda")) || [];
     setFilas(agenda);
   }, []);
-
 
 
   const generarPDF = () => {
