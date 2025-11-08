@@ -166,15 +166,16 @@ const FormNuevaFactura = ({ show, onHide, onGuardar, itemEditar = null }) => {
           <Form.Group className="mb-3" controlId="estado">
             <Form.Label>Estado</Form.Label>
             <Form.Select
-              {...register("estado",{
+              {...register("estado", {
                 required: "El estado es obligatorio",
               })}
             >
+              <option value="">Seleccionar estado...</option>
               <option value="Pagada">Pagada</option>
               <option value="Pendiente">Pendiente</option>
               <option value="Anulada">Anulada</option>
             </Form.Select>
-             {errors.estado && (
+            {errors.estado && (
               <small className="text-danger">{errors.estado.message}</small>
             )}
           </Form.Group>

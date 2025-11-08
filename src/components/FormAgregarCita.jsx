@@ -17,7 +17,7 @@ const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
       fecha: "",
       hora: "",
       cliente: "",
-      abogado: "Dra. Gómez",
+      abogado: "",
       tipoEvento: "",
       notas: "",
     },
@@ -131,6 +131,7 @@ const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
             <Form.Label>Cliente</Form.Label>
             <Form.Control
               type="text"
+              placeholder="Ej: Juan Perez"
               {...register("cliente", {
                 required: "El nombre del cliente es obligatorio",
                 minLength: {
@@ -156,6 +157,7 @@ const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
                 required: "El abogado es obligatorio",
               })}
             >
+               <option value="">Seleccionar abogado...</option>
               {abogados.map((abogado) => (
                 <option key={abogado.id} value={`Dr. ${abogado.apellido}`}>
                   {`Dr. ${abogado.apellido}`}
@@ -174,7 +176,7 @@ const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
                 required: "El tipo de evento es obligatorio",
               })}
             >
-               <option value="">Seleccionar tipo de evento</option>
+               <option value="">Seleccionar tipo de evento...</option>
               <option value="Audiencia">Audiencia</option>
               <option value="Consulta">Consulta</option>
               <option value="Reunión">Reunión</option>
@@ -189,6 +191,7 @@ const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
             <Form.Control
               as="textarea"
               rows={3}
+              placeholder="Consulta por..."
               {...register("notas", {
                 required: "Las notas son obligatorias",
                 minLength: {
