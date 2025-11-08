@@ -25,7 +25,7 @@ const Tablageneral = ({ columnas, claves, filas, acciones }) => {
             </tr>
           ) : (
             filas.map((fila, indicefila) => (
-              <tr key={fila.id || indicefila}>
+               <tr key={`${fila.id}-${indicefila}`}>
                 <td className="text-center align-middle">{indicefila + 1}</td>
                 {claves.map((clave, indicecelda) => (
                   <td className="text-center align-middle" key={indicecelda}>

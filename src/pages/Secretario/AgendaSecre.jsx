@@ -5,13 +5,15 @@ import FormAgregarCita from "../../components/FormAgregarCita";
 import { useState, useEffect } from "react";
 import BarraBusqueda from "../../components/BarraBusqueda";
 import BarraBusquedaFecha from "../../components/BarraBusquedaFecha";
+import { v4 as uuidv4 } from "uuid";
 
-const registrar = ({ id, nombre, tipoEvento }) => {
+const registrar = ({ citaId, nombre, tipoEvento }) => {
   const historial = JSON.parse(
     localStorage.getItem("movimientosSecreAgenda") || "[]"
   );
   const nuevoRegistro = {
-    id,
+    id: uuidv4(),
+    citaId,
     nombre,
     tipoEvento,
     fecha: new Date().toLocaleString("es-AR"),
@@ -87,7 +89,7 @@ const AgendaSecre = () => {
       }
     });
     registrar({
-      id: cliente.id,
+      citaId: cliente.id,
       nombre: cliente.cliente,
       tipoEvento: "eliminarCita",
     });
@@ -102,7 +104,7 @@ const AgendaSecre = () => {
       actualizadas = [...filas, cita];
     }
     registrar({
-      id: cita.id,
+      citaId: cita.id,
       nombre: cita.cliente,
       tipoEvento,
     });
