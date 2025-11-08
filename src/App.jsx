@@ -22,6 +22,7 @@ import TareasSecre from "./pages/Secretario/TareasSecre";
 import FacturacionSecre from "./pages/Secretario/FacturacionSecre";
 import ProteccionRutas from "./routers/ProteccionRutas";
 
+
 function App() {
   return (
     <BrowserRouter>
@@ -55,7 +56,7 @@ function App() {
           </Route>
         </Route>
         <Route path="*" element={<ErrorPages />} />
-      </Routes>
+      </Routes>  
     </BrowserRouter>
   );
 }
