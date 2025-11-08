@@ -137,9 +137,14 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
             <Form.Label>Teléfono:</Form.Label>
             <Form.Control
               type="tel"
+              inputMode="numeric"
               placeholder="3813005896"
               {...register("telefono", {
                 required: "El teléfono es obligatorio",
+                pattern: {
+                  value: /^\d+$/,
+                  message: "Solo se permiten números",
+                },
               })}
             />
             <Form.Text className="text-danger">
