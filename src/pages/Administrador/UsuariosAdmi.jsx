@@ -40,7 +40,7 @@ const UsuariosAdmi = () => {
   const eliminar = (id) => {
     const usuarios = filas.find((item) => item.id === id);
     Swal.fire({
-      title: `¿Eliminar al ${usuarios.nombre}?`,
+      title: `¿Eliminar a el usuario ${usuarios.nombre} ${usuarios.apellido}?`,
       text: "Este cambio no se puede revertir",
       icon: "warning",
       showCancelButton: true,
@@ -55,7 +55,7 @@ const UsuariosAdmi = () => {
         localStorage.setItem(tipo, JSON.stringify(actualizadas));
         Swal.fire({
           title: "Eliminado",
-          text: `El usuario ${usuarios.nombre}  fue eliminada correctamente.`,
+          text: `El usuario ${usuarios.nombre} ${usuarios.apellido} fue eliminada correctamente.`,
           icon: "success",
         });
       }
