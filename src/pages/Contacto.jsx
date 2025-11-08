@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Button, Container, Alert } from 'react-bootstrap';
+import { Link } from "react-router-dom";
 
 const ContactForm = () => {
     const [formData, setFormData] = useState({
@@ -74,6 +75,11 @@ const ContactForm = () => {
                     Enviar
                 </Button>
             </Form>
+             <div className="text-center mt-4">
+                    <Link to="/">
+                        <Button variant="secondary"> Volver al inicio</Button>
+                    </Link>
+                </div>
         </Container>
     );
 };
