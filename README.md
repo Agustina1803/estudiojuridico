@@ -4,7 +4,7 @@ Aplicación web responsiva diseñada para optimizar la organización interna de 
 
 ## Demo del proyecto
 Mira el demo del proyecto
-[aqui](https://apjsestudiojuridico.netlify.app/)
+[aqui](https://apjdestudiojuridic.netlify.app/)
 
 ## Tecnologias utilizadas
 
