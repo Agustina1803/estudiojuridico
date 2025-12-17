@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { login } from "../../helper/login.Api.js";
 
 export function RegistroPage() {
   const {
@@ -17,7 +18,8 @@ export function RegistroPage() {
   const navegacion = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const passwordVisibility = () => setShowPassword((prev) => !prev);
-  const loginUser = (user) => {
+
+  const loginUser = async (user) => {
     const { formBasicEmail, formBasicPassword } = user;
     if (
       formBasicEmail === import.meta.env.VITE_ADMIN_EMAIL &&
@@ -28,35 +30,41 @@ export function RegistroPage() {
       navegacion("/app/inicioadmi");
       return;
     }
-    const usuariosLocalStorage =
-      JSON.parse(localStorage.getItem("usuarios")) || [];
 
-    const usuarioEncontrado = usuariosLocalStorage.find(
-      (usuario) =>
-        usuario.email === formBasicEmail &&
-        usuario.formBasicPassword === formBasicPassword
-    );
+    try {
+      const respuesta = await login({
+        email: formBasicEmail,
+        formBasicPassword: formBasicPassword,
+      });
+      if (!respuesta || !respuesta.ok) {
+        Swal.fire({
+          icon: "error",
+          title: "Usuario o contraseña incorrectas",
+          text: "Verificar tus datos e intenta nuevamente",
+        });
+        reset();
+        return;
+      }
+      const dato = await respuesta.json();
 
-    if (!usuarioEncontrado) {
+      localStorage.setItem("token", dato.token);
+      localStorage.setItem("user", JSON.stringify(dato));
+
+      const rol = dato.role?.toLowerCase();
+
+      if (rol === "admin") {
+        navegacion("/app/inicioadmi");
+      } else if (rol === "secre") {
+        navegacion("/app/iniciosecre");
+      } else if (rol === "abog") {
+        navegacion("/app/inicioabog");
+      }
+    } catch (error) {
       Swal.fire({
         icon: "error",
-        title: "Usuario o contraseña incorrectas!",
-        text: "Verifica tus datos e intenta nuevamente.",
+        title: "Error de conexion",
+        text: "No se pudo conectar al servidor",
       });
-      reset();
-      return;
-    }
-
-    sessionStorage.setItem("user", JSON.stringify(usuarioEncontrado));
-
-    const rol = usuarioEncontrado.role?.toLowerCase();
-
-    if (rol === "admin") {
-      navegacion("/app/inicioadmi");
-    } else if (rol === "secre") {
-      navegacion("/app/iniciosecre");
-    } else if (rol === "abog") {
-      navegacion("/app/inicioabog");
     }
   };
 
