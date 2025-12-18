@@ -5,25 +5,10 @@ import FormAgregarCita from "../../components/FormAgregarCita";
 import { useState, useEffect } from "react";
 import BarraBusqueda from "../../components/BarraBusqueda";
 import BarraBusquedaFecha from "../../components/BarraBusquedaFecha";
-import { v4 as uuidv4 } from "uuid";
+import { listarCitas } from "../../helper/cita.Api";
 
-const registrar = ({ citaId, nombre, tipoEvento }) => {
-  const historial = JSON.parse(
-    localStorage.getItem("movimientosSecreAgenda") || "[]"
-  );
-  const nuevoRegistro = {
-    id: uuidv4(),
-    citaId,
-    nombre,
-    tipoEvento,
-    fecha: new Date().toLocaleString("es-AR"),
-  };
-  localStorage.setItem(
-    "movimientosSecreAgenda",
-    JSON.stringify([...historial, nuevoRegistro])
-  );
-};
 
+ 
 const AgendaSecre = () => {
   const columnas = [
     "Nº",
@@ -35,19 +20,31 @@ const AgendaSecre = () => {
     "Notas",
   ];
   const claves = ["fecha", "hora", "cliente", "abogado", "tipoEvento", "notas"];
-  const tipo = "citas";
-  const [filas, setFilas] = useState([]);
+  const [filasFiltrada, setFilasFiltradas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
   const [busquedaNombre, setNombre] = useState("");
   const [busquedaFecha, setFecha] = useState("");
 
-  useEffect(() => {
-    const citasGuardadas = localStorage.getItem("citas");
-    if (citasGuardadas) {
-      setFilas(JSON.parse(citasGuardadas));
+   const obtenerFilasFiltradas = async () => {
+    try {
+      const data = await listarCitas(busquedaNombre, busquedaFecha);
+      const citasTransformadas = data.map((cita) => ({
+        ...cita,
+        abogado:
+          cita.abogado && typeof cita.abogado === "object"
+            ? `${cita.abogado.nombre} ${cita.abogado.apellido}`
+            : cita.abogado,
+      }));
+      setFilasFiltradas(citasTransformadas);
+    } catch (error) {
+      console.error("Error al obtener citas:", error);
     }
-  }, []);
+  };
+
+  useEffect(() => {
+    obtenerFilasFiltradas();
+  }, [busquedaNombre, busquedaFecha]);
 
   const abrirModal = () => {
     setItemEditar(null);
@@ -60,9 +57,9 @@ const AgendaSecre = () => {
   };
 
   const editar = (id) => {
-    const cliente = filas.find((item) => item.id === id);
+    const cita = filas.find((item) => item._id === id);
     setItemEditar(cliente);
-    setMostrarModal(true);
+    setMostrarModal(cita);
   };
 
   const eliminar = (id) => {
