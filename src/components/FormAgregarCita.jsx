@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { Modal, Button, Form, Row, Col } from "react-bootstrap";
+import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
 
 const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
@@ -33,25 +32,30 @@ const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
     }
   }, [itemEditar, setValue, reset]);
 
-  const onSubmit = (data) => {
-    const cita = {
-      id: itemEditar ? itemEditar.id : uuidv4(),
-      ...data,
-    };
-
-    Swal.fire({
-      icon: "success",
-      title: itemEditar ? "¡Cita actualizada!" : "¡Cita agregada!",
-      text: itemEditar
-        ? "La cita fue actualizada exitosamente."
-        : "La cita fue agregada exitosamente.",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-
-    reset();
-    onHide();
-    onGuardar(cita);
+ const onSubmit = async (data) => {
+    try {
+      if (itemEditar && itemEditar._id) {
+        data._id = itemEditar._id;
+      }
+      await onGuardar(data);
+      Swal.fire({
+        icon: "success",
+        title: itemEditar ? "¡Cita actualizada!" : "¡Cita agregada!",
+        text: itemEditar
+          ? "La cita fue actualizada exitosamente."
+          : "La cita fue agregada exitosamente.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      reset();
+      onHide();
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo guardar la cita. Intenta nuevamente.",
+      });
+    }
   };
 
   const handleCancel = () => {
@@ -62,17 +66,24 @@ const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
   const modalTitle = itemEditar ? "Editar Cita" : "Nueva Cita";
   const submitButtonText = itemEditar ? "Actualizar" : "Guardar";
 
-  const [abogados, setAbogados] = useState([]);
+ const [abogados, setAbogados] = useState([]);
   useEffect(() => {
-    const usuariosGuardados = localStorage.getItem("usuarios");
-    if (usuariosGuardados) {
-      const usuariosTotales = JSON.parse(usuariosGuardados);
-      const abogadosTotales = usuariosTotales.filter(
-        (usuarios) => usuarios.role === "abog"
-      );
-      setAbogados(abogadosTotales);
-    }
+    const cargarAbogados = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const respuesta = await fetch(
+          `${import.meta.env.VITE_API_USUARIOS}?role=abog`,
+          { headers: { "x-token": token } }
+        );
+        const dato = await respuesta.json();
+        setAbogados(dato);
+      } catch (error) {
+        console.error("Error al cargar abogados:", error);
+      }
+    };
+    cargarAbogados();
   }, []);
+
 
   return (
     <Modal show={show} onHide={onHide} centered>

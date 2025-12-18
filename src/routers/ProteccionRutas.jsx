@@ -1,13 +1,17 @@
 import { Navigate, Outlet } from "react-router-dom";
 
-const ProteccionRutas = ({ usuarioLogueado,roleUsuario }) => {
-   const usuariosession= sessionStorage.getItem("user");
-   const usuarioParseado= usuariosession ? JSON.parse(usuariosession) : null;
-  if (usuarioParseado?.role?.toLowerCase() === roleUsuario.toLowerCase()) {
+const ProteccionRutas = ({ roleUsuario }) => {
+  const token = localStorage.getItem("token");
+  const usuarioParseado = JSON.parse(localStorage.getItem("user"));
+  console.log("Usuario parseado:", usuarioParseado);
 
-        return <Outlet />;
-    }
+  if (!usuarioParseado || !token) {
     return <Navigate to="/" />;
+  }
+  if (usuarioParseado?.role?.toLowerCase() === roleUsuario.toLowerCase()) {
+    return <Outlet />;
+  }
+  return <Navigate to="/" />;
 };
 
 export default ProteccionRutas;

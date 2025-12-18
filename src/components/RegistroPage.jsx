@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { login } from "../helper/login.Api";
 
 export function RegistroPage() {
   const {
@@ -17,8 +18,10 @@ export function RegistroPage() {
   const navegacion = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const passwordVisibility = () => setShowPassword((prev) => !prev);
-  const loginUser = (user) => {
+
+  const loginUser = async (user) => {
     const { formBasicEmail, formBasicPassword } = user;
+
     if (
       formBasicEmail === import.meta.env.VITE_ADMIN_EMAIL &&
       formBasicPassword === import.meta.env.VITE_ADMIN_PASSWORD
@@ -28,35 +31,39 @@ export function RegistroPage() {
       navegacion("/app/inicioadmi");
       return;
     }
-    const usuariosLocalStorage =
-      JSON.parse(localStorage.getItem("usuarios")) || [];
 
-    const usuarioEncontrado = usuariosLocalStorage.find(
-      (usuario) =>
-        usuario.email === formBasicEmail &&
-        usuario.formBasicPassword === formBasicPassword
-    );
+    try {
+      const respuesta = await login({
+        email: formBasicEmail,
+        formBasicPassword: formBasicPassword,
+      });
 
-    if (!usuarioEncontrado) {
+      if (!respuesta || !respuesta.ok) {
+        Swal.fire({
+          icon: "error",
+          title: "Usuario o contraseña incorrectas!",
+          text: "Verifica tus datos e intenta nuevamente.",
+        });
+        reset();
+        return;
+      }
+
+      const data = await respuesta.json();
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data));
+      
+      const rol = data.role ? data.role.toLowerCase() : "";
+      if (rol === "admin") navegacion("/app/inicioadmi");
+      else if (rol === "secre") navegacion("/app/iniciosecre");
+      else if (rol === "abog") navegacion("/app/inicioabog");
+      else navegacion("/app/inicio");
+    } catch (error) {
       Swal.fire({
         icon: "error",
-        title: "Usuario o contraseña incorrectas!",
-        text: "Verifica tus datos e intenta nuevamente.",
+        title: "Error de conexión",
+        text: "No se pudo contactar al servidor.",
       });
       reset();
-      return;
-    }
-
-    sessionStorage.setItem("user", JSON.stringify(usuarioEncontrado));
-
-    const rol = usuarioEncontrado.role?.toLowerCase();
-
-    if (rol === "admin") {
-      navegacion("/app/inicioadmi");
-    } else if (rol === "secre") {
-      navegacion("/app/iniciosecre");
-    } else if (rol === "abog") {
-      navegacion("/app/inicioabog");
     }
   };
 
@@ -115,9 +122,11 @@ export function RegistroPage() {
             {errors.formBasicPassword?.message}
           </Form.Text>
         </Form.Group>
+
         <Form.Group className="mb-3" controlId="formBasicCheckbox">
           <Form.Check type="checkbox" label="Recuérdame" />
         </Form.Group>
+
         <div className="d-flex justify-content-center">
           <Button variant="primary" type="submit" className="w-100">
             Iniciar Sesión
