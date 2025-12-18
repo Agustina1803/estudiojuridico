@@ -6,9 +6,8 @@ import { useState, useEffect } from "react";
 import BarraBusqueda from "../../components/BarraBusqueda";
 import BarraBusquedaFecha from "../../components/BarraBusquedaFecha";
 import { listarCitas } from "../../helper/cita.Api";
+import { listarAbogados } from "../../helper/usuario.Api";
 
-
- 
 const AgendaSecre = () => {
   const columnas = [
     "Nº",
@@ -26,21 +25,6 @@ const AgendaSecre = () => {
   const [busquedaNombre, setNombre] = useState("");
   const [busquedaFecha, setFecha] = useState("");
 
-   const obtenerFilasFiltradas = async () => {
-    try {
-      const data = await listarCitas(busquedaNombre, busquedaFecha);
-      const citasTransformadas = data.map((cita) => ({
-        ...cita,
-        abogado:
-          cita.abogado && typeof cita.abogado === "object"
-            ? `${cita.abogado.nombre} ${cita.abogado.apellido}`
-            : cita.abogado,
-      }));
-      setFilasFiltradas(citasTransformadas);
-    } catch (error) {
-      console.error("Error al obtener citas:", error);
-    }
-  };
 
   useEffect(() => {
     obtenerFilasFiltradas();
@@ -62,10 +46,19 @@ const AgendaSecre = () => {
     setMostrarModal(cita);
   };
 
-  const eliminar = (id) => {
-    const cliente = filas.find((item) => item.id === id);
+  const [abogados, setAbogados] = useState([]);
+  useEffect(() => {
+    const cargarAbogados = async () => {
+      const data = await listarAbogados();
+      setAbogados(data);
+    };
+    cargarAbogados();
+  }, []);
+
+  const eliminar = async (id) => {
+ const cita = filasFiltradas.find((item) => item._id === id);
     Swal.fire({
-      title: `¿Eliminar la ${cliente.tipoEvento} del cliente ${cliente.cliente}?`,
+      title: `¿Eliminar la ${cita.tipoEvento} del cliente ${cita.cliente}?`,
       text: "Este cambio no se puede revertir",
       icon: "warning",
       showCancelButton: true,
@@ -110,21 +103,21 @@ const AgendaSecre = () => {
     cerrarModal();
   };
 
-  const filasFiltradas = filas
-    .filter(
-      (fila) =>
-        busquedaNombre === "" ||
-        fila.cliente
-          ?.toLowerCase()
-          .trim()
-          .includes(busquedaNombre.toLowerCase()) ||
-        fila.abogado?.toString().trim().includes(busquedaNombre)
-    )
-    .filter(
-      (fila) =>
-        busquedaFecha === "" || fila.fecha?.trim().startsWith(busquedaFecha)
-    );
-
+  const obtenerFilasFiltradas = async () => {
+    try {
+      const data = await listarCitas(busquedaNombre, busquedaFecha);
+      const citasTransformadas = data.map((cita) => ({
+        ...cita,
+        abogado:
+          cita.abogado && typeof cita.abogado === "object"
+            ? `${cita.abogado.nombre} ${cita.abogado.apellido}`
+            : cita.abogado,
+      }));
+      setFilasFiltradas(citasTransformadas);
+    } catch (error) {
+      console.error("Error al obtener citas:", error);
+    }
+  };
   return (
     <>
       <div className="d-flex justify-content-evenly">
