@@ -16,7 +16,7 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 
-const Menu = ({ role }) => {
+const Menu = () => {
   const navigate = useNavigate();
   const cerrarSesion = () => {
     Swal.fire({
@@ -30,12 +30,14 @@ const Menu = ({ role }) => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        sessionStorage.removeItem("user");
+        localStorage.removeItem("user");
         navigate("/");
       }
     });
   };
 
+  const usuario = JSON.parse(localStorage.getItem("user"));
+  const role = usuario?.role;
   const menus = () => {
     switch (role) {
       case "admin":
