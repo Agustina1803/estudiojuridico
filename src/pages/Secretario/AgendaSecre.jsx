@@ -5,7 +5,12 @@ import FormAgregarCita from "../../components/FormAgregarCita";
 import { useState, useEffect } from "react";
 import BarraBusqueda from "../../components/BarraBusqueda";
 import BarraBusquedaFecha from "../../components/BarraBusquedaFecha";
-import { listarCitas } from "../../helper/cita.Api";
+import {
+  listarCitas,
+  crearCita,
+  actualizarCita,
+  eliminarCita,
+} from "../../helper/cita.Api";
 import { listarAbogados } from "../../helper/usuario.Api";
 
 const AgendaSecre = () => {
@@ -19,12 +24,11 @@ const AgendaSecre = () => {
     "Notas",
   ];
   const claves = ["fecha", "hora", "cliente", "abogado", "tipoEvento", "notas"];
-  const [filasFiltrada, setFilasFiltradas] = useState([]);
+  const [filasFiltradas, setFilasFiltradas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
   const [busquedaNombre, setNombre] = useState("");
   const [busquedaFecha, setFecha] = useState("");
-
 
   useEffect(() => {
     obtenerFilasFiltradas();
@@ -56,8 +60,8 @@ const AgendaSecre = () => {
   }, []);
 
   const eliminar = async (id) => {
- const cita = filasFiltradas.find((item) => item._id === id);
-    Swal.fire({
+    const cita = filasFiltradas.find((item) => item._id === id);
+    const confirmado = await Swal.fire({
       title: `¿Eliminar la ${cita.tipoEvento} del cliente ${cita.cliente}?`,
       text: "Este cambio no se puede revertir",
       icon: "warning",
@@ -66,41 +70,38 @@ const AgendaSecre = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const actualizadas = filas.filter((item) => item.id !== id);
-        setFilas(actualizadas);
-        localStorage.setItem(tipo, JSON.stringify(actualizadas));
+    });
+
+    if (confirmado.isConfirmed) {
+      const ok = await eliminarCita(cita._id);
+      if (ok) {
         Swal.fire({
           title: "Eliminado",
-          text: "La cita  fue eliminada correctamente.",
+          text: "La cita fue eliminada correctamente.",
           icon: "success",
         });
+        obtenerFilasFiltradas();
       }
-    });
-    registrar({
-      citaId: cliente.id,
-      nombre: cliente.cliente,
-      tipoEvento: "eliminarCita",
-    });
+    }
   };
 
-  const agregarCita = (cita) => {
-    let actualizadas;
-    const tipoEvento = itemEditar ? "edicionCita" : "agregarCita";
+  const agregarCita = async (cita) => {
+    let nuevaCita;
     if (itemEditar) {
-      actualizadas = filas.map((fila) => (fila.id === cita.id ? cita : fila));
+      nuevaCita = await actualizarCita({ ...cita, _id: itemEditar._id });
     } else {
-      actualizadas = [...filas, cita];
+      nuevaCita = await crearCita(cita);
+      await registrarMovimiento({
+        citaId: nuevaCita._id,
+        nombre: nuevaCita.cliente,
+        tipoEvento: "agregarCita",
+      });
     }
-    registrar({
-      citaId: cita.id,
-      nombre: cita.cliente,
-      tipoEvento,
-    });
-    setFilas(actualizadas);
-    localStorage.setItem(tipo, JSON.stringify(actualizadas));
-    cerrarModal();
+
+    if (nuevaCita) {
+      obtenerFilasFiltradas();
+      cerrarModal();
+    }
   };
 
   const obtenerFilasFiltradas = async () => {
@@ -133,8 +134,8 @@ const AgendaSecre = () => {
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">
-            <Boton action="editar" onClick={() => editar(fila.id)} />
-            <Boton action="eliminar" onClick={() => eliminar(fila.id)} />
+            <Boton action="editar" onClick={() => editar(fila._id)} />
+            <Boton action="eliminar" onClick={() => eliminar(fila._id)} />
           </div>
         )}
       />
