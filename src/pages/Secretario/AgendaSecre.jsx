@@ -30,6 +30,22 @@ const AgendaSecre = () => {
   const [busquedaNombre, setNombre] = useState("");
   const [busquedaFecha, setFecha] = useState("");
 
+  const obtenerFilasFiltradas = async () => {
+    try {
+      const data = await listarCitas(busquedaNombre, busquedaFecha);
+      const citasTransformadas = data.map((cita) => ({
+        ...cita,
+        abogado:
+          cita.abogado && typeof cita.abogado === "object"
+            ? `${cita.abogado.nombre} ${cita.abogado.apellido}`
+            : cita.abogado,
+      }));
+      setFilasFiltradas(citasTransformadas);
+    } catch (error) {
+      console.error("Error al obtener citas:", error);
+    }
+  };
+
   useEffect(() => {
     obtenerFilasFiltradas();
   }, [busquedaNombre, busquedaFecha]);
@@ -45,9 +61,9 @@ const AgendaSecre = () => {
   };
 
   const editar = (id) => {
-    const cita = filas.find((item) => item._id === id);
-    setItemEditar(cliente);
-    setMostrarModal(cita);
+    const cita = filasFiltradas.find((item) => item._id === id);
+    setItemEditar(cita);
+    setMostrarModal(true);
   };
 
   const [abogados, setAbogados] = useState([]);
@@ -104,21 +120,6 @@ const AgendaSecre = () => {
     }
   };
 
-  const obtenerFilasFiltradas = async () => {
-    try {
-      const data = await listarCitas(busquedaNombre, busquedaFecha);
-      const citasTransformadas = data.map((cita) => ({
-        ...cita,
-        abogado:
-          cita.abogado && typeof cita.abogado === "object"
-            ? `${cita.abogado.nombre} ${cita.abogado.apellido}`
-            : cita.abogado,
-      }));
-      setFilasFiltradas(citasTransformadas);
-    } catch (error) {
-      console.error("Error al obtener citas:", error);
-    }
-  };
   return (
     <>
       <div className="d-flex justify-content-evenly">
@@ -147,6 +148,7 @@ const AgendaSecre = () => {
         onHide={cerrarModal}
         onGuardar={agregarCita}
         itemEditar={itemEditar}
+        abogados={abogados}
       />
     </>
   );
