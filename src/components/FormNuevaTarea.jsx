@@ -1,8 +1,7 @@
-import { useEffect} from "react";
+import { useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
-
 const FormNuevaTarea = ({
   show,
   onHide,
@@ -26,12 +25,11 @@ const FormNuevaTarea = ({
       estado: "",
     },
   });
-
   useEffect(() => {
     if (itemEditar) {
       setValue("descripcion", itemEditar.descripcion || "");
       setValue("prioridad", itemEditar.prioridad || "");
-      setValue("fecha", itemEditar.fecha);
+      setValue("fecha", itemEditar.fecha ? itemEditar.fecha.split("T")[0] : "");
       setValue("estado", itemEditar.estado || "");
       if (itemEditar.abogado) {
         const abogadoId =
@@ -47,11 +45,9 @@ const FormNuevaTarea = ({
 
   const onSubmit = async (data) => {
     try {
-      if (itemEditar && itemEditar._id) {
-        data._id = itemEditar._id;
-      }
-     data.fecha = new Date(data.fecha);
-      await onGuardar(data);
+      let tareaData = { ...data };
+      tareaData.fecha = new Date(`${data.fecha}T00:00:00`).toISOString();
+      await onGuardar(tareaData, itemEditar?._id);
       Swal.fire({
         icon: "success",
         title: itemEditar ? "¡Tarea actualizada!" : "¡Tarea agregada!",
@@ -71,6 +67,7 @@ const FormNuevaTarea = ({
       });
     }
   };
+
   const handleCancel = () => {
     reset();
     onHide();
@@ -78,7 +75,6 @@ const FormNuevaTarea = ({
 
   const modalTitle = itemEditar ? "Editar tarea" : "Nueva tarea";
   const submitButtonText = itemEditar ? "Actualizar" : "Guardar";
-
   return (
     <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton>
@@ -127,9 +123,7 @@ const FormNuevaTarea = ({
             <Form.Label>Fecha:</Form.Label>
             <Form.Control
               type="date"
-              {...register("fecha", {
-                required: "La fecha es obligatorio",
-              })}
+              {...register("fecha", { required: "La fecha es obligatoria" })}
             />
             {errors.fecha && (
               <small className="text-danger">{errors.fecha.message}</small>
@@ -139,7 +133,7 @@ const FormNuevaTarea = ({
             <Form.Label>Prioridad</Form.Label>
             <Form.Select
               {...register("prioridad", {
-                required: "La prioridad es obligatorio",
+                required: "La prioridad es obligatoria",
               })}
             >
               <option value="">Seleccionar prioridad...</option>
@@ -154,13 +148,11 @@ const FormNuevaTarea = ({
           <Form.Group className="mb-3" controlId="estado">
             <Form.Label>Estado</Form.Label>
             <Form.Select
-              {...register("estado", {
-                required: "El estado es obligatorio",
-              })}
+              {...register("estado", { required: "El estado es obligatorio" })}
             >
               <option value="">Seleccionar estado...</option>
               <option value="Pendiente">Pendiente</option>
-              <option value="Proceso">En proceso</option>
+              <option value="Proceso">Proceso</option>
               <option value="Completada">Completada</option>
               <option value="Cancelada">Cancelada</option>
               <option value="Reprogramada">Reprogramada</option>
@@ -183,5 +175,4 @@ const FormNuevaTarea = ({
     </Modal>
   );
 };
-
 export default FormNuevaTarea;

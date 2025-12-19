@@ -42,13 +42,14 @@ export const crearCita = async (citaNueva) => {
 export const actualizarCita = async (cita) => {
   try {
     const token = localStorage.getItem("token");
+    const { _id, ...body } = cita; 
     const respuesta = await fetch(`${urlEstudio}/citas/${cita._id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "x-token": token,
       },
-      body: JSON.stringify(cita),
+      body: JSON.stringify(body),
     });
     if (!respuesta.ok) {
       throw new Error("Error al actualizar la cita");

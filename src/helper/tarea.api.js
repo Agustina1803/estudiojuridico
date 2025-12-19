@@ -5,15 +5,14 @@ export const listarTareas = async (estado = "", fecha = "") => {
     const queryParams = new URLSearchParams();
     if (estado) queryParams.append("estado", estado);
     if (fecha) queryParams.append("fecha", fecha);
-    const respuesta = await fetch(
-      `${urlEstudio}/tarea?${queryParams.toString()}`
-    );
+
+    const respuesta = await fetch(`${urlEstudio}/tarea?${queryParams.toString()}`);
     if (!respuesta.ok) {
       throw new Error("Error al listar las tareas");
     }
     return await respuesta.json();
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return [];
   }
 };
@@ -29,7 +28,7 @@ export const crearTarea = async (tareaNueva) => {
       },
       body: JSON.stringify(tareaNueva),
     });
-    console.log("Body recibido:", req.body);
+    console.log("Body enviado (crear):", tareaNueva);
     if (!respuesta.ok) {
       throw new Error("Error al crear la tarea");
     }
@@ -43,17 +42,19 @@ export const crearTarea = async (tareaNueva) => {
 export const actualizarTarea = async (tarea) => {
   try {
     const token = localStorage.getItem("token");
-    const respuesta = await fetch(`${urlEstudio}/tarea/${tarea._id}`, {
+    const { _id, ...body } = tarea; 
+    const respuesta = await fetch(`${urlEstudio}/tarea/${_id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
         "x-token": token,
       },
-      body: JSON.stringify(tarea),
+      body: JSON.stringify(body),
     });
     if (!respuesta.ok) {
       throw new Error("Error al actualizar la tarea");
     }
+    console.log("Body enviado (update):", body);
     return await respuesta.json();
   } catch (error) {
     console.error(error);
