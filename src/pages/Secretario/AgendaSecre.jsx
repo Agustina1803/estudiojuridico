@@ -125,7 +125,7 @@ const AgendaSecre = () => {
       <div className="d-flex justify-content-evenly">
         <BarraBusqueda
           onSearch={setNombre}
-          placeholder="Buscar por cliente o abogado..."
+          placeholder="Buscar por cliente..."
         />
         <BarraBusquedaFecha onDateChange={setFecha} />
       </div>
