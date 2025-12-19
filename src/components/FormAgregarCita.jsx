@@ -3,7 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 
-const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
+const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null, abogados = [] }) => {
   const {
     register,
     handleSubmit,
@@ -24,16 +24,17 @@ const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
 
   useEffect(() => {
     if (itemEditar) {
-      setValue("fecha", itemEditar.fecha || "");
+      setValue("fecha", itemEditar.fecha ? itemEditar.fecha.split("T")[0] : "");
       setValue("hora", itemEditar.hora || "");
       setValue("cliente", itemEditar.cliente || "");
       setValue("tipoEvento", itemEditar.tipoEvento || "");
       setValue("notas", itemEditar.notas || "");
-
-      if (itemEditar.abogado && typeof itemEditar.abogado === "object") {
-        setValue("abogado", itemEditar.abogado._id);
-      } else {
-        setValue("abogado", itemEditar.abogado || "");
+      if (itemEditar.abogado) {
+        const abogadoId =
+          typeof itemEditar.abogado === "object"
+            ? itemEditar.abogado._id
+            : itemEditar.abogado;
+        setValue("abogado", abogadoId || "");
       }
     } else {
       reset();
@@ -73,24 +74,6 @@ const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
 
   const modalTitle = itemEditar ? "Editar Cita" : "Nueva Cita";
   const submitButtonText = itemEditar ? "Actualizar" : "Guardar";
-
-  const [abogados, setAbogados] = useState([]);
-  useEffect(() => {
-    const cargarAbogados = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const respuesta = await fetch(
-          `${import.meta.env.VITE_API_USUARIOS}?role=abog`,
-          { headers: { "x-token": token } }
-        );
-        const dato = await respuesta.json();
-        setAbogados(dato);
-      } catch (error) {
-        console.error("Error al cargar abogados:", error);
-      }
-    };
-    cargarAbogados();
-  }, []);
 
   return (
     <Modal show={show} onHide={onHide} centered>
@@ -175,14 +158,12 @@ const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
           <Form.Group controlId="abogado" className="mt-3">
             <Form.Label>Abogado asignado</Form.Label>
             <Form.Select {...register("abogado", { required: true })}>
-              {" "}
-              <option value="">Seleccione un abogado</option>{" "}
+              <option value="">Seleccione un abogado</option>
               {abogados.map((abog) => (
                 <option key={abog._id} value={abog._id}>
-                  {" "}
-                  {abog.nombre} {abog.apellido}{" "}
+                  {abog.nombre} {abog.apellido}
                 </option>
-              ))}{" "}
+              ))}
             </Form.Select>
             {errors.abogado && (
               <small className="text-danger">{errors.abogado.message}</small>
