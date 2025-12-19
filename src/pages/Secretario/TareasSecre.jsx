@@ -48,10 +48,8 @@ const TareasSecre = () => {
             : tarea.abogado,
       }));
       setFilasFiltradas(tareaTransformada);
-      console.log("Datos crudos recibidos:", data);
     } catch (error) {
       console.error("Error al obtener la tarea:", error);
-      setFilasFiltradas([]);
     }
   };
 
