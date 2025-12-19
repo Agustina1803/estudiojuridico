@@ -1,14 +1,21 @@
 const urlEstudio = import.meta.env.VITE_URL_DESARROLLO;
 
-export const listarTareas = async () =>{
-    try{
-        const respuesta = await fetch(`${urlEstudio}/tarea`);
-        if(!respuesta.ok){
-            throw new Error("Error al obtener tareas");
-        } 
-        return await respuesta.json();
-    }catch(error){
-        console.error(error);
-        return null;
+export const listarCita  = async (estado = "", fecha = "") => {
+  try {
+    const queryParams = new URLSearchParams();
+    if (estado) queryParams.append("estado", estado);
+    if (fecha) queryParams.append("fecha", fecha);
+    const respuesta = await fetch(
+      `${urlEstudio}/tareas?${queryParams.toString()}`
+    );
+    if (!respuesta.ok) {
+      throw new Error("Error al listar las tareas");
     }
+    return await respuesta.json();
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
 }
+
+
