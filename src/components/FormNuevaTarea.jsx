@@ -1,10 +1,14 @@
-import { useEffect, useState } from "react";
-import { Modal, Button, Form, Row, Col } from "react-bootstrap";
+import { useEffect } from "react";
+import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
-
-const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
+const FormNuevaTarea = ({
+  show,
+  onHide,
+  onGuardar,
+  itemEditar = null,
+  abogados = [],
+}) => {
   const {
     register,
     handleSubmit,
@@ -21,57 +25,56 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
       estado: "",
     },
   });
-
   useEffect(() => {
     if (itemEditar) {
-      Object.entries(itemEditar).forEach(([key, value]) => {
-        setValue(key, value || "");
-      });
+      setValue("descripcion", itemEditar.descripcion || "");
+      setValue("prioridad", itemEditar.prioridad || "");
+      setValue("fecha", itemEditar.fecha ? itemEditar.fecha.split("T")[0] : "");
+      setValue("estado", itemEditar.estado || "");
+      if (itemEditar.abogado) {
+        const abogadoId =
+          typeof itemEditar.abogado === "object"
+            ? itemEditar.abogado._id
+            : itemEditar.abogado;
+        setValue("abogado", abogadoId || "");
+      }
     } else {
       reset();
     }
   }, [itemEditar, setValue, reset]);
 
-  const onSubmit = (data) => {
-    const tarea = {
-      id: itemEditar ? itemEditar.id : uuidv4(),
-      ...data,
-    };
-
-    Swal.fire({
-      icon: "success",
-      title: itemEditar ? "¡Tarea actualizada!" : "¡Tarea agregada!",
-      text: itemEditar
-        ? "La tarea fue actualizada exitosamente."
-        : "La tarea fue agregada exitosamente.",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-
-    reset();
-    onHide();
-    onGuardar(tarea);
+  const onSubmit = async (data) => {
+    try {
+      let tareaData = { ...data };
+      tareaData.fecha = new Date(`${data.fecha}T00:00:00`).toISOString();
+      await onGuardar(tareaData, itemEditar?._id);
+      Swal.fire({
+        icon: "success",
+        title: itemEditar ? "¡Tarea actualizada!" : "¡Tarea agregada!",
+        text: itemEditar
+          ? "La tarea fue actualizada exitosamente."
+          : "La tarea fue agregada exitosamente.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      reset();
+      onHide();
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo guardar la tarea. Intenta nuevamente.",
+      });
+    }
   };
 
   const handleCancel = () => {
     reset();
     onHide();
   };
+
   const modalTitle = itemEditar ? "Editar tarea" : "Nueva tarea";
   const submitButtonText = itemEditar ? "Actualizar" : "Guardar";
-
-  const [abogados, setAbogados] = useState([]);
-  useEffect(() => {
-    const usuariosGuardados = localStorage.getItem("usuarios");
-    if (usuariosGuardados) {
-      const usuariosTotales = JSON.parse(usuariosGuardados);
-      const abogadosTotales = usuariosTotales.filter(
-        (usuarios) => usuarios.role === "abog"
-      );
-      setAbogados(abogadosTotales);
-    }
-  }, []);
-
   return (
     <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton>
@@ -104,32 +107,23 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
           </Form.Group>
           <Form.Group className="mb-3" controlId="abogado">
             <Form.Label>Responsable</Form.Label>
-            <Form.Group controlId="abogado" className="mt-3">
-              <Form.Label>Abogado asignado</Form.Label>
-              <Form.Select
-                {...register("abogado", {
-                  required: "El abogado es obligatorio",
-                })}
-              >
-                <option value="">Seleccionar abogado...</option>
-                {abogados.map((abogado) => (
-                  <option key={abogado.id} value={`Dr. ${abogado.apellido}`}>
-                    {`Dr. ${abogado.apellido}`}
-                  </option>
-                ))}
-              </Form.Select>
-              {errors.abogado && (
-                <small className="text-danger">{errors.abogado.message}</small>
-              )}
-            </Form.Group>
+            <Form.Select {...register("abogado", { required: true })}>
+              <option value="">Seleccione un abogado</option>
+              {abogados.map((abog) => (
+                <option key={abog._id} value={abog._id}>
+                  {abog.nombre} {abog.apellido}
+                </option>
+              ))}
+            </Form.Select>
+            {errors.abogado && (
+              <small className="text-danger">{errors.abogado.message}</small>
+            )}
           </Form.Group>
           <Form.Group className="mb-3" controlId="fecha">
             <Form.Label>Fecha:</Form.Label>
             <Form.Control
               type="date"
-              {...register("fecha", {
-                required: "La fecha es obligatorio",
-              })}
+              {...register("fecha", { required: "La fecha es obligatoria" })}
             />
             {errors.fecha && (
               <small className="text-danger">{errors.fecha.message}</small>
@@ -139,7 +133,7 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
             <Form.Label>Prioridad</Form.Label>
             <Form.Select
               {...register("prioridad", {
-                required: "La prioridad es obligatorio",
+                required: "La prioridad es obligatoria",
               })}
             >
               <option value="">Seleccionar prioridad...</option>
@@ -154,13 +148,11 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
           <Form.Group className="mb-3" controlId="estado">
             <Form.Label>Estado</Form.Label>
             <Form.Select
-              {...register("estado", {
-                required: "El estado es obligatorio",
-              })}
+              {...register("estado", { required: "El estado es obligatorio" })}
             >
               <option value="">Seleccionar estado...</option>
               <option value="Pendiente">Pendiente</option>
-              <option value="Proceso">En proceso</option>
+              <option value="Proceso">Proceso</option>
               <option value="Completada">Completada</option>
               <option value="Cancelada">Cancelada</option>
               <option value="Reprogramada">Reprogramada</option>
@@ -183,5 +175,4 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
     </Modal>
   );
 };
-
 export default FormNuevaTarea;

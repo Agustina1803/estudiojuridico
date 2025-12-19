@@ -46,7 +46,7 @@ const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null, abogados 
       if (itemEditar && itemEditar._id) {
         data._id = itemEditar._id;
       }
-      data.fecha = new Date(`${data.fecha}T${data.hora}:00`);
+      data.fecha = new Date(`${data.fecha}T${data.hora}:00`).toISOString();
       await onGuardar(data);
       Swal.fire({
         icon: "success",
