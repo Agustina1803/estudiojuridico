@@ -48,7 +48,7 @@ export const actualizarCita = async (cita) => {
         "Content-Type": "application/json",
         "x-token": token,
       },
-      body: JSON.stringify(cita._id),
+      body: JSON.stringify(cita),
     });
     if (!respuesta.ok) {
       throw new Error("Error al actualizar la cita");

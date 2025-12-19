@@ -107,11 +107,6 @@ const AgendaSecre = () => {
       nuevaCita = await actualizarCita({ ...cita, _id: itemEditar._id });
     } else {
       nuevaCita = await crearCita(cita);
-      await registrarMovimiento({
-        citaId: nuevaCita._id,
-        nombre: nuevaCita.cliente,
-        tipoEvento: "agregarCita",
-      });
     }
 
     if (nuevaCita) {
