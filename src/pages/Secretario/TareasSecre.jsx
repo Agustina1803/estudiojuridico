@@ -6,6 +6,9 @@ import { useState, useEffect } from "react";
 import BarraBusqueda from "../../components/BarraBusqueda";
 import BarraBusquedaFecha from "../../components/BarraBusquedaFecha";
 import "../../styles/estados.css";
+import {
+  listarTareas
+} from "../../helper/tarea.api";
 
 const TareasSecre = () => {
   const columnas = [
@@ -17,19 +20,27 @@ const TareasSecre = () => {
     "Estado",
   ];
   const claves = ["descripcion", "abogado", "fecha", "prioridad", "estado"];
-  const tipo = "tareas";
   const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
   const [busquedaAbogado, setbusquedaAbogado] = useState("");
   const [busquedaFecha, setbusquedaFecha] = useState("");
 
-  useEffect(() => {
-    const tareasGuardadas = localStorage.getItem("tareas");
-    if (tareasGuardadas) {
-      setFilas(JSON.parse(tareasGuardadas));
+  const obtenerFilasFiltradas = async () => {
+    try {
+      const data = await listarTareas(busquedaAbogado, busquedaFecha);
+      const citasTransformadas = data.map((cita) => ({
+        ...cita,
+        abogado:
+          cita.abogado && typeof cita.abogado === "object"
+            ? `${cita.abogado.nombre} ${cita.abogado.apellido}`
+            : cita.abogado,
+      }));
+      setFilasFiltradas(citasTransformadas);
+    } catch (error) {
+      console.error("Error al obtener citas:", error);
     }
-  }, []);
+  };
 
   const abrirModal = () => {
     setItemEditar(null);
