@@ -7,7 +7,10 @@ import BarraBusqueda from "../../components/BarraBusqueda";
 import BarraBusquedaFecha from "../../components/BarraBusquedaFecha";
 import "../../styles/estados.css";
 import {
-  listarTareas
+  listarTareas,
+  crearTarea,
+  actualizarTarea,
+  eliminarTarea,
 } from "../../helper/tarea.api";
 import { listarAbogados } from "../../helper/usuario.Api";
 
@@ -20,32 +23,41 @@ const TareasSecre = () => {
     "Prioridad",
     "Estado",
   ];
-  const claves = ["descripcion", "abogadoNombre", "fecha", "prioridad", "estado"];
- const [filasFiltrada, setFilasFiltradas] = useState([]);
+  const claves = [
+    "descripcion",
+    "abogadoNombre",
+    "fecha",
+    "prioridad",
+    "estado",
+  ];
+
+  const [filasFiltradas, setFilasFiltradas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
-  const [busquedaAbogado, setbusquedaAbogado] = useState("");
+  const [busquedaEstado, setbusquedaEstado] = useState("");
   const [busquedaFecha, setbusquedaFecha] = useState("");
 
   const obtenerFilasFiltradas = async () => {
     try {
-      const data = await listarTareas(busquedaAbogado, busquedaFecha);
-      const tareaTransformado = data.map((tarea) => ({
+      const data = await listarTareas(busquedaEstado, busquedaFecha);
+      const tareaTransformada = data.map((tarea) => ({
         ...tarea,
-        abogado:
+        abogadoNombre:
           tarea.abogado && typeof tarea.abogado === "object"
             ? `${tarea.abogado.nombre} ${tarea.abogado.apellido}`
             : tarea.abogado,
       }));
-      setFilasFiltradas(tareaTransformado);
+      setFilasFiltradas(tareaTransformada);
+      console.log("Datos crudos recibidos:", data);
     } catch (error) {
       console.error("Error al obtener la tarea:", error);
+      setFilasFiltradas([]);
     }
   };
 
-    useEffect(() => {
+  useEffect(() => {
     obtenerFilasFiltradas();
-  }, [busquedaAbogado, busquedaFecha]);
+  }, [busquedaEstado, busquedaFecha]);
 
   const abrirModal = () => {
     setItemEditar(null);
@@ -57,13 +69,13 @@ const TareasSecre = () => {
     setMostrarModal(false);
   };
 
-   const editar = (id) => {
+  const editar = (id) => {
     const tarea = filasFiltradas.find((item) => item._id === id);
     setItemEditar(tarea);
     setMostrarModal(true);
   };
 
-    const [abogados, setAbogados] = useState([]);
+  const [abogados, setAbogados] = useState([]);
   useEffect(() => {
     const cargarAbogados = async () => {
       const data = await listarAbogados();
@@ -72,24 +84,24 @@ const TareasSecre = () => {
     cargarAbogados();
   }, []);
 
-    const agregarTarea = async (tarea) => {
-      let nuevaTarea;
-      if (itemEditar) {
-        nuevaTarea = await actualizarCliente({ ...tarea, _id: itemEditar._id });
-      } else {
-        nuevaTarea = await crearCliente(tarea);
-      }
-  
-      if (nuevaTarea) {
-        obtenerFilasFiltradas();
-        cerrarModal();
-      }
-    };
+  const agregarTarea = async (tarea) => {
+    let nuevaTarea;
+    if (itemEditar) {
+      nuevaTarea = await actualizarTarea({ ...tarea, _id: itemEditar._id });
+    } else {
+      nuevaTarea = await crearTarea(tarea);
+    }
+
+    if (nuevaTarea) {
+      obtenerFilasFiltradas();
+      cerrarModal();
+    }
+  };
 
   const eliminar = async (id) => {
-    const nuevaTarea = filasFiltradas.find((item) => item._id === id);
+    const tarea = filasFiltradas.find((item) => item._id === id);
     const confirmado = await Swal.fire({
-      title: `¿Eliminar la tarea: ${tarea.descipcion}?`,
+      title: `¿Eliminar la tarea: ${tarea.descripcion}?`,
       text: "Este cambio no se puede revertir",
       icon: "warning",
       showCancelButton: true,
@@ -100,7 +112,7 @@ const TareasSecre = () => {
     });
 
     if (confirmado.isConfirmed) {
-      const ok = await eliminarTarea(cita._id);
+      const ok = await eliminarTarea(tarea._id);
       if (ok) {
         Swal.fire({
           title: "Eliminado",
@@ -112,21 +124,11 @@ const TareasSecre = () => {
     }
   };
 
-
-  const filasConColores = filasFiltradas.map((fila) => ({
-    ...fila,
-    estado: (
-      <span className={`estado-${fila.estado?.toLowerCase()}`}>
-        {fila.estado}
-      </span>
-    ),
-  }));
-
   return (
     <>
       <div className="d-flex justify-content-evenly">
         <BarraBusqueda
-          onSearch={setbusquedaAbogado}
+          onSearch={setbusquedaEstado}
           placeholder="Buscar por cliente o monto..."
         />
 
@@ -134,7 +136,7 @@ const TareasSecre = () => {
       </div>
       <Tablageneral
         columnas={columnas}
-        filas={filasConColores}
+        filas={filasFiltradas}
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">

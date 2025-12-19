@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
-import { Modal, Button, Form, Row, Col } from "react-bootstrap";
+import { useEffect} from "react";
+import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
 
-const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
+const FormNuevaTarea = ({
+  show,
+  onHide,
+  onGuardar,
+  itemEditar = null,
+  abogados = [],
+}) => {
   const {
     register,
     handleSubmit,
@@ -24,53 +29,55 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
 
   useEffect(() => {
     if (itemEditar) {
-      Object.entries(itemEditar).forEach(([key, value]) => {
-        setValue(key, value || "");
-      });
+      setValue("descripcion", itemEditar.descripcion || "");
+      setValue("prioridad", itemEditar.prioridad || "");
+      setValue("fecha", itemEditar.fecha);
+      setValue("estado", itemEditar.estado || "");
+      if (itemEditar.abogado) {
+        const abogadoId =
+          typeof itemEditar.abogado === "object"
+            ? itemEditar.abogado._id
+            : itemEditar.abogado;
+        setValue("abogado", abogadoId || "");
+      }
     } else {
       reset();
     }
   }, [itemEditar, setValue, reset]);
 
-  const onSubmit = (data) => {
-    const tarea = {
-      id: itemEditar ? itemEditar.id : uuidv4(),
-      ...data,
-    };
-
-    Swal.fire({
-      icon: "success",
-      title: itemEditar ? "¡Tarea actualizada!" : "¡Tarea agregada!",
-      text: itemEditar
-        ? "La tarea fue actualizada exitosamente."
-        : "La tarea fue agregada exitosamente.",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-
-    reset();
-    onHide();
-    onGuardar(tarea);
+  const onSubmit = async (data) => {
+    try {
+      if (itemEditar && itemEditar._id) {
+        data._id = itemEditar._id;
+      }
+      data.fecha = new Date(`${data.fecha}T${data.hora}:00`);
+      await onGuardar(data);
+      Swal.fire({
+        icon: "success",
+        title: itemEditar ? "¡Tarea actualizada!" : "¡Tarea agregada!",
+        text: itemEditar
+          ? "La tarea fue actualizada exitosamente."
+          : "La tarea fue agregada exitosamente.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      reset();
+      onHide();
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo guardar la tarea. Intenta nuevamente.",
+      });
+    }
   };
-
   const handleCancel = () => {
     reset();
     onHide();
   };
+
   const modalTitle = itemEditar ? "Editar tarea" : "Nueva tarea";
   const submitButtonText = itemEditar ? "Actualizar" : "Guardar";
-
-  const [abogados, setAbogados] = useState([]);
-  useEffect(() => {
-    const usuariosGuardados = localStorage.getItem("usuarios");
-    if (usuariosGuardados) {
-      const usuariosTotales = JSON.parse(usuariosGuardados);
-      const abogadosTotales = usuariosTotales.filter(
-        (usuarios) => usuarios.role === "abog"
-      );
-      setAbogados(abogadosTotales);
-    }
-  }, []);
 
   return (
     <Modal show={show} onHide={onHide} centered>
@@ -104,24 +111,17 @@ const FormNuevaTarea = ({ show, onHide, onGuardar, itemEditar = null }) => {
           </Form.Group>
           <Form.Group className="mb-3" controlId="abogado">
             <Form.Label>Responsable</Form.Label>
-            <Form.Group controlId="abogado" className="mt-3">
-              <Form.Label>Abogado asignado</Form.Label>
-              <Form.Select
-                {...register("abogado", {
-                  required: "El abogado es obligatorio",
-                })}
-              >
-                <option value="">Seleccionar abogado...</option>
-                {abogados.map((abogado) => (
-                  <option key={abogado.id} value={`Dr. ${abogado.apellido}`}>
-                    {`Dr. ${abogado.apellido}`}
-                  </option>
-                ))}
-              </Form.Select>
-              {errors.abogado && (
-                <small className="text-danger">{errors.abogado.message}</small>
-              )}
-            </Form.Group>
+            <Form.Select {...register("abogado", { required: true })}>
+              <option value="">Seleccione un abogado</option>
+              {abogados.map((abog) => (
+                <option key={abog._id} value={abog._id}>
+                  {abog.nombre} {abog.apellido}
+                </option>
+              ))}
+            </Form.Select>
+            {errors.abogado && (
+              <small className="text-danger">{errors.abogado.message}</small>
+            )}
           </Form.Group>
           <Form.Group className="mb-3" controlId="fecha">
             <Form.Label>Fecha:</Form.Label>

@@ -1,12 +1,12 @@
-const urlEstudio = import.meta.env.VITE_URL_DESARROLLO;
+const urlEstudio = import.meta.env.VITE_API_DESARROLLO;
 
-export const listarCita  = async (estado = "", fecha = "") => {
+export const listarTareas = async (estado = "", fecha = "") => {
   try {
     const queryParams = new URLSearchParams();
     if (estado) queryParams.append("estado", estado);
     if (fecha) queryParams.append("fecha", fecha);
     const respuesta = await fetch(
-      `${urlEstudio}/tareas?${queryParams.toString()}`
+      `${urlEstudio}/tarea?${queryParams.toString()}`
     );
     if (!respuesta.ok) {
       throw new Error("Error al listar las tareas");
@@ -14,14 +14,14 @@ export const listarCita  = async (estado = "", fecha = "") => {
     return await respuesta.json();
   } catch (error) {
     console.log(error);
-    return null;
+    return [];
   }
-}
+};
 
 export const crearTarea = async (tareaNueva) => {
   try {
     const token = localStorage.getItem("token");
-    const respuesta = await fetch(`${urlEstudio}/tareas`, {
+    const respuesta = await fetch(`${urlEstudio}/tarea`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -29,21 +29,21 @@ export const crearTarea = async (tareaNueva) => {
       },
       body: JSON.stringify(tareaNueva),
     });
+    console.log("Body recibido:", req.body);
     if (!respuesta.ok) {
       throw new Error("Error al crear la tarea");
     }
     return await respuesta.json();
   } catch (error) {
     console.error(error);
-    return null;
+    return [];
   }
-}
-
+};
 
 export const actualizarTarea = async (tarea) => {
   try {
     const token = localStorage.getItem("token");
-    const respuesta = await fetch(`${urlEstudio}/tareas/${tarea._id}`, {
+    const respuesta = await fetch(`${urlEstudio}/tarea/${tarea._id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -57,26 +57,26 @@ export const actualizarTarea = async (tarea) => {
     return await respuesta.json();
   } catch (error) {
     console.error(error);
-    return null;
+    return [];
   }
-}
+};
 
-export const eliminarCita = async (_id) => {
-    try{
-        const token = localStorage.getItem("token");
-        const respuesta = await fetch(`${urlEstudio}/tareas/${_id}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json",
-                "x-token": token,
-            },
-        });
-        if (!respuesta.ok) {
-            throw new Error("Error al eliminar la tarea");
-        }
-        return true;
-    }catch(error){
-        console.error(error);
-        return false;
+export const eliminarTarea = async (_id) => {
+  try {
+    const token = localStorage.getItem("token");
+    const respuesta = await fetch(`${urlEstudio}/tarea/${_id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "x-token": token,
+      },
+    });
+    if (!respuesta.ok) {
+      throw new Error("Error al eliminar la tarea");
     }
-}
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
