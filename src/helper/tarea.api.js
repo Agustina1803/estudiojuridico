@@ -38,3 +38,45 @@ export const crearTarea = async (tareaNueva) => {
     return null;
   }
 }
+
+
+export const actualizarTarea = async (tarea) => {
+  try {
+    const token = localStorage.getItem("token");
+    const respuesta = await fetch(`${urlEstudio}/tareas/${tarea._id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "x-token": token,
+      },
+      body: JSON.stringify(tarea),
+    });
+    if (!respuesta.ok) {
+      throw new Error("Error al actualizar la tarea");
+    }
+    return await respuesta.json();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export const eliminarCita = async (_id) => {
+    try{
+        const token = localStorage.getItem("token");
+        const respuesta = await fetch(`${urlEstudio}/tareas/${_id}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                "x-token": token,
+            },
+        });
+        if (!respuesta.ok) {
+            throw new Error("Error al eliminar la tarea");
+        }
+        return true;
+    }catch(error){
+        console.error(error);
+        return false;
+    }
+}
