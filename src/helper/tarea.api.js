@@ -18,4 +18,23 @@ export const listarCita  = async (estado = "", fecha = "") => {
   }
 }
 
-
+export const crearTarea = async (tareaNueva) => {
+  try {
+    const token = localStorage.getItem("token");
+    const respuesta = await fetch(`${urlEstudio}/tareas`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-token": token,
+      },
+      body: JSON.stringify(tareaNueva),
+    });
+    if (!respuesta.ok) {
+      throw new Error("Error al crear la tarea");
+    }
+    return await respuesta.json();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
