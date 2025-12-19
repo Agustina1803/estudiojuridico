@@ -3,7 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import Swal from "sweetalert2";
 
-const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
+const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null, abogados = [] }) => {
   const {
     register,
     handleSubmit,
@@ -24,19 +24,29 @@ const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
 
   useEffect(() => {
     if (itemEditar) {
-      Object.entries(itemEditar).forEach(([key, value]) => {
-        setValue(key, value || "");
-      });
+      setValue("fecha", itemEditar.fecha ? itemEditar.fecha.split("T")[0] : "");
+      setValue("hora", itemEditar.hora || "");
+      setValue("cliente", itemEditar.cliente || "");
+      setValue("tipoEvento", itemEditar.tipoEvento || "");
+      setValue("notas", itemEditar.notas || "");
+      if (itemEditar.abogado) {
+        const abogadoId =
+          typeof itemEditar.abogado === "object"
+            ? itemEditar.abogado._id
+            : itemEditar.abogado;
+        setValue("abogado", abogadoId || "");
+      }
     } else {
       reset();
     }
   }, [itemEditar, setValue, reset]);
 
- const onSubmit = async (data) => {
+  const onSubmit = async (data) => {
     try {
       if (itemEditar && itemEditar._id) {
         data._id = itemEditar._id;
       }
+      data.fecha = new Date(`${data.fecha}T${data.hora}:00`);
       await onGuardar(data);
       Swal.fire({
         icon: "success",
@@ -57,7 +67,6 @@ const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
       });
     }
   };
-
   const handleCancel = () => {
     reset();
     onHide();
@@ -65,25 +74,6 @@ const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
 
   const modalTitle = itemEditar ? "Editar Cita" : "Nueva Cita";
   const submitButtonText = itemEditar ? "Actualizar" : "Guardar";
-
- const [abogados, setAbogados] = useState([]);
-  useEffect(() => {
-    const cargarAbogados = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const respuesta = await fetch(
-          `${import.meta.env.VITE_API_USUARIOS}?role=abog`,
-          { headers: { "x-token": token } }
-        );
-        const dato = await respuesta.json();
-        setAbogados(dato);
-      } catch (error) {
-        console.error("Error al cargar abogados:", error);
-      }
-    };
-    cargarAbogados();
-  }, []);
-
 
   return (
     <Modal show={show} onHide={onHide} centered>
@@ -106,34 +96,38 @@ const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
           </Form.Group>
           <Form.Group controlId="hora">
             <Form.Label>Hora</Form.Label>
-            <Form.Select
-              {...register("hora", {
-                required: "La hora es obligatoria",
-              })}
-            >
-              <option value="">Seleccioná una hora</option>
-              <option value="08:00">08:00</option>
-              <option value="08:00">08:30</option>
-              <option value="09:00">09:00</option>
-              <option value="08:00">09:30</option>
-              <option value="10:00">10:00</option>
-              <option value="08:00">10:30</option>
-              <option value="11:00">11:00</option>
-              <option value="08:00">11:30</option>
-              <option value="12:00">12:00</option>
-              <option value="08:00">12:30</option>
-              <option value="13:00">13:00</option>
-              <option value="08:00">13:30</option>
-              <option value="14:00">14:00</option>
-              <option value="08:00">14:30</option>
-              <option value="15:00">15:00</option>
-              <option value="08:00">15:30</option>
-              <option value="16:00">16:00</option>
-              <option value="08:00">16:30</option>
-              <option value="17:00">17:00</option>
-              <option value="08:00">17:30</option>
-              <option value="18:00">18:00</option>
-            </Form.Select>
+            <Form.Group controlId="hora">
+              <Form.Label>Hora</Form.Label>
+              <Form.Select
+                {...register("hora", { required: "La hora es obligatoria" })}
+              >
+                <option value="">Seleccioná una hora</option>
+                <option value="08:00">08:00</option>
+                <option value="08:30">08:30</option>
+                <option value="09:00">09:00</option>
+                <option value="09:30">09:30</option>
+                <option value="10:00">10:00</option>
+                <option value="10:30">10:30</option>
+                <option value="11:00">11:00</option>
+                <option value="11:30">11:30</option>
+                <option value="12:00">12:00</option>
+                <option value="12:30">12:30</option>
+                <option value="13:00">13:00</option>
+                <option value="13:30">13:30</option>
+                <option value="14:00">14:00</option>
+                <option value="14:30">14:30</option>
+                <option value="15:00">15:00</option>
+                <option value="15:30">15:30</option>
+                <option value="16:00">16:00</option>
+                <option value="16:30">16:30</option>
+                <option value="17:00">17:00</option>
+                <option value="17:30">17:30</option>
+                <option value="18:00">18:00</option>
+              </Form.Select>
+              {errors.hora && (
+                <small className="text-danger">{errors.hora.message}</small>
+              )}
+            </Form.Group>
             {errors.hora && (
               <small className="text-danger">{errors.hora.message}</small>
             )}
@@ -163,15 +157,11 @@ const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
           </Form.Group>
           <Form.Group controlId="abogado" className="mt-3">
             <Form.Label>Abogado asignado</Form.Label>
-            <Form.Select
-              {...register("abogado", {
-                required: "El abogado es obligatorio",
-              })}
-            >
-               <option value="">Seleccionar abogado...</option>
-              {abogados.map((abogado) => (
-                <option key={abogado.id} value={`Dr. ${abogado.apellido}`}>
-                  {`Dr. ${abogado.apellido}`}
+            <Form.Select {...register("abogado", { required: true })}>
+              <option value="">Seleccione un abogado</option>
+              {abogados.map((abog) => (
+                <option key={abog._id} value={abog._id}>
+                  {abog.nombre} {abog.apellido}
                 </option>
               ))}
             </Form.Select>
@@ -187,10 +177,10 @@ const FormAgregarCita = ({ show, onHide, onGuardar, itemEditar = null }) => {
                 required: "El tipo de evento es obligatorio",
               })}
             >
-               <option value="">Seleccionar tipo de evento...</option>
+              <option value="">Seleccionar tipo de evento...</option>
               <option value="Audiencia">Audiencia</option>
               <option value="Consulta">Consulta</option>
-              <option value="Reunión">Reunión</option>
+              <option value="Reunion">Reunión</option>
             </Form.Select>
             {errors.tipoEvento && (
               <small className="text-danger">{errors.tipoEvento.message}</small>

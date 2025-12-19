@@ -23,7 +23,14 @@ const AgendaSecre = () => {
     "Tipo de Evento",
     "Notas",
   ];
-  const claves = ["fecha", "hora", "cliente", "abogado", "tipoEvento", "notas"];
+  const claves = [
+    "fecha",
+    "hora",
+    "cliente",
+    "abogadoNombre",
+    "tipoEvento",
+    "notas",
+  ];
   const [filasFiltradas, setFilasFiltradas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
@@ -35,7 +42,7 @@ const AgendaSecre = () => {
       const data = await listarCitas(busquedaNombre, busquedaFecha);
       const citasTransformadas = data.map((cita) => ({
         ...cita,
-        abogado:
+        abogadoNombre:
           cita.abogado && typeof cita.abogado === "object"
             ? `${cita.abogado.nombre} ${cita.abogado.apellido}`
             : cita.abogado,
@@ -107,11 +114,6 @@ const AgendaSecre = () => {
       nuevaCita = await actualizarCita({ ...cita, _id: itemEditar._id });
     } else {
       nuevaCita = await crearCita(cita);
-      await registrarMovimiento({
-        citaId: nuevaCita._id,
-        nombre: nuevaCita.cliente,
-        tipoEvento: "agregarCita",
-      });
     }
 
     if (nuevaCita) {
@@ -125,7 +127,7 @@ const AgendaSecre = () => {
       <div className="d-flex justify-content-evenly">
         <BarraBusqueda
           onSearch={setNombre}
-          placeholder="Buscar por cliente o abogado..."
+          placeholder="Buscar por cliente..."
         />
         <BarraBusquedaFecha onDateChange={setFecha} />
       </div>

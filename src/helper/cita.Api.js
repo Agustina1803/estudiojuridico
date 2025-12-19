@@ -1,8 +1,13 @@
 const urlEstudio = import.meta.env.VITE_API_DESARROLLO;
 
-export const listarCitas = async () => {
+export const listarCitas = async (cliente = "", fecha = "") => {
   try {
-    const respuesta = await fetch(`${urlEstudio}/citas`);
+    const queryParams = new URLSearchParams();
+    if (cliente) queryParams.append("cliente", cliente);
+    if (fecha) queryParams.append("fecha", fecha);
+    const respuesta = await fetch(
+      `${urlEstudio}/citas?${queryParams.toString()}`
+    );
     if (!respuesta.ok) {
       throw new Error("Error al listar las citas");
     }
@@ -43,14 +48,14 @@ export const actualizarCita = async (cita) => {
         "Content-Type": "application/json",
         "x-token": token,
       },
-      body: JSON.stringify(cita._id),
+      body: JSON.stringify(cita),
     });
     if (!respuesta.ok) {
       throw new Error("Error al actualizar la cita");
     }
     return await respuesta.json();
   } catch (error) {
-     console.error(error);
+    console.error(error);
     return null;
   }
 };
@@ -70,7 +75,7 @@ export const eliminarCita = async (_id) => {
     }
     return true;
   } catch (error) {
-     console.error(error);
+    console.error(error);
     return false;
   }
 };
