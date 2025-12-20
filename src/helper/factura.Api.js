@@ -44,3 +44,25 @@ export const crearFactura = async (facturaNueva) => {
     return [];
   }
 };
+
+export const actualizarFactura = async (factura) => {
+  try {
+    const token = localStorage.getItem("token");      
+      const { _id, ...body } = factura;
+      const respuesta = await fetch(`${urlEstudio}/facturacion/${_id}`, {  
+         method: "PUT", 
+         headers: {
+             "Content-Type": "application/json",
+               "x-token": token,
+         },
+         body: JSON.stringify(body),
+     }); 
+      if (!respuesta.ok) {
+      throw new Error("Error al actualizar la factura");
+    } 
+      return await respuesta.json();
+   } catch (error) {
+      console.error(error);
+      return [];
+   }  
+};
