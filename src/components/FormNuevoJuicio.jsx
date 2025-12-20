@@ -1,7 +1,6 @@
 import { useEffect } from "react";
-import { Modal, Button, Form, Row, Col } from "react-bootstrap";
+import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
 
 const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
@@ -25,46 +24,56 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
 
   useEffect(() => {
     if (itemEditar) {
-      Object.entries(itemEditar).forEach(([key, value]) => {
-        setValue(key, value || "");
-      });
+      setValue("nombreDeJuicio", itemEditar.nombreDeJuicio || "");
+      setValue("numeroExpediente", itemEditar.numeroExpediente || "");
+      setValue("nombreCliente", itemEditar.nombreCliente || "");
+      setValue("juzgado", itemEditar.juzgado || "");
+      setValue("fecha", itemEditar.fecha ? itemEditar.fecha.split("T")[0] : "");
     } else {
       reset();
     }
   }, [itemEditar, setValue, reset]);
 
-  const onSubmit = (data) => {
-    const juicio = {
-      id: itemEditar ? itemEditar.id : uuidv4(),
-      numeroExpediente: data.numeroExpediente,
-      nombreDeJuicio: data.nombreDeJuicio,
-      nombreCliente: data.nombreCliente,
-      juzgado: data.juzgado,
-      fecha: data.fecha,
-      seleccionarArchivo: "ArchivoJuicio.pdf",
-    };
-
-    Swal.fire({
-      icon: "success",
-      title: itemEditar
-        ? `¡juicio ${juicio.nombreDeJuicio} fue actualizado!`
-        : "¡juicio agregado!",
-      text: itemEditar
-        ? `El juicio  fue actualizado  exitosamente.`
-        : "El juicio fue agregado exitosamente.",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-
-    reset();
-    onHide();
-    onGuardar(juicio);
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+      formData.append("nombreDeJuicio", data.nombreDeJuicio);
+      formData.append("numeroExpediente", data.numeroExpediente);
+      formData.append("nombreCliente", data.nombreCliente);
+      formData.append("juzgado", data.juzgado);
+      formData.append(
+        "fecha",
+        new Date(`${data.fecha}T00:00:00`).toISOString()
+      );
+      if (data.seleccionarArchivo && data.seleccionarArchivo[0]) {
+        formData.append("seleccionarArchivo", data.seleccionarArchivo[0]);
+      }
+      await onGuardar(formData, itemEditar?._id);
+      Swal.fire({
+        icon: "success",
+        title: itemEditar ? "¡Juicio actualizado!" : "¡Juicio agregado!",
+        text: itemEditar
+          ? "El Juicio fue actualizado exitosamente."
+          : "El Juicio fue agregadao exitosamente.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      reset();
+      onHide();
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error al guardar el juicio",
+        text: "No se pudo guardar el juicio. Inténtalo de nuevo.",
+      });
+    }
   };
 
-  const handleCancel = () => {
+    const handleCancel = () => {
     reset();
     onHide();
   };
+
   const modalTitle = itemEditar ? "Editar juicio" : "Nuevo juicio";
   const submitButtonText = itemEditar ? "Actualizar" : "Guardar";
   const juzgadosTucuman = [
@@ -209,7 +218,7 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
             <Form.Control
               type="file"
               {...register("seleccionarArchivo", {
-                required: "El archivo es obligatorio",
+               required: itemEditar ? false : "El archivo es obligatorio",
               })}
             />
             {errors.seleccionarArchivo && (
