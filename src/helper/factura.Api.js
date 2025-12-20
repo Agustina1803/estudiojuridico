@@ -27,7 +27,7 @@ export const listarFacturas = async (
 export const crearFacturas = async (formData) => {
   try {
     const token = localStorage.getItem("token");
-    const respuesta = await fetch("http://localhost:3001/api/facturacion", {
+    const respuesta = await fetch(`${urlEstudio}/facturacion`, {
       method: "POST",
       headers: {
         "x-token": token,
