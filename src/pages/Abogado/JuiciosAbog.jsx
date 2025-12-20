@@ -9,8 +9,8 @@ import {
   crearJuicios,
   actualizarJuicios,
   eliminarJuicios,
+  descargarFactura
 } from "../../helper/juicios.Api";
-import { crearFacturas } from "../../helper/factura.Api";
 
 const JuiciosAbog = () => {
   const columnas = [
@@ -38,7 +38,7 @@ const JuiciosAbog = () => {
 
   const obtenerFilasFiltradas = async () => {
     try {
-      const data = await listarCitas(busquedaNumeroExpediente);
+      const data = await listarJuicios(busquedaNumeroExpediente);
       const juiciosTransformados = data.map((juicios) => ({
         ...juicios,
         archivoNombre: (
@@ -72,17 +72,17 @@ const JuiciosAbog = () => {
   };
 
   const editar = (id) => {
-    const juicios = filasFiltradas.find((item) => item._id === id);
+    const juicios = filasFiltrada.find((item) => item._id === id);
     setItemEditar(juicios);
     setMostrarModal(true);
   };
 
   const agregarJuicios = async (formData, id) => {
     let nuevoJuicio;
-   if (itemEditar) {
+    if (itemEditar) {
       nuevoJuicio = await actualizarJuicios(formData, id);
     } else {
-      nuevoJuicio = await crearFacturas(formData);
+      nuevoJuicio = await crearJuicios(formData);
     }
     if (nuevoJuicio) {
       obtenerFilasFiltradas();
@@ -103,34 +103,41 @@ const JuiciosAbog = () => {
       cancelButtonText: "Cancelar",
     });
     if (confirmada.isConfirmed) {
-          const ok = await eliminarJuicios(juicios._id);
-          if (ok) {
-            Swal.fire({
-              title: "Eliminado",
-              text: "El juicio fue eliminada correctamente.",
-              icon: "success",
-            });
-            obtenerFilasFiltradas();
-          }
-        }
-      };
-
-  const descargar = (id) => {
-    const cliente = filas.find((item) => item.id === id);
-    Swal.fire({
-      icon: "success",
-      title: `¡${cliente.seleccionarArchivo} descargado!`,
-      timer: 2000,
-      showConfirmButton: false,
-    });
+      const ok = await eliminarJuicios(juicios._id);
+      if (ok) {
+        Swal.fire({
+          title: "Eliminado",
+          text: "El juicio fue eliminada correctamente.",
+          icon: "success",
+        });
+        obtenerFilasFiltradas();
+      }
+    }
   };
 
-
+  const descargar = async (id) => {
+    const respuesta = await descargarFactura(id);
+    if (respuesta) {
+      Swal.fire({
+        icon: "success",
+        title: "¡Factura descargada!",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error al descargar la factura",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    }
+  };
 
   return (
     <>
       <BarraBusqueda
-        onSearch={setBusquedaDeJuicio}
+        onSearch={setBusquedaNumeroExpediente}
         placeholder="Buscar por  juicio o expediente..."
       />
 
@@ -140,9 +147,9 @@ const JuiciosAbog = () => {
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">
-            <Boton action="editar" onClick={() => editar(fila.id)} />
-            <Boton action="eliminar" onClick={() => eliminar(fila.id)} />
-            <Boton action="descargar" onClick={() => descargar(fila.id)} />
+            <Boton action="editar" onClick={() => editar(fila._id)} />
+            <Boton action="eliminar" onClick={() => eliminar(fila._id)} />
+            <Boton action="descargar" onClick={() => descargar(fila._id)} />
           </div>
         )}
       />

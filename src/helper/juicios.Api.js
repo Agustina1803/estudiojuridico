@@ -76,3 +76,17 @@ export const eliminarJuicios = async (_id) => {
     return false;
   }
 };
+
+export const descargarFactura = async (id) => {
+  try {
+    window.open(`${urlEstudio}/juicios/${id}/descargar`, "_blank");
+  } catch (error) {
+    console.error(error);
+    Swal.fire({
+      icon: "error",
+      title: "Error al descargar la factura",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+  }
+};
