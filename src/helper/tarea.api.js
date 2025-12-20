@@ -28,7 +28,6 @@ export const crearTarea = async (tareaNueva) => {
       },
       body: JSON.stringify(tareaNueva),
     });
-    console.log("Body enviado (crear):", tareaNueva);
     if (!respuesta.ok) {
       throw new Error("Error al crear la tarea");
     }
