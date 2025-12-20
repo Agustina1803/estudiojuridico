@@ -66,3 +66,23 @@ export const actualizarFactura = async (factura) => {
       return [];
    }  
 };
+
+export const eliminarFactura = async (_id) => {
+  try {
+    const token = localStorage.getItem("token");
+      const respuesta = await fetch(`${urlEstudio}/facturacion/${_id}`, {
+         method: "DELETE",
+         headers: {
+             "Content-Type": "application/json",
+               "x-token": token,
+         },
+     });
+      if (!respuesta.ok) {
+      throw new Error("Error al eliminar la factura");
+    } 
+      return await respuesta.json();
+   } catch (error) {    
+      console.error(error);
+      return [];
+   }  
+};
