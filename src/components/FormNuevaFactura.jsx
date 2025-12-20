@@ -1,6 +1,5 @@
 import { Modal, Button, Form, InputGroup } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
 import { useEffect } from "react";
 
@@ -25,35 +24,49 @@ const FormNuevaFactura = ({ show, onHide, onGuardar, itemEditar = null }) => {
 
   useEffect(() => {
     if (itemEditar) {
-      Object.entries(itemEditar).forEach(([key, value]) => {
-        setValue(key, value || "");
-      });
+      setValue("fecha", itemEditar.fecha ? itemEditar.fecha.split("T")[0] : "");
+      setValue("nombreCliente", itemEditar.nombreCliente || "");
+      setValue("concepto", itemEditar.concepto || "");
+      setValue("monto", itemEditar.monto || "");
+      setValue("estado", itemEditar.estado || "");
     } else {
       reset();
     }
   }, [itemEditar, setValue, reset]);
 
-  const onSubmit = (data) => {
-    const factura = {
-      id: itemEditar ? itemEditar.id : uuidv4(),
-      fecha: data.fecha,
-      nombreCliente: data.nombreCliente,
-      concepto: data.concepto,
-      monto: data.monto,
-      seleccionarArchivo: "Factura.pdf",
-      estado: data.estado,
-    };
-    Swal.fire({
-      icon: "success",
-      title: `¡${factura.seleccionarArchivo} agregada!`,
-      text: "La factura fue agregada exitosamente.",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-
-    reset();
-    onHide();
-    onGuardar(factura);
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+      formData.append(
+        "fecha",
+        new Date(`${data.fecha}T00:00:00`).toISOString()
+      );
+      formData.append("nombreCliente", data.nombreCliente);
+      formData.append("concepto", data.concepto);
+      formData.append("monto", data.monto);
+      formData.append("estado", data.estado);
+      if (data.seleccionarArchivo && data.seleccionarArchivo[0]) {
+        formData.append("seleccionarArchivo", data.seleccionarArchivo[0]);
+      }
+      await onGuardar(formData, itemEditar?._id);
+      Swal.fire({
+        icon: "success",
+        title: itemEditar ? "¡Factura actualizada!" : "¡Factura agregada!",
+        text: itemEditar
+          ? "La factura fue actualizada exitosamente."
+          : "La factura fue agregada exitosamente.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      reset();
+      onHide();
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error al guardar la factura",
+        text: "No se pudo guardar la factura. Inténtalo de nuevo.",
+      });
+    }
   };
 
   const handleCancel = () => {
@@ -134,7 +147,7 @@ const FormNuevaFactura = ({ show, onHide, onGuardar, itemEditar = null }) => {
             <Form.Control
               type="file"
               {...register("seleccionarArchivo", {
-                required: "El archivo es obligatorio",
+                required: itemEditar ? false : "El archivo es obligatorio",
               })}
             />
             {errors.seleccionarArchivo && (

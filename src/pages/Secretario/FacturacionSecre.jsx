@@ -12,7 +12,7 @@ import {
   crearFacturas,
   actualizarFacturas,
   eliminarFacturas,
-  descargarFacturas,
+  descargarFactura,
 } from "../../helper/factura.Api";
 
 const FacturacionSecre = () => {
@@ -21,7 +21,7 @@ const FacturacionSecre = () => {
     "Fecha",
     "Cliente",
     "Concepto",
-    "Factura",
+    "Archivo",
     "Monto",
     "Estado",
   ];
@@ -29,7 +29,7 @@ const FacturacionSecre = () => {
     "fecha",
     "nombreCliente",
     "concepto",
-    "seleccionarArchivo",
+    "archivoNombre",
     "monto",
     "estado",
   ];
@@ -48,8 +48,18 @@ const FacturacionSecre = () => {
         busquedaEstado,
         busquedaFecha
       );
-      const facturaTransformada = data.map((facturas) => ({
-        ...facturas,
+      const facturaTransformada = data.map((factura) => ({
+        ...factura,
+        archivoNombre: (
+          <a
+            href={factura.seleccionarArchivo?.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {" "}
+            {factura.seleccionarArchivo?.nombre || "archivo"}{" "}
+          </a>
+        ),
       }));
       setFilasFiltradas(facturaTransformada);
     } catch (error) {
@@ -72,7 +82,7 @@ const FacturacionSecre = () => {
   };
 
   const editar = (id) => {
-    const cliente = filasFiltradas.find((item) => item._id === id);
+    const facturas = filasFiltradas.find((item) => item._id === id);
     setItemEditar(facturas);
     setMostrarModal(true);
   };
@@ -80,7 +90,7 @@ const FacturacionSecre = () => {
   const eliminar = async (id) => {
     const facturas = filasFiltradas.find((item) => item._id === id);
     const confirmada = await Swal.fire({
-      title: `¿Eliminar la ${facturas.factura} del cliente ${facturas.nombreCliente}?`,
+      title: `¿Eliminar la factura del cliente ${facturas.nombreCliente}?`,
       text: "Este cambio no se puede revertir",
       icon: "warning",
       showCancelButton: true,
@@ -102,17 +112,13 @@ const FacturacionSecre = () => {
     }
   };
 
-  const agregarFactura = async (facturas) => {
+  const agregarFactura = async (formData, id) => {
     let nuevaFactura;
     if (itemEditar) {
-      nuevaFactura = await actualizarFacturas({
-        ...facturas,
-        _id: itemEditar._id,
-      });
+      nuevaFactura = await actualizarFacturas(formData, id);
     } else {
-      nuevaFactura = await crearFacturas(facturas);
+      nuevaFactura = await crearFacturas(formData);
     }
-
     if (nuevaFactura) {
       obtenerFilasFiltradas();
       cerrarModal();
@@ -120,7 +126,7 @@ const FacturacionSecre = () => {
   };
 
   const descargar = async (id) => {
-    const respuesta = await descargarFacturas(id);
+    const respuesta = await descargarFactura(id);
     if (respuesta) {
       Swal.fire({
         icon: "success",
@@ -154,9 +160,9 @@ const FacturacionSecre = () => {
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">
-            <Boton action="editar" onClick={() => editar(fila.id)} />
-            <Boton action="eliminar" onClick={() => eliminar(fila.id)} />
-            <Boton action="descargar" onClick={() => descargar(fila.id)} />
+            <Boton action="editar" onClick={() => editar(fila._id)} />
+            <Boton action="eliminar" onClick={() => eliminar(fila._id)} />
+            <Boton action="descargar" onClick={() => descargar(fila._id)} />
           </div>
         )}
       />

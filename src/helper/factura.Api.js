@@ -24,38 +24,33 @@ export const listarFacturas = async (
   }
 };
 
-export const crearFacturas = async (facturaNueva) => {
+export const crearFacturas = async (formData) => {
   try {
     const token = localStorage.getItem("token");
-    const respuesta = await fetch(`${urlEstudio}/facturacion`, {
+    const respuesta = await fetch("http://localhost:3001/api/facturacion", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         "x-token": token,
       },
-      body: JSON.stringify(facturaNueva),
+      body: formData,
     });
-    if (!respuesta.ok) {
-      throw new Error("Error al crear la factura");
-    }
+    if (!respuesta.ok) throw new Error("Error al crear la factura");
     return await respuesta.json();
   } catch (error) {
     console.error(error);
-    return [];
+    return null;
   }
 };
 
-export const actualizarFacturas = async (factura) => {
+export const actualizarFacturas = async (formData, id) => {
   try {
     const token = localStorage.getItem("token");
-    const { _id, ...body } = factura;
-    const respuesta = await fetch(`${urlEstudio}/facturacion/${_id}`, {
+    const respuesta = await fetch(`${urlEstudio}/facturacion/${id}`, {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json",
         "x-token": token,
       },
-      body: JSON.stringify(body),
+      body: formData,
     });
     if (!respuesta.ok) {
       throw new Error("Error al actualizar la factura");
@@ -89,10 +84,7 @@ export const eliminarFacturas = async (_id) => {
 
 export const descargarFactura = async (id) => {
   try {
-    window.open(
-      `${urlEstudio}/facturacion/${id}/descargar`,
-      "_blank"
-    );
+    window.open(`${urlEstudio}/facturacion/${id}/descargar`, "_blank");
   } catch (error) {
     console.error(error);
     Swal.fire({
