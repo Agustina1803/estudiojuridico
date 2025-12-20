@@ -11,7 +11,8 @@ import {
   listarFacturas,
   crearFacturas,
   actualizarFacturas,
-  eliminarFacturas 
+  eliminarFacturas,
+  descargarFacturas,
 } from "../../helper/factura.Api";
 
 const FacturacionSecre = () => {
@@ -42,7 +43,11 @@ const FacturacionSecre = () => {
 
   const obtenerFilasFiltradas = async () => {
     try {
-      const data = await listarFacturas(busquedaMonto,busquedaEstado, busquedaFecha);
+      const data = await listarFacturas(
+        busquedaMonto,
+        busquedaEstado,
+        busquedaFecha
+      );
       const facturaTransformada = data.map((facturas) => ({
         ...facturas,
       }));
@@ -52,10 +57,9 @@ const FacturacionSecre = () => {
     }
   };
 
-    useEffect(() => {
+  useEffect(() => {
     obtenerFilasFiltradas();
   }, [busquedaEstado, busquedaFecha]);
-
 
   const abrirModal = () => {
     setItemEditar(null);
@@ -86,48 +90,61 @@ const FacturacionSecre = () => {
       cancelButtonText: "Cancelar",
     });
     if (confirmada.isConfirmed) {
-          const ok = await eliminarFacturas(facturas._id);
-          if (ok) {
-            Swal.fire({
-              title: "Eliminado",
-              text: "La tarea fue eliminada correctamente.",
-              icon: "success",
-            });
-            obtenerFilasFiltradas();
-          }
-        }
-      };
-
- 
-  const agregarFactura = async (facturas) => {
-     let nuevaFactura;
-     if (itemEditar) {
-       nuevaFactura = await actualizarFacturas({ ...facturas, _id: itemEditar._id });
-     } else {
-       nuevaFactura = await crearFacturas(facturas);
-     }
- 
-     if (nuevaFactura) {
-       obtenerFilasFiltradas();
-       cerrarModal();
-     }
-   };
-
-  const descargar = (id) => {
-    const cliente = filas.find((item) => item.id === id);
-    Swal.fire({
-      icon: "success",
-      title: `¡${cliente.seleccionarArchivo} descargado!`,
-      timer: 2000,
-      showConfirmButton: false,
-    });
+      const ok = await eliminarFacturas(facturas._id);
+      if (ok) {
+        Swal.fire({
+          title: "Eliminado",
+          text: "La tarea fue eliminada correctamente.",
+          icon: "success",
+        });
+        obtenerFilasFiltradas();
+      }
+    }
   };
 
+  const agregarFactura = async (facturas) => {
+    let nuevaFactura;
+    if (itemEditar) {
+      nuevaFactura = await actualizarFacturas({
+        ...facturas,
+        _id: itemEditar._id,
+      });
+    } else {
+      nuevaFactura = await crearFacturas(facturas);
+    }
+
+    if (nuevaFactura) {
+      obtenerFilasFiltradas();
+      cerrarModal();
+    }
+  };
+
+  const descargar = async (id) => {
+    const respuesta = await descargarFacturas(id);
+    if (respuesta) {
+      Swal.fire({
+        icon: "success",
+        title: "¡Factura descargada!",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error al descargar la factura",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    }
+  };
 
   return (
     <>
       <div className="d-flex justify-content-evenly">
-        <BarraBusqueda onSearch={setNombreMonto} placeholder="Buscar por cliente o monto..." />
+        <BarraBusqueda
+          onSearch={setNombreMonto}
+          placeholder="Buscar por cliente o monto..."
+        />
         <BarraBusquedaEstado onEstadoChange={setEstado} />
         <BarraBusquedaFecha onDateChange={setFecha} />
       </div>

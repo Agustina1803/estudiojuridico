@@ -47,42 +47,59 @@ export const crearFacturas = async (facturaNueva) => {
 
 export const actualizarFacturas = async (factura) => {
   try {
-    const token = localStorage.getItem("token");      
-      const { _id, ...body } = factura;
-      const respuesta = await fetch(`${urlEstudio}/facturacion/${_id}`, {  
-         method: "PUT", 
-         headers: {
-             "Content-Type": "application/json",
-               "x-token": token,
-         },
-         body: JSON.stringify(body),
-     }); 
-      if (!respuesta.ok) {
+    const token = localStorage.getItem("token");
+    const { _id, ...body } = factura;
+    const respuesta = await fetch(`${urlEstudio}/facturacion/${_id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "x-token": token,
+      },
+      body: JSON.stringify(body),
+    });
+    if (!respuesta.ok) {
       throw new Error("Error al actualizar la factura");
-    } 
-      return await respuesta.json();
-   } catch (error) {
-      console.error(error);
-      return [];
-   }  
+    }
+    return await respuesta.json();
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
 };
 
 export const eliminarFacturas = async (_id) => {
   try {
     const token = localStorage.getItem("token");
-      const respuesta = await fetch(`${urlEstudio}/facturacion/${_id}`, {
-         method: "DELETE",
-         headers: {
-             "Content-Type": "application/json",
-               "x-token": token,
-         },
-     });
-      if (!respuesta.ok) {
+    const respuesta = await fetch(`${urlEstudio}/facturacion/${_id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "x-token": token,
+      },
+    });
+    if (!respuesta.ok) {
       throw new Error("Error al eliminar la factura");
-    } 
-      return await respuesta.json();
-   } catch (error) {    
-      console.error(error);
-      return [];
-   }  
+    }
+    return await respuesta.json();
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+export const descargarFactura = async (id) => {
+  try {
+    window.open(
+      `${urlEstudio}/facturacion/${id}/descargar`,
+      "_blank"
+    );
+  } catch (error) {
+    console.error(error);
+    Swal.fire({
+      icon: "error",
+      title: "Error al descargar la factura",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+  }
 };
