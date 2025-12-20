@@ -4,6 +4,12 @@ import FormNuevoJuicio from "../../components/FormNuevoJuicio";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import BarraBusqueda from "../../components/BarraBusqueda";
+import {
+  listarJuicios,
+  crearJuicios,
+  actualizarJuicios,
+  eliminarJuicios,
+} from "../../helper/juicios.Api";
 
 const JuiciosAbog = () => {
   const columnas = [
@@ -23,18 +29,38 @@ const JuiciosAbog = () => {
     "fecha",
     "seleccionarArchivo",
   ];
-  const tipo = "juicios";
-  const [filas, setFilas] = useState([]);
+
+  const [filasFiltrada, setFilasFiltradas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
-  const [busquedaDeJuicio, setBusquedaDeJuicio] = useState("");
+  const [busquedaNumeroExpediente, setBusquedaNumeroExpediente] = useState("");
+
+  const obtenerFilasFiltradas = async () => {
+    try {
+      const data = await listarCitas(busquedaNumeroExpediente);
+      const juiciosTransformados = data.map((juicios) => ({
+        ...juicios,
+        archivoNombre: (
+          <a
+            href={juicios.seleccionarArchivo?.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {juicios.seleccionarArchivo?.nombre || "archivo"}
+          </a>
+        ),
+      }));
+      setFilasFiltradas(juiciosTransformados);
+    } catch (error) {
+      console.error("Error al obtener el juicio:");
+    }
+  };
 
   useEffect(() => {
-    const juiciosGuardados = localStorage.getItem("juicios");
-    if (juiciosGuardados) {
-      setFilas(JSON.parse(juiciosGuardados));
-    }
-  }, []);
+    obtenerFilasFiltradas();
+  }, [busquedaNumeroExpediente]);
+
+
 
   const abrirModal = () => {
     setItemEditar(null);
@@ -47,13 +73,13 @@ const JuiciosAbog = () => {
   };
 
   const editar = (id) => {
-    const juicio = filas.find((item) => item.id === id);
-    setItemEditar(juicio);
+    const juicios = filasFiltrada.find((item) => item._id === id);
+    setItemEditar(juicios);
     setMostrarModal(true);
   };
 
-  const agregarJuicios = (juicio) => {
-    let actualizadas;
+  const agregarJuicios = (formData, id) => {
+    let nuevoJuicio;
     if (itemEditar) {
       actualizadas = filas.map((fila) =>
         fila.id === juicio.id ? juicio : fila

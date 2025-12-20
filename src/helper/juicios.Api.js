@@ -17,7 +17,7 @@ export const listarJuicios = async (numeroExpediente = "") => {
   }
 };
 
-export const crearJuicio = async (juicioNueva) => {
+export const crearJuicios = async (juicioNueva) => {
   try {
     const token = localStorage.getItem("token");
     const respuesta = await fetch(`${urlEstudio}/juicios`, {
@@ -38,7 +38,7 @@ export const crearJuicio = async (juicioNueva) => {
   }
 };
 
-export const actualizarJuicio = async (juicio) => {
+export const actualizarJuicios = async (juicio) => {
   try {
     const token = localStorage.getItem("token");
     const { _id, ...body } = juicio; 
@@ -60,7 +60,7 @@ export const actualizarJuicio = async (juicio) => {
   }
 };
 
-export const eliminarJuicio = async (_id) => {
+export const eliminarJuicios = async (_id) => {
   try {
     const token = localStorage.getItem("token");
     const respuesta = await fetch(`${urlEstudio}/juicios/${_id}`, {

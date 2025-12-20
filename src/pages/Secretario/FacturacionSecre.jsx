@@ -57,8 +57,8 @@ const FacturacionSecre = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            {" "}
-            {factura.seleccionarArchivo?.nombre || "archivo"}{" "}
+           
+            {factura.seleccionarArchivo?.nombre || "archivo"}
           </a>
         ),
       }));
