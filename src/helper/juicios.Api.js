@@ -3,7 +3,7 @@ const urlEstudio = import.meta.env.VITE_API_DESARROLLO;
 export const listarJuicios = async (numeroExpediente = "") => {
   try {
     const queryParams = new URLSearchParams();
-    if (numeroExpediente) queryParams.append("cliente", numeroExpediente);
+    if (numeroExpediente) queryParams.append("numeroExpediente", numeroExpediente);
     const respuesta = await fetch(
       `${urlEstudio}/juicios?${queryParams.toString()}`
     );
@@ -13,20 +13,19 @@ export const listarJuicios = async (numeroExpediente = "") => {
     return await respuesta.json();
   } catch (error) {
     console.log(error);
-    return null;
+    return [];
   }
 };
 
-export const crearJuicios = async (juicioNueva) => {
+export const crearJuicios = async (formData) => {
   try {
     const token = localStorage.getItem("token");
     const respuesta = await fetch(`${urlEstudio}/juicios`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         "x-token": token,
       },
-      body: JSON.stringify(juicioNueva),
+      body:formData,
     });
     if (!respuesta.ok) {
       throw new Error("Error al crear la cita");
@@ -38,17 +37,15 @@ export const crearJuicios = async (juicioNueva) => {
   }
 };
 
-export const actualizarJuicios = async (juicio) => {
+export const actualizarJuicios = async (formData, id) => {
   try {
     const token = localStorage.getItem("token");
-    const { _id, ...body } = juicio; 
-    const respuesta = await fetch(`${urlEstudio}/juicios/${juicio._id}`, {
+    const respuesta = await fetch(`${urlEstudio}/juicios/${id}`, {
       method: "PUT",
       headers: {
-        "Content-Type": "application/json",
         "x-token": token,
       },
-      body: JSON.stringify(body),
+      body: formData,
     });
     if (!respuesta.ok) {
       throw new Error("Error al actualizar el juicio");

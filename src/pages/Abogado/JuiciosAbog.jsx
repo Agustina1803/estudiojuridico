@@ -10,6 +10,7 @@ import {
   actualizarJuicios,
   eliminarJuicios,
 } from "../../helper/juicios.Api";
+import { crearFacturas } from "../../helper/factura.Api";
 
 const JuiciosAbog = () => {
   const columnas = [
@@ -60,8 +61,6 @@ const JuiciosAbog = () => {
     obtenerFilasFiltradas();
   }, [busquedaNumeroExpediente]);
 
-
-
   const abrirModal = () => {
     setItemEditar(null);
     setMostrarModal(true);
@@ -73,29 +72,28 @@ const JuiciosAbog = () => {
   };
 
   const editar = (id) => {
-    const juicios = filasFiltrada.find((item) => item._id === id);
+    const juicios = filasFiltradas.find((item) => item._id === id);
     setItemEditar(juicios);
     setMostrarModal(true);
   };
 
-  const agregarJuicios = (formData, id) => {
+  const agregarJuicios = async (formData, id) => {
     let nuevoJuicio;
-    if (itemEditar) {
-      actualizadas = filas.map((fila) =>
-        fila.id === juicio.id ? juicio : fila
-      );
+   if (itemEditar) {
+      nuevoJuicio = await actualizarJuicios(formData, id);
     } else {
-      actualizadas = [...filas, juicio];
+      nuevoJuicio = await crearFacturas(formData);
     }
-    setFilas(actualizadas);
-    localStorage.setItem(tipo, JSON.stringify(actualizadas));
-    cerrarModal();
+    if (nuevoJuicio) {
+      obtenerFilasFiltradas();
+      cerrarModal();
+    }
   };
 
-  const eliminar = (id) => {
-    const juicio = filas.find((item) => item.id === id);
+  const eliminar = async (id) => {
+    const juicios = filasFiltrada.find((item) => item._id === id);
     Swal.fire({
-      title: `¿Eliminar a jucio ${juicio.nombreDeJuicio}?`,
+      title: `¿Eliminar a jucio ${juicios.nombreDeJuicio}?`,
       text: "Este cambio no se puede revertir",
       icon: "warning",
       showCancelButton: true,
@@ -103,19 +101,19 @@ const JuiciosAbog = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const actualizadas = filas.filter((item) => item.id !== id);
-        setFilas(actualizadas);
-        localStorage.setItem(tipo, JSON.stringify(actualizadas));
-        Swal.fire({
-          title: "Eliminado",
-          text: "El juicio fue eliminado correctamente.",
-          icon: "success",
-        });
-      }
     });
-  };
+    if (confirmada.isConfirmed) {
+          const ok = await eliminarJuicios(juicios._id);
+          if (ok) {
+            Swal.fire({
+              title: "Eliminado",
+              text: "El juicio fue eliminada correctamente.",
+              icon: "success",
+            });
+            obtenerFilasFiltradas();
+          }
+        }
+      };
 
   const descargar = (id) => {
     const cliente = filas.find((item) => item.id === id);
@@ -127,15 +125,7 @@ const JuiciosAbog = () => {
     });
   };
 
-  const filasFiltradas = filas.filter(
-    (fila) =>
-      busquedaDeJuicio === "" ||
-      fila.nombreDeJuicio
-        ?.toLowerCase()
-        .trim()
-        .includes(busquedaDeJuicio.toLowerCase()) ||
-      fila.numeroExpediente?.toString().trim().includes(busquedaDeJuicio)
-  );
+
 
   return (
     <>
@@ -146,7 +136,7 @@ const JuiciosAbog = () => {
 
       <Tablageneral
         columnas={columnas}
-        filas={filasFiltradas}
+        filas={filasFiltrada}
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">
