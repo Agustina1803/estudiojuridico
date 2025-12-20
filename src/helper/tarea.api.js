@@ -1,49 +1,48 @@
 const urlEstudio = import.meta.env.VITE_API_DESARROLLO;
 
-export const listarCitas = async (cliente = "", fecha = "") => {
+export const listarTareas = async (estado = "", fecha = "") => {
   try {
     const queryParams = new URLSearchParams();
-    if (cliente) queryParams.append("cliente", cliente);
+    if (estado) queryParams.append("estado", estado);
     if (fecha) queryParams.append("fecha", fecha);
-    const respuesta = await fetch(
-      `${urlEstudio}/citas?${queryParams.toString()}`
-    );
+
+    const respuesta = await fetch(`${urlEstudio}/tarea?${queryParams.toString()}`);
     if (!respuesta.ok) {
-      throw new Error("Error al listar las citas");
+      throw new Error("Error al listar las tareas");
     }
     return await respuesta.json();
   } catch (error) {
-    console.log(error);
-    return null;
+    console.error(error);
+    return [];
   }
 };
 
-export const crearCita = async (citaNueva) => {
+export const crearTarea = async (tareaNueva) => {
   try {
     const token = localStorage.getItem("token");
-    const respuesta = await fetch(`${urlEstudio}/citas`, {
+    const respuesta = await fetch(`${urlEstudio}/tarea`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "x-token": token,
       },
-      body: JSON.stringify(citaNueva),
+      body: JSON.stringify(tareaNueva),
     });
     if (!respuesta.ok) {
-      throw new Error("Error al crear la cita");
+      throw new Error("Error al crear la tarea");
     }
     return await respuesta.json();
   } catch (error) {
     console.error(error);
-    return null;
+    return [];
   }
 };
 
-export const actualizarCita = async (cita) => {
+export const actualizarTarea = async (tarea) => {
   try {
     const token = localStorage.getItem("token");
-    const { _id, ...body } = cita; 
-    const respuesta = await fetch(`${urlEstudio}/citas/${cita._id}`, {
+    const { _id, ...body } = tarea; 
+    const respuesta = await fetch(`${urlEstudio}/tarea/${_id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -52,19 +51,19 @@ export const actualizarCita = async (cita) => {
       body: JSON.stringify(body),
     });
     if (!respuesta.ok) {
-      throw new Error("Error al actualizar la cita");
+      throw new Error("Error al actualizar la tarea");
     }
     return await respuesta.json();
   } catch (error) {
     console.error(error);
-    return null;
+    return [];
   }
 };
 
-export const eliminarCita = async (_id) => {
+export const eliminarTarea = async (_id) => {
   try {
     const token = localStorage.getItem("token");
-    const respuesta = await fetch(`${urlEstudio}/citas/${_id}`, {
+    const respuesta = await fetch(`${urlEstudio}/tarea/${_id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -72,7 +71,7 @@ export const eliminarCita = async (_id) => {
       },
     });
     if (!respuesta.ok) {
-      throw new Error("Error al eliminar la cita");
+      throw new Error("Error al eliminar la tarea");
     }
     return true;
   } catch (error) {
