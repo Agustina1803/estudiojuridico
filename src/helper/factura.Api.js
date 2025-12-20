@@ -24,7 +24,7 @@ export const listarFacturas = async (
   }
 };
 
-export const crearFactura = async (facturaNueva) => {
+export const crearFacturas = async (facturaNueva) => {
   try {
     const token = localStorage.getItem("token");
     const respuesta = await fetch(`${urlEstudio}/facturacion`, {
@@ -45,7 +45,7 @@ export const crearFactura = async (facturaNueva) => {
   }
 };
 
-export const actualizarFactura = async (factura) => {
+export const actualizarFacturas = async (factura) => {
   try {
     const token = localStorage.getItem("token");      
       const { _id, ...body } = factura;
@@ -67,7 +67,7 @@ export const actualizarFactura = async (factura) => {
    }  
 };
 
-export const eliminarFactura = async (_id) => {
+export const eliminarFacturas = async (_id) => {
   try {
     const token = localStorage.getItem("token");
       const respuesta = await fetch(`${urlEstudio}/facturacion/${_id}`, {

@@ -7,6 +7,12 @@ import BarraBusqueda from "../../components/BarraBusqueda";
 import BarraBusquedaFecha from "../../components/BarraBusquedaFecha";
 import BarraBusquedaEstado from "../../components/BarraBusquedaEstado";
 import "../../styles/estados.css";
+import {
+  listarFacturas,
+  crearFacturas,
+  actualizarFacturas,
+  eliminarFacturas 
+} from "../../helper/factura.Api";
 
 const FacturacionSecre = () => {
   const columnas = [
@@ -26,20 +32,30 @@ const FacturacionSecre = () => {
     "monto",
     "estado",
   ];
-  const tipo = "facturas";
-  const [filas, setFilas] = useState([]);
+
+  const [filasFiltradas, setFilasFiltradas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
-  const [busquedaNombreMonto, setNombreMonto] = useState("");
+  const [busquedaMonto, setNombreMonto] = useState("");
   const [busquedaEstado, setEstado] = useState("");
   const [busquedaFecha, setFecha] = useState("");
 
-  useEffect(() => {
-    const facturasGuardadas = localStorage.getItem("facturas");
-    if (facturasGuardadas) {
-      setFilas(JSON.parse(facturasGuardadas));
+  const obtenerFilasFiltradas = async () => {
+    try {
+      const data = await listarFacturas(busquedaMonto,busquedaEstado, busquedaFecha);
+      const facturaTransformada = data.map((facturas) => ({
+        ...facturas,
+      }));
+      setFilasFiltradas(facturaTransformada);
+    } catch (error) {
+      console.error("Error al obtener la factura:", error);
     }
-  }, []);
+  };
+
+    useEffect(() => {
+    obtenerFilasFiltradas();
+  }, [busquedaEstado, busquedaFecha]);
+
 
   const abrirModal = () => {
     setItemEditar(null);
@@ -52,15 +68,15 @@ const FacturacionSecre = () => {
   };
 
   const editar = (id) => {
-    const cliente = filas.find((item) => item.id === id);
-    setItemEditar(cliente);
+    const cliente = filasFiltradas.find((item) => item._id === id);
+    setItemEditar(facturas);
     setMostrarModal(true);
   };
 
-  const eliminar = (id) => {
-    const cliente = filas.find((item) => item.id === id);
-    Swal.fire({
-      title: `¿Eliminar la ${cliente.seleccionarArchivo} del cliente ${cliente.nombreCliente}?`,
+  const eliminar = async (id) => {
+    const facturas = filasFiltradas.find((item) => item._id === id);
+    const confirmada = await Swal.fire({
+      title: `¿Eliminar la ${facturas.factura} del cliente ${facturas.nombreCliente}?`,
       text: "Este cambio no se puede revertir",
       icon: "warning",
       showCancelButton: true,
@@ -68,51 +84,34 @@ const FacturacionSecre = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const actualizadas = filas.filter((item) => item.id !== id);
-        setFilas(actualizadas);
-        localStorage.setItem(tipo, JSON.stringify(actualizadas));
-        Swal.fire({
-          title: "Eliminado",
-          text: `La ${cliente.factura} fue eliminada correctamente.`,
-          icon: "success",
-        });
-      }
     });
-  };
+    if (confirmada.isConfirmed) {
+          const ok = await eliminarFacturas(facturas._id);
+          if (ok) {
+            Swal.fire({
+              title: "Eliminado",
+              text: "La tarea fue eliminada correctamente.",
+              icon: "success",
+            });
+            obtenerFilasFiltradas();
+          }
+        }
+      };
 
-  const filasFiltradas = filas
-    .filter(
-      (fila) =>
-        busquedaNombreMonto === "" ||
-        fila.nombreCliente
-          ?.toLowerCase().trim()
-          .includes(busquedaNombreMonto.toLowerCase()) ||
-        fila.monto?.toString().trim().includes(busquedaNombreMonto)
-    )
-    .filter(
-      (fila) => busquedaFecha === "" || fila.fecha?.trim().startsWith(busquedaFecha)
-    )
-    .filter(
-      (fila) =>
-        busquedaEstado === "" ||
-        fila.estado?.trim().toLowerCase() === busquedaEstado.toLowerCase()
-    );
-
-  const agregarFactura = (factura) => {
-    let actualizadas;
-    if (itemEditar) {
-      actualizadas = filas.map((fila) =>
-        fila.id === factura.id ? factura : fila
-      );
-    } else {
-      actualizadas = [...filas, factura];
-    }
-    setFilas(actualizadas);
-    localStorage.setItem(tipo, JSON.stringify(actualizadas));
-    cerrarModal();
-  };
+ 
+  const agregarFactura = async (facturas) => {
+     let nuevaFactura;
+     if (itemEditar) {
+       nuevaFactura = await actualizarFacturas({ ...facturas, _id: itemEditar._id });
+     } else {
+       nuevaFactura = await crearFacturas(facturas);
+     }
+ 
+     if (nuevaFactura) {
+       obtenerFilasFiltradas();
+       cerrarModal();
+     }
+   };
 
   const descargar = (id) => {
     const cliente = filas.find((item) => item.id === id);
@@ -124,14 +123,6 @@ const FacturacionSecre = () => {
     });
   };
 
-  const filasConColores = filasFiltradas.map((fila) => ({
-    ...fila,
-    estado: (
-      <span className={`estado-${fila.estado?.toLowerCase()}`}>
-        {fila.estado}
-      </span>
-    ),
-  }));
 
   return (
     <>
@@ -142,7 +133,7 @@ const FacturacionSecre = () => {
       </div>
       <Tablageneral
         columnas={columnas}
-        filas={filasConColores}
+        filas={filasFiltradas}
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">
