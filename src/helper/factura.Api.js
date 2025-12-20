@@ -12,7 +12,7 @@ export const listarFacturas = async (
     if (estado) queryParams.append("estado", estado);
 
     const respuesta = await fetch(
-      `${urlEstudio}/factura?${queryParams.toString()}`
+      `${urlEstudio}/facturacion?${queryParams.toString()}`
     );
     if (!respuesta.ok) {
       throw new Error("Error al listar las facturas");
@@ -27,7 +27,7 @@ export const listarFacturas = async (
 export const crearFactura = async (facturaNueva) => {
   try {
     const token = localStorage.getItem("token");
-    const respuesta = await fetch(`${urlEstudio}/factura`, {
+    const respuesta = await fetch(`${urlEstudio}/facturacion`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
