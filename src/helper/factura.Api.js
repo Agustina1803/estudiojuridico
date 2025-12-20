@@ -2,14 +2,14 @@ const urlEstudio = import.meta.env.VITE_API_DESARROLLO;
 
 export const listarFacturas = async (
   nombreCliente = "",
-  fecha = "",
-  estado = ""
+  estado = "",
+  fecha = ""
 ) => {
   try {
     const queryParams = new URLSearchParams();
     if (nombreCliente) queryParams.append("nombreCliente", nombreCliente);
-    if (fecha) queryParams.append("fecha", fecha);
     if (estado) queryParams.append("estado", estado);
+    if (fecha) queryParams.append("fecha", fecha);
 
     const respuesta = await fetch(
       `${urlEstudio}/facturacion?${queryParams.toString()}`

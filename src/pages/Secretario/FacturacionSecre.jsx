@@ -37,14 +37,15 @@ const FacturacionSecre = () => {
   const [filasFiltradas, setFilasFiltradas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
-  const [busquedaMonto, setNombreMonto] = useState("");
+     const [busquedaCliente, setBusquedaCliente] = useState("");
   const [busquedaEstado, setEstado] = useState("");
   const [busquedaFecha, setFecha] = useState("");
+
 
   const obtenerFilasFiltradas = async () => {
     try {
       const data = await listarFacturas(
-        busquedaMonto,
+        busquedaCliente,
         busquedaEstado,
         busquedaFecha
       );
@@ -69,7 +70,7 @@ const FacturacionSecre = () => {
 
   useEffect(() => {
     obtenerFilasFiltradas();
-  }, [busquedaEstado, busquedaFecha]);
+  }, [busquedaCliente,busquedaEstado, busquedaFecha]);
 
   const abrirModal = () => {
     setItemEditar(null);
@@ -148,8 +149,8 @@ const FacturacionSecre = () => {
     <>
       <div className="d-flex justify-content-evenly">
         <BarraBusqueda
-          onSearch={setNombreMonto}
-          placeholder="Buscar por cliente o monto..."
+          onSearch={setBusquedaCliente}
+          placeholder="Buscar por cliente..."
         />
         <BarraBusquedaEstado onEstadoChange={setEstado} />
         <BarraBusquedaFecha onDateChange={setFecha} />
