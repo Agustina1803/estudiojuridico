@@ -71,3 +71,22 @@ export const actualizarUsuario = async (usuario) => {
   }
 }
 
+export const eliminarUsuario = async (id) => {
+  try {
+    const token = localStorage.getItem("token");
+    const respuesta = await fetch(`${urlUsuarios}/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "x-token": token,
+      },
+    });
+    if (!respuesta.ok) {
+      throw new Error("Error al eliminar el usuario");
+    }
+    return await respuesta.json();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
