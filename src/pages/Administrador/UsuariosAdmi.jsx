@@ -4,22 +4,36 @@ import Swal from "sweetalert2";
 import FormAltaUsuario from "../Administrador/FormAltaUsuario";
 import { useState, useEffect } from "react";
 import BarraBusqueda from "../../components/BarraBusqueda";
+import {
+  listarUsuarios,
+  crearUsuario,
+  actualizarUsuario,
+  eliminarUsuario,
+} from "../../helper/usuario.Api";
 
 const UsuariosAdmi = () => {
   const columnas = ["Nº", "Nombre", "Apellido", "Email", "Telefono", "Rol"];
   const claves = ["nombre", "apellido", "email", "telefono", "role"];
-  const tipo = "usuarios";
-  const [filas, setFilas] = useState([]);
+  const [filasFiltradas, setFilasFiltradas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
   const [busquedaNombreApellido, setNombreApellido] = useState("");
 
-  useEffect(() => {
-    const usuariosGuardadas = localStorage.getItem("usuarios");
-    if (usuariosGuardadas) {
-      setFilas(JSON.parse(usuariosGuardadas));
+  const obtenerFilasFiltradas = async () => {
+    try {
+      const data = await listarUsuarios(busquedaNombreApellido);
+      const usuariosTransformados = data.map((usuario) => ({
+        ...usuario,
+      }));
+      setFilasFiltradas(usuariosTransformados);
+    } catch (error) {
+      console.error("Error al obtener usuarios");
     }
-  }, []);
+  };
+
+  useEffect(() => {
+    obtenerFilasFiltradas();
+  }, [busquedaNombreApellido]);
 
   const abrirModal = () => {
     setItemEditar(null);
@@ -32,14 +46,14 @@ const UsuariosAdmi = () => {
   };
 
   const editar = (id) => {
-    const usuarios = filas.find((item) => item.id === id);
+    const usuarios = filasFiltradas.find((item) => item._id === id);
     setItemEditar(usuarios);
     setMostrarModal(true);
   };
 
-  const eliminar = (id) => {
-    const usuarios = filas.find((item) => item.id === id);
-    Swal.fire({
+  const eliminar = async (id) => {
+  const usuarios = filasFiltradas.find((item) => item._id === id);
+  const confirmado = await   Swal.fire({
       title: `¿Eliminar a el usuario ${usuarios.nombre} ${usuarios.apellido}?`,
       text: "Este cambio no se puede revertir",
       icon: "warning",
@@ -48,41 +62,37 @@ const UsuariosAdmi = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const actualizadas = filas.filter((item) => item.id !== id);
-        setFilas(actualizadas);
-        localStorage.setItem(tipo, JSON.stringify(actualizadas));
-        Swal.fire({
-          title: "Eliminado",
-          text: `El usuario ${usuarios.nombre} ${usuarios.apellido} fue eliminada correctamente.`,
-          icon: "success",
-        });
-      }
     });
-  };
+    if (confirmado.isConfirmed) {
+          const ok = await eliminarUsuario(usuarios._id);
+          if (ok) {
+            Swal.fire({
+              title: "Eliminado",
+              text: "El usuario fue eliminada correctamente.",
+              icon: "success",
+            });
+            obtenerFilasFiltradas();
+          }
+        }
+      };
+    
 
-  const agegarUsuario = (user) => {
-    let actualizadas;
+  const agegarUsuario = async (user) => {
+    let nuevoUsuario;
     if (itemEditar) {
-      actualizadas = filas.map((fila) => (fila.id === user.id ? user : fila));
+     nuevoUsuario = await actualizarUsuario({ ...user, _id: itemEditar._id });
     } else {
-      actualizadas = [...filas, user];
+      nuevoUsuario = await crearUsuario(user);
     }
-    setFilas(actualizadas);
-    localStorage.setItem(tipo, JSON.stringify(actualizadas));
-    cerrarModal();
+
+    if (nuevoUsuario) {
+      obtenerFilasFiltradas();
+      cerrarModal();
+    }
   };
 
-  const filasFiltradas = filas.filter(
-    (fila) =>
-      busquedaNombreApellido === "" ||
-      fila.nombre
-        ?.toLowerCase()
-        .trim()
-        .includes(busquedaNombreApellido.toLowerCase()) ||
-      fila.apellido?.trim().includes(busquedaNombreApellido)
-  );
+
+
   return (
     <>
       <BarraBusqueda
@@ -96,8 +106,8 @@ const UsuariosAdmi = () => {
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">
-            <Boton action="editar" onClick={() => editar(fila.id)} />
-            <Boton action="eliminar" onClick={() => eliminar(fila.id)} />
+            <Boton action="editar" onClick={() => editar(fila._id)} />
+            <Boton action="eliminar" onClick={() => eliminar(fila._id)} />
           </div>
         )}
       />
