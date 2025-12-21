@@ -4,6 +4,8 @@ import FormNuevoCliente from "../../components/FormNuevoCliente";
 import BarraBusqueda from "../../components/BarraBusqueda";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import { listarClientes, crearCliente, actualizarCliente, eliminarCliente } from "../../helper/cliente.Api";
+
 
 const ClientesSecre = () => {
   const columnas = [
@@ -15,86 +17,89 @@ const ClientesSecre = () => {
     "Estado",
   ];
   const claves = ["nombre", "identificador", "email", "telefono", "prioridad"];
-  const tipo = "clientes";
   const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
-  const [busqueda, setBusqueda] = useState("");
+  const [busquedaIdentificador, setBusquedaIdentificador] = useState("");
 
-  useEffect(() => {
-    const clientesGuardados = localStorage.getItem("clientes");
-    if (clientesGuardados) {
-      setFilas(JSON.parse(clientesGuardados));
+  const obtenerFilasFiltradas = async () => {
+    try {
+      const data = await listarClientes(busquedaIdentificador);
+      const clientesTransformados = data.map((cliente) => ({
+        ...cliente,
+      }));
+      setFilas(clientesTransformados);
+    } catch (error) {
+      console.error("Error al obtener clientes:", error);
     }
-  }, []);
-
-  const abrirModal = () => {
-    setItemEditar(null);
-    setMostrarModal(true);
-  };
-
-  const cerrarModal = () => {
-    setItemEditar(null);
-    setMostrarModal(false);
-  };
-
-  const editar = (id) => {
-    const cliente = filas.find((item) => item.id === id);
-    setItemEditar(cliente);
-    setMostrarModal(true);
-  };
 
 
+    useEffect(() => {
+      obtenerFilasFiltradas();
+    }, [busquedaIdentificador]);
 
-  const agregarCliente = (cliente) => {
-    let actualizadas;
-    if (itemEditar) {
-      actualizadas = filas.map((fila) =>
-        fila.id === cliente.id ? cliente : fila
-      );
-    } else {
-      actualizadas = [...filas, cliente];
-    }
-    setFilas(actualizadas);
-    localStorage.setItem(tipo, JSON.stringify(actualizadas));
-    cerrarModal();
-  };
 
-  const eliminar = (id) => {
-    const cliente = filas.find((item) => item.id === id);
-    Swal.fire({
-      title: `¿Eliminar al cliente ${cliente.nombre}?`,
-      text: "Este cambio no se puede revertir",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const actualizadas = filas.filter((item) => item.id !== id);
-        setFilas(actualizadas);
-        localStorage.setItem(tipo, JSON.stringify(actualizadas));
-        Swal.fire({
-          title: "Eliminado",
-          text: "El cliente fue eliminada correctamente.",
-          icon: "success",
-        });
+    const abrirModal = () => {
+      setItemEditar(null);
+      setMostrarModal(true);
+    };
+
+    const cerrarModal = () => {
+      setItemEditar(null);
+      setMostrarModal(false);
+    };
+
+    const editar = (id) => {
+      const cliente = filasFiltradas.find((item) => item._id === id);
+      setItemEditar(cliente);
+      setMostrarModal(true);
+    };
+
+
+
+    const agregarCliente = async (cliente) => {
+      let nuevoCliente;
+      if (itemEditar) {
+        nuevoCliente = await actualizarCliente({ ...cliente, _id: itemEditar._id });
+      } else {
+        nuevoCliente = await crearCliente(cliente);
       }
-    });
+
+      if (nuevoCliente) {
+        obtenerFilasFiltradas();
+        cerrarModal();
+      }
+    };
+
+
+    const eliminar = async (id) => {
+      const cliente = filasFiltradas.find((item) => item.id === id);
+      const confirmado = await Swal.fire({
+        title: `¿Eliminar al cliente ${cliente.nombre}?`,
+        text: "Este cambio no se puede revertir",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+      });
+      if (confirmado.isConfirmed) {
+        const ok = await eliminarCliente(cliente._id);
+        if (ok) {
+          Swal.fire({
+            title: "Eliminado",
+            text: "el cliente fue eliminado correctamente.",
+            icon: "success",
+          });
+          obtenerFilasFiltradas();
+        }
+      }
+    };
   };
-
-const filasFiltradas = filas.filter(
-  (fila) =>
-    fila.nombre?.trim().toLowerCase().includes(busqueda.trim().toLowerCase()) ||
-    fila.identificador?.trim().toLowerCase().includes(busqueda.trim().toLowerCase()) ||
-    fila.email?.trim().toLowerCase().includes(busqueda.trim().toLowerCase())
-);
-
   return (
     <>
-      <BarraBusqueda onSearch={setBusqueda} placeholder="Buscar por cliente, DNI/CUIT..."/>
+      <BarraBusqueda onSearch={setBusqueda} placeholder="Buscar por cliente, DNI/CUIT..." />
 
       <Tablageneral
         columnas={columnas}
