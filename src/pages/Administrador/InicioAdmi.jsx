@@ -1,14 +1,21 @@
 import { Row, Col, Card } from "react-bootstrap";
 import { useEffect, useState } from "react";
-import 
+import  {listarUsuarios} from "../../helper/usuario.Api";
 
 const InicioAdmi = () => {
   const [usuariosGuardadas, setUsuariosGuardadas] = useState([]);
 
   useEffect(() => {
-    const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
-    setUsuariosGuardadas(usuarios);
-  }, []);
+   const obtenerUsuarios = async () => {
+      try{
+        const usuarios = await listarUsuarios();
+      setUsuariosGuardadas(usuarios);
+    }catch(error){
+        console.error("Error al obtener usuarios:", error);
+      }
+  };
+  obtenerUsuarios();
+ }, []);
 
   const contarUusuario = () => {
     let abogados = 0;
@@ -17,6 +24,7 @@ const InicioAdmi = () => {
     let usuariosTotales = usuariosGuardadas.length;
 
     usuariosGuardadas.forEach((usuario) => {
+      const rol = usuario.role?.toLowerCase();
       if (usuario.role === "abog") {
         abogados++;
       } else if (usuario.role === "secre") {
