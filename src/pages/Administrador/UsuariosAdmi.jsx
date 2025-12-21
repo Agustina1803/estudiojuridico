@@ -14,7 +14,7 @@ import {
 const UsuariosAdmi = () => {
   const columnas = ["Nº", "Nombre", "Apellido", "Email", "Telefono", "Rol"];
   const claves = ["nombre", "apellido", "email", "telefono", "role"];
-  const [filasFiltradas, setFilas] = useState([]);
+  const [filasFiltradas, setFilasFiltradas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
   const [busquedaNombreApellido, setNombreApellido] = useState("");
@@ -52,7 +52,7 @@ const UsuariosAdmi = () => {
   };
 
   const eliminar = async (id) => {
-  const usuarios = filas.find((item) => item._id === id);
+  const usuarios = filasFiltradas.find((item) => item._id === id);
   const confirmado = await   Swal.fire({
       title: `¿Eliminar a el usuario ${usuarios.nombre} ${usuarios.apellido}?`,
       text: "Este cambio no se puede revertir",

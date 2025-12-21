@@ -14,19 +14,28 @@ export const listarAbogados = async () => {
   }
 };
 
-export const listarUsuarios = async () =>{
+export const listarUsuarios = async (role = "", search = "") => {
   try {
     const token = localStorage.getItem("token");
-    const respuesta = await fetch(`${urlUsuarios}`, {
-      headers: { "x-token": token },
-    });
-    if (!respuesta.ok) throw new Error("Error al obtener usuarios");
+    const queryParams = new URLSearchParams();
+    if (role) queryParams.append("role", role);
+    if (search) queryParams.append("search", search);
+    const url = queryParams.toString()
+      ? `${urlUsuarios}?${queryParams.toString()}`
+      : urlUsuarios;
+    const respuesta = await fetch(url, { 
+      headers: { 
+        "x-token": token
+       } });
+    if (!respuesta.ok) {
+      throw new Error("Error al obtener usuarios");
+    }
     return await respuesta.json();
   } catch (error) {
     console.error(error);
     return [];
   }
-}
+};
 
 export const crearUsuario = async (usuarioNuevo) => {
   try {
@@ -47,13 +56,13 @@ export const crearUsuario = async (usuarioNuevo) => {
     console.error(error);
     return null;
   }
-}
+};
 
 export const actualizarUsuario = async (usuario) => {
   try {
     const token = localStorage.getItem("token");
-    const { id, ...body } = usuario; 
-    const respuesta = await fetch(`${urlUsuarios}/${id}`, {
+    const { _id, ...body } = usuario;
+    const respuesta = await fetch(`${urlUsuarios}/${_id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -69,7 +78,7 @@ export const actualizarUsuario = async (usuario) => {
     console.error(error);
     return null;
   }
-}
+};
 
 export const eliminarUsuario = async (id) => {
   try {
@@ -89,4 +98,4 @@ export const eliminarUsuario = async (id) => {
     console.error(error);
     return null;
   }
-}
+};
