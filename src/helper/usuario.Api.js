@@ -13,3 +13,17 @@ export const listarAbogados = async () => {
     return [];
   }
 };
+
+export const listarUsuarios = async () =>{
+  try {
+    const token = localStorage.getItem("token");
+    const respuesta = await fetch(`${urlUsuarios}`, {
+      headers: { "x-token": token },
+    });
+    if (!respuesta.ok) throw new Error("Error al obtener usuarios");
+    return await respuesta.json();
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
