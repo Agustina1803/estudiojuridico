@@ -40,10 +40,10 @@ export const crearArchivos = async (formData) => {
   }
 };
 
-export const actualizarFacturas = async (formData, id) => {
+export const actualizarDocumentos = async (formData, id) => {
   try {
     const token = localStorage.getItem("token");
-    const respuesta = await fetch(`${urlEstudio}/subirArchivos${id}`, {
+    const respuesta = await fetch(`${urlEstudio}/subirArchivos/${id}`, {
       method: "PUT",
       headers: {
         "x-token": token,
@@ -56,14 +56,14 @@ export const actualizarFacturas = async (formData, id) => {
     return await respuesta.json();
   } catch (error) {
     console.error(error);
-    return [];
+    return null;
   }
 };
 
 export const eliminarDocumento = async (_id) => {
   try {
     const token = localStorage.getItem("token");
-    const respuesta = await fetch(`${urlEstudio}/subirArchivos${_id}`, {
+    const respuesta = await fetch(`${urlEstudio}/subirArchivos/${_id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -76,18 +76,16 @@ export const eliminarDocumento = async (_id) => {
     return await respuesta.json();
   } catch (error) {
     console.error(error);
-    return [];
+    return null;
   }
 };
 
 export const descargarDocumento = async (id) => {
   try {
-    window.open(`${urlEstudio}/subirArchivos/descargar`, "_blank");
+    window.open(`${urlEstudio}/subirArchivos/descargar/${id}`, "_blank");
+    return true;
   } catch (error) {
     console.error(error);
-    Swal.fire({
-      icon: "error",
-      title: "Error al descargar el documento",
-    });
+    return false;
   }
 };
