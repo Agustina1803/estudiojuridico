@@ -58,7 +58,7 @@ export const actualizarFacturas = async (formData, id) => {
     return await respuesta.json();
   } catch (error) {
     console.error(error);
-    return [];
+    return null;
   }
 };
 
@@ -78,20 +78,16 @@ export const eliminarFacturas = async (_id) => {
     return await respuesta.json();
   } catch (error) {
     console.error(error);
-    return [];
+    return null;
   }
 };
 
 export const descargarFactura = async (id) => {
   try {
     window.open(`${urlEstudio}/facturacion/${id}/descargar`, "_blank");
+    return true;
   } catch (error) {
     console.error(error);
-    Swal.fire({
-      icon: "error",
-      title: "Error al descargar la factura",
-      timer: 2000,
-      showConfirmButton: false,
-    });
+    return false;
   }
 };
