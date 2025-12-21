@@ -81,7 +81,7 @@ const DocumentosSecre = () => {
 
   const eliminar = async (id) => {
     const archivos = filasFiltradas.find((item) => item._id === id);
-    const result = await Swal.fire({
+    const resultado = await Swal.fire({
       title: `¿Eliminar ${archivos.seleccionarArchivo?.nombre || 'este archivo'}? `,
       text: "Este cambio no se puede revertir",
       icon: "warning",
@@ -91,7 +91,7 @@ const DocumentosSecre = () => {
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
     });
-    if (result.isConfirmed) {
+    if (resultado.isConfirmed) {
       const ok = await eliminarDocumento(archivos._id);
       if (ok) {
         Swal.fire({
@@ -124,15 +124,13 @@ const DocumentosSecre = () => {
         Swal.fire({
           icon: "success",
           title: "¡Documento descargado!",
-          timer: 2000,
-          showConfirmButton: false,
+
         });
       } else {
         Swal.fire({
           icon: "error",
           title: "Error al descargar el documento",
-          timer: 2000,
-          showConfirmButton: false,
+          
         });
       }
     };
