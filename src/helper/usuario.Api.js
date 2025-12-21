@@ -27,3 +27,24 @@ export const listarUsuarios = async () =>{
     return [];
   }
 }
+
+export const crearUsuario = async (usuarioNuevo) => {
+  try {
+    const token = localStorage.getItem("token");
+    const respuesta = await fetch(`${urlUsuarios}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-token": token,
+      },
+      body: JSON.stringify(usuarioNuevo),
+    });
+    if (!respuesta.ok) {
+      throw new Error("Error al crear el usuario");
+    }
+    return await respuesta.json();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
