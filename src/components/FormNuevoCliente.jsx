@@ -1,7 +1,6 @@
 import { useEffect } from "react";
-import { Modal, Button, Form, Row, Col } from "react-bootstrap";
+import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
 
 const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
@@ -18,47 +17,56 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
       identificador: "",
       email: "",
       telefono: "",
-      estado: "",
+      estadoCliente: "",
     },
   });
 
   useEffect(() => {
     if (itemEditar) {
-      Object.entries(itemEditar).forEach(([key, value]) => {
-        setValue(key, value || "");
-      });
+      setValue("nombre", itemEditar.nombre || "");
+      setValue("identificador", itemEditar.identificador || "");
+      setValue("email", itemEditar.email || "");
+      setValue("telefono", itemEditar.telefono || "");
+      setValue("estadoCliente", itemEditar.estadoCliente || "");
     } else {
       reset();
     }
   }, [itemEditar, setValue, reset]);
 
-  const onSubmit = (data) => {
-    const cliente = {
-      id: itemEditar ? itemEditar.id : uuidv4(),
-      ...data,
-    };
+  const onSubmit = async (data) => {
+    try {
+      if (itemEditar && itemEditar._id) {
+        data._id = itemEditar._id;
+      }
 
-    Swal.fire({
-      icon: "success",
-      title: itemEditar
-        ? `¡Cliente ${cliente.nombre} fue actualizado!`
-        : "¡Cliente agregado!",
-      text: itemEditar
-        ? `El cliente  fue actualizado  exitosamente.`
-        : "El cliente fue agregado exitosamente.",
-      timer: 2000,
-      showConfirmButton: false,
-    });
+      await onGuardar(data);
+      Swal.fire({
+        icon: "success",
+        title: itemEditar
+          ? `¡Cliente ${data.nombre} fue actualizado!`
+          : "¡Cliente agregado!",
+        text: itemEditar
+          ? `El cliente fue actualizado exitosamente.`
+          : "El cliente fue agregado exitosamente.",
+    
+      });
 
-    reset();
-    onHide();
-    onGuardar(cliente);
+      reset();
+      onHide();
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo guardar cliente. Intenta nuevamente.",
+      });
+    }
   };
 
   const handleCancel = () => {
     reset();
     onHide();
   };
+
   const modalTitle = itemEditar ? "Editar Cliente" : "Nuevo Cliente";
   const submitButtonText = itemEditar ? "Actualizar" : "Guardar";
 
@@ -70,16 +78,16 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
       <Modal.Body>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Form.Group className="mb-3" controlId="nombre">
-            <Form.Label>Nombre Completo: </Form.Label>
+            <Form.Label>Nombre Completo:</Form.Label>
             <Form.Control
               type="text"
               placeholder="Ej: Juan Perez"
               {...register("nombre", {
                 required: "El nombre del cliente es obligatorio",
                 minLength: {
-                  value: 10,
+                  value: 4,
                   message:
-                    "El nombre del cliente debe tener como mínimo 10 caracteres",
+                    "El nombre del cliente debe tener como mínimo 4 caracteres",
                 },
                 maxLength: {
                   value: 30,
@@ -92,6 +100,7 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
               {errors.nombre?.message}
             </Form.Text>
           </Form.Group>
+
           <Form.Group className="mb-3" controlId="identificador">
             <Form.Label>DNI / CUIT :</Form.Label>
             <Form.Control
@@ -99,22 +108,13 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
               placeholder="Ej: 20301234567"
               {...register("identificador", {
                 required: "Este campo es obligatorio",
-                validate: (value) => {
-                  const limpio = value.replace(/-/g, "");
-                  const soloNumeros = /^\d{7,11}$/.test(limpio);
-                  if (!soloNumeros)
-                    return "Debe contener solo números (7 a 11 dígitos)";
-                  if (limpio.length === 11 && !validarCuit(limpio)) {
-                    return "CUIT/CUIL inválido";
-                  }
-                  return true;
-                },
               })}
             />
             <Form.Text className="text-danger">
               {errors.identificador?.message}
             </Form.Text>
           </Form.Group>
+
           <Form.Group className="mb-3" controlId="email">
             <Form.Label>Email:</Form.Label>
             <Form.Control
@@ -133,6 +133,7 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
               {errors.email?.message}
             </Form.Text>
           </Form.Group>
+
           <Form.Group className="mb-3" controlId="telefono">
             <Form.Label>Teléfono:</Form.Label>
             <Form.Control
@@ -151,21 +152,25 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
               {errors.telefono?.message}
             </Form.Text>
           </Form.Group>
-          <Form.Group className="mb-3" controlId="prioridad">
-            <Form.Label>Estado</Form.Label>
+
+          <Form.Group className="mb-3" controlId="estadoCliente">
+            <Form.Label>Estado del Cliente</Form.Label>
             <Form.Select
-              {...register("prioridad", {
-                required: "La prioridad es obligatorio",
+              {...register("estadoCliente", {
+                required: "El estado del cliente es obligatorio",
               })}
             >
-              <option value="">Seleccionar tipo de evento</option>
-              <option value="activo">Activo</option>
-              <option value="inactivo">Inactivo</option>
+              <option value="">Seleccionar estado</option>
+              <option value="Activo">Activo</option>
+              <option value="Inactivo">Inactivo</option>
             </Form.Select>
-            {errors.prioridad && (
-              <small className="text-danger">{errors.prioridad.message}</small>
+            {errors.estadoCliente && (
+              <small className="text-danger">
+                {errors.estadoCliente.message}
+              </small>
             )}
           </Form.Group>
+
           <div className="justify-content-end d-flex">
             <Button variant="success" type="submit" className="me-2">
               {submitButtonText}

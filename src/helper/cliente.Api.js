@@ -22,7 +22,7 @@ export const crearCliente = async (clienteNuevo) => {
         "Content-Type": "application/json",
         "x-token": token,
       },
-      body: JSON.stringify(citaNueva),
+      body: JSON.stringify(clienteNuevo),
     });
     if (!respuesta.ok) {
       throw new Error("Error al crear el cliente");
@@ -42,7 +42,7 @@ export const actualizarCliente = async (cliente) => {
         "Content-Type": "application/json",
         "x-token": token,
       },
-      body: JSON.stringify(cita._id),
+      body: JSON.stringify(cliente),
     });
     if (!respuesta.ok) {
       throw new Error("Error al actualizar el cliente");
