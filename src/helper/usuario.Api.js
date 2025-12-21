@@ -48,3 +48,26 @@ export const crearUsuario = async (usuarioNuevo) => {
     return null;
   }
 }
+
+export const actualizarUsuario = async (usuario) => {
+  try {
+    const token = localStorage.getItem("token");
+    const { id, ...body } = usuario; 
+    const respuesta = await fetch(`${urlUsuarios}/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "x-token": token,
+      },
+      body: JSON.stringify(body),
+    });
+    if (!respuesta.ok) {
+      throw new Error("Error al actualizar el usuario");
+    }
+    return await respuesta.json();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
