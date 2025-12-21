@@ -9,7 +9,7 @@ import {
   crearJuicios,
   actualizarJuicios,
   eliminarJuicios,
-  descargarFactura
+  descargarJuicio
 } from "../../helper/juicios.Api";
 
 const JuiciosAbog = () => {
@@ -28,7 +28,7 @@ const JuiciosAbog = () => {
     "nombreCliente",
     "juzgado",
     "fecha",
-    "seleccionarArchivo",
+    "archivoNombre",
   ];
 
   const [filasFiltrada, setFilasFiltradas] = useState([]);
@@ -92,7 +92,7 @@ const JuiciosAbog = () => {
 
   const eliminar = async (id) => {
     const juicios = filasFiltrada.find((item) => item._id === id);
-    Swal.fire({
+    const confirmada = await Swal.fire({
       title: `¿Eliminar a jucio ${juicios.nombreDeJuicio}?`,
       text: "Este cambio no se puede revertir",
       icon: "warning",
@@ -116,7 +116,7 @@ const JuiciosAbog = () => {
   };
 
   const descargar = async (id) => {
-    const respuesta = await descargarFactura(id);
+    const respuesta = await descargarJuicio(id);
     if (respuesta) {
       Swal.fire({
         icon: "success",

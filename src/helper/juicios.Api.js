@@ -28,7 +28,7 @@ export const crearJuicios = async (formData) => {
       body:formData,
     });
     if (!respuesta.ok) {
-      throw new Error("Error al crear la cita");
+      throw new Error("Error al crear el juicio");
     }
     return await respuesta.json();
   } catch (error) {
@@ -77,14 +77,14 @@ export const eliminarJuicios = async (_id) => {
   }
 };
 
-export const descargarFactura = async (id) => {
+export const descargarJuicio = async (id) => {
   try {
     window.open(`${urlEstudio}/juicios/${id}/descargar`, "_blank");
   } catch (error) {
     console.error(error);
     Swal.fire({
       icon: "error",
-      title: "Error al descargar la factura",
+      title: "Error al descargar el juicio",
       timer: 2000,
       showConfirmButton: false,
     });

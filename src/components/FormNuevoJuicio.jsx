@@ -69,7 +69,7 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
     }
   };
 
-    const handleCancel = () => {
+  const handleCancel = () => {
     reset();
     onHide();
   };
@@ -141,16 +141,6 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
               placeholder="Ej: 2030/234567"
               {...register("numeroExpediente", {
                 required: "El nº de expediente es obligatorio",
-                validate: (value) => {
-                  const limpio = value.replace(/-/g, "");
-                  const soloNumeros = /^\d{7,11}$/.test(limpio);
-                  if (!soloNumeros)
-                    return "Debe contener solo números (5 a 11 dígitos)";
-                  if (limpio.length === 11 && !validarCuit(limpio)) {
-                    return "numero de expediente inválido";
-                  }
-                  return true;
-                },
               })}
               isInvalid={!!errors.numeroExpediente}
             />
@@ -215,12 +205,7 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
           </Form.Group>
           <Form.Group className="mb-3" controlId="seleccionarArchivo">
             <Form.Label>Seleccionar archivo</Form.Label>
-            <Form.Control
-              type="file"
-              {...register("seleccionarArchivo", {
-               required: itemEditar ? false : "El archivo es obligatorio",
-              })}
-            />
+            <Form.Control type="file" {...register("seleccionarArchivo")} />
             {errors.seleccionarArchivo && (
               <small className="text-danger">
                 {errors.seleccionarArchivo.message}
