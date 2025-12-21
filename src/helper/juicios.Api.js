@@ -3,7 +3,8 @@ const urlEstudio = import.meta.env.VITE_API_DESARROLLO;
 export const listarJuicios = async (numeroExpediente = "") => {
   try {
     const queryParams = new URLSearchParams();
-    if (numeroExpediente) queryParams.append("numeroExpediente", numeroExpediente);
+    if (numeroExpediente)
+      queryParams.append("numeroExpediente", numeroExpediente);
     const respuesta = await fetch(
       `${urlEstudio}/juicios?${queryParams.toString()}`
     );
@@ -25,7 +26,7 @@ export const crearJuicios = async (formData) => {
       headers: {
         "x-token": token,
       },
-      body:formData,
+      body: formData,
     });
     if (!respuesta.ok) {
       throw new Error("Error al crear el juicio");
@@ -70,7 +71,7 @@ export const eliminarJuicios = async (_id) => {
     if (!respuesta.ok) {
       throw new Error("Error al eliminar el juicio");
     }
-    return true;
+    return await respuesta.json();
   } catch (error) {
     console.error(error);
     return false;
@@ -80,13 +81,9 @@ export const eliminarJuicios = async (_id) => {
 export const descargarJuicio = async (id) => {
   try {
     window.open(`${urlEstudio}/juicios/${id}/descargar`, "_blank");
+    return true;
   } catch (error) {
     console.error(error);
-    Swal.fire({
-      icon: "error",
-      title: "Error al descargar el juicio",
-      timer: 2000,
-      showConfirmButton: false,
-    });
+    return false;
   }
 };
