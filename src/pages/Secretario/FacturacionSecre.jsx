@@ -37,7 +37,7 @@ const FacturacionSecre = () => {
   const [filasFiltradas, setFilasFiltradas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
-     const [busquedaCliente, setBusquedaCliente] = useState("");
+  const [busquedaCliente, setBusquedaCliente] = useState("");
   const [busquedaEstado, setEstado] = useState("");
   const [busquedaFecha, setFecha] = useState("");
 
@@ -57,8 +57,8 @@ const FacturacionSecre = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            {" "}
-            {factura.seleccionarArchivo?.nombre || "archivo"}{" "}
+           
+            {factura.seleccionarArchivo?.nombre || "archivo"}
           </a>
         ),
       }));
