@@ -1,14 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
-  const [showPassword, setShowPassword] = useState(false);
-  const passwordVisibility = () => setShowPassword((prev) => !prev);
-
+const FormAgregarUsuario = ({ show, onHide, onGuardar, itemEditar = null }) => {
   const {
     register,
     handleSubmit,
@@ -37,38 +32,38 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
     }
   }, [itemEditar, setValue, reset]);
 
-  const onSubmit = (data) => {
-    const usuario = {
-      id: itemEditar ? itemEditar.id : uuidv4(),
-      ...data,
-      formBasicPassword:
-        itemEditar && data.newPassword
-          ? data.newPassword
-          : data.formBasicPassword,
-    };
-
-    Swal.fire({
-      icon: "success",
-      title: itemEditar
-        ? `¡Usuario ${usuario.nombre} fue actualizado!`
-        : "¡Usuario agregado!",
-      text: itemEditar
-        ? `El Usuario  fue actualizado  exitosamente.`
-        : "El Usuario fue agregado exitosamente.",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-
-    reset();
-    onHide();
-    onGuardar(usuario);
+  const onSubmit = async (data) => {
+    try {
+      if (itemEditar && itemEditar._id) {
+        data._id = itemEditar._id;
+      }
+      await onGuardar(data);
+      Swal.fire({
+        icon: "success",
+        title: itemEditar ? "¡Usuario actualizado!" : "¡Usuario agregado!",
+        text: itemEditar
+          ? "El usuario fue actualizado exitosamente."
+          : "El usuario fue agregado exitosamente.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      reset();
+      onHide();
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo guardar el usuario. Intenta nuevamente.",
+      });
+    }
   };
 
   const handleCancel = () => {
     reset();
     onHide();
   };
-  const modalTitle = itemEditar ? "Editar usuario" : "Nuevo usuario";
+
+  const modalTitle = itemEditar ? "Editar Usuario" : "Nuevo Usuario";
   const submitButtonText = itemEditar ? "Actualizar" : "Guardar";
 
   return (
@@ -78,54 +73,37 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit(onSubmit)}>
-          <Form.Group className="mb-3" controlId="nombre">
-            <Form.Label>Nombre: </Form.Label>
+
+          <Form.Group controlId="nombre" className="mb-3">
+            <Form.Label>Nombre</Form.Label>
             <Form.Control
               type="text"
               placeholder="Ej: Juan"
               {...register("nombre", {
-                required: "El nombre del usuario es obligatorio",
-                minLength: {
-                  value: 4,
-                  message:
-                    "El nombre del usuario debe tener como mínimo 10 caracteres",
-                },
-                maxLength: {
-                  value: 30,
-                  message:
-                    "El nombre del usuario debe tener como máximo 30 caracteres",
-                },
+                required: "El nombre es obligatorio",
+                minLength: { value: 4, message: "Debe tener al menos 4 caracteres" },
+                maxLength: { value: 30, message: "No puede superar los 30 caracteres" },
               })}
             />
-            <Form.Text className="text-danger">
-              {errors.nombre?.message}
-            </Form.Text>
+            {errors.nombre && <small className="text-danger">{errors.nombre.message}</small>}
           </Form.Group>
-          <Form.Group className="mb-3" controlId="apellido">
-            <Form.Label>Apellido: </Form.Label>
+
+          <Form.Group controlId="apellido" className="mb-3">
+            <Form.Label>Apellido</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Ej:Perez"
+              placeholder="Ej: Pérez"
               {...register("apellido", {
-                required: "El apellido del usuario es obligatorio",
-                minLength: {
-                  value: 4,
-                  message:
-                    "El apellido del usuario debe tener como mínimo 10 caracteres",
-                },
-                maxLength: {
-                  value: 30,
-                  message:
-                    "El apellido del usuario debe tener como máximo 30 caracteres",
-                },
+                required: "El apellido es obligatorio",
+                minLength: { value: 4, message: "Debe tener al menos 4 caracteres" },
+                maxLength: { value: 30, message: "No puede superar los 30 caracteres" },
               })}
             />
-            <Form.Text className="text-danger">
-              {errors.apellido?.message}
-            </Form.Text>
+            {errors.apellido && <small className="text-danger">{errors.apellido.message}</small>}
           </Form.Group>
-          <Form.Group className="mb-3" controlId="email">
-            <Form.Label>Email:</Form.Label>
+
+          <Form.Group controlId="email" className="mb-3">
+            <Form.Label>Email</Form.Label>
             <Form.Control
               type="email"
               placeholder="Ej: juanperez@gmail.com"
@@ -133,119 +111,69 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
                 required: "El email es obligatorio",
                 pattern: {
                   value:
-                    /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/,
-                  message: "El formato del email es incorrecto",
+                    /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i,
+                  message: "Formato de email inválido",
                 },
               })}
             />
-            <Form.Text className="text-danger">
-              {errors.email?.message}
-            </Form.Text>
+            {errors.email && <small className="text-danger">{errors.email.message}</small>}
           </Form.Group>
-          <Form.Group className="mb-3" controlId="telefono">
-            <Form.Label>Teléfono:</Form.Label>
+
+
+          <Form.Group controlId="telefono" className="mb-3">
+            <Form.Label>Teléfono</Form.Label>
             <Form.Control
               type="tel"
-              inputMode="numeric"
               placeholder="3813005896"
               {...register("telefono", {
                 required: "El teléfono es obligatorio",
+                pattern: { value: /^\d+$/, message: "Solo se permiten números" },
+                minLength: { value: 7, message: "Debe tener al menos 7 dígitos" },
+                maxLength: { value: 15, message: "No puede superar los 15 dígitos" },
+              })}
+            />
+            {errors.telefono && <small className="text-danger">{errors.telefono.message}</small>}
+          </Form.Group>
+
+          <Form.Group controlId="formBasicPassword" className="mb-3">
+            <Form.Label>Contraseña</Form.Label>
+            <Form.Control
+              type="password"
+              placeholder="Contraseña"
+              {...register("formBasicPassword", {
+                required: "La contraseña es obligatoria",
                 pattern: {
-                  value: /^\d+$/,
-                  message: "Solo se permiten números",
+                  value:
+                    /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/,
+                  message:
+                    "Debe tener entre 8 y 16 caracteres, incluir mayúsculas, minúsculas, número y caracter especial",
                 },
               })}
             />
-            <Form.Text className="text-danger">
-              {errors.telefono?.message}
-            </Form.Text>
+            {errors.formBasicPassword && (
+              <small className="text-danger">{errors.formBasicPassword.message}</small>
+            )}
           </Form.Group>
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <div className="input-group">
-              <Form.Control
-                type={showPassword ? "text" : "password"}
-                placeholder="Contraseña"
-                {...register("formBasicPassword", {
-                  required: "La contraseña es obligatoria",
-                  pattern: {
-                    value:
-                      /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/,
-                    message:
-                      "Debe tener entre 8 y 16 caracteres, al menos un dígito, una minúscula, una mayúscula y un caracter especial.",
-                  },
-                })}
-              />
-              <Button
-                variant="outline-secondary"
-                type="button"
-                onClick={passwordVisibility}
-                aria-label={
-                  showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
-                }
-              >
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </Button>
-            </div>
-            <Form.Text className="text-danger">
-              {errors.formBasicPassword?.message}
-            </Form.Text>
-          </Form.Group>
-          {itemEditar && (
-            <Form.Group className="mb-3" controlId="newPassword">
-              <Form.Label>Nueva contraseña</Form.Label>
-              <div className="input-group">
-                <Form.Control
-                  type={setShowPassword ? "text" : "password"}
-                  placeholder="Nueva contraseña"
-                  {...register("newPassword", {
-                    pattern: {
-                      value:
-                        /^(?=.*\d)(?=.*[\u0021-\u002b\u003c-\u0040])(?=.*[A-Z])(?=.*[a-z])\S{8,16}$/,
-                      message:
-                        "Debe tener entre 8 y 16 caracteres, al menos un dígito, una minúscula, una mayúscula y un caracter especial.",
-                    },
-                  })}
-                />
-                <Button
-                  variant="outline-secondary"
-                  type="button"
-                  onClick={passwordVisibility}
-                  aria-label={
-                    setShowPassword
-                      ? "Ocultar nueva contraseña"
-                      : "Mostrar nueva contraseña"
-                  }
-                >
-                  {setShowPassword ? <FaEyeSlash /> : <FaEye />}
-                </Button>
-              </div>
-              <Form.Text className="text-danger">
-                {errors.newPassword?.message}
-              </Form.Text>
-            </Form.Group>
-          )}
-          <Form.Group className="mb-3" controlId="role">
-            <Form.Label>Rol:</Form.Label>
+
+          <Form.Group controlId="role" className="mb-3">
+            <Form.Label>Rol</Form.Label>
             <Form.Select
-              {...register("role", {
-                required: "El rol es obligatorio",
-              })}
+              {...register("role", { required: "El rol es obligatorio" })}
             >
               <option value="">Seleccionar rol...</option>
-              <option value="admin"> Administrador</option>
-              <option value="secre"> Secretario/a</option>
-              <option value="abog"> Abogado</option>
+              <option value="admin">Administrador</option>
+              <option value="secre">Secretario/a</option>
+              <option value="abog">Abogado</option>
             </Form.Select>
-            <Form.Text className="text-danger">
-              {errors.role?.message}
-            </Form.Text>
+            {errors.role && <small className="text-danger">{errors.role.message}</small>}
           </Form.Group>
-          <div className="justify-content-end d-flex">
-            <Button variant="success" type="submit" className="me-2">
-              {submitButtonText}
-            </Button>
-            <Button variant="secondary" onClick={handleCancel}>
+
+          <div className="d-flex justify-content-end mt-4">
+            <Button variant="secondary" onClick={handleCancel} className="me-2">
               Cancelar
+            </Button>
+            <Button variant="primary" type="submit">
+              {submitButtonText}
             </Button>
           </div>
         </Form>
@@ -254,4 +182,4 @@ const FormNuevoCliente = ({ show, onHide, onGuardar, itemEditar = null }) => {
   );
 };
 
-export default FormNuevoCliente;
+export default FormAgregarUsuario;
