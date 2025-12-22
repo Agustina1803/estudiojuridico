@@ -148,19 +148,22 @@ const FacturacionAbog = () => {
   return (
     <>
       <div className="d-flex justify-content-evenly">
-        <BarraBusqueda onSearch={setNombreMonto} placeholder="Buscar por cliente o monto..." />
+        <BarraBusqueda
+          onSearch={setBusquedaCliente}
+          placeholder="Buscar por cliente..."
+        />
         <BarraBusquedaEstado onEstadoChange={setEstado} />
         <BarraBusquedaFecha onDateChange={setFecha} />
       </div>
       <Tablageneral
         columnas={columnas}
-        filas={filasConColores}
+        filas={filasFiltradas}
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">
-            <Boton action="editar" onClick={() => editar(fila.id)} />
-            <Boton action="eliminar" onClick={() => eliminar(fila.id)} />
-            <Boton action="descargar" onClick={() => descargar(fila.id)} />
+            <Boton action="editar" onClick={() => editar(fila._id)} />
+            <Boton action="eliminar" onClick={() => eliminar(fila._id)} />
+            <Boton action="descargar" onClick={() => descargar(fila._id)} />
           </div>
         )}
       />
