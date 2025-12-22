@@ -7,6 +7,13 @@ import BarraBusqueda from "../../components/BarraBusqueda";
 import BarraBusquedaFecha from "../../components/BarraBusquedaFecha";
 import BarraBusquedaEstado from "../../components/BarraBusquedaEstado";
 import "../../styles/estados.css";
+import {
+  listarFacturas,
+  crearFacturas,
+  actualizarFacturas,
+  eliminarFacturas,
+  descargarFactura,
+} from "../../helper/factura.Api";
 
 const FacturacionAbog = () => {
   const columnas = [
