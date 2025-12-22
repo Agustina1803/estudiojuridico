@@ -84,7 +84,15 @@ export const eliminarFacturas = async (_id) => {
 
 export const descargarFactura = async (id) => {
   try {
-    window.open(`${urlEstudio}/facturacion/${id}/descargar`, "_blank");
+    const token = localStorage.getItem("token");
+    const respuesta = await fetch(`${urlEstudio}/facturacion/${id}/descargar`, {
+      method: "GET",
+      headers: { "x-token": token },
+    });
+    if (!respuesta.ok) throw new Error("Error al descargar la factura");
+    const blob = await respuesta.blob();
+    const url = window.URL.createObjectURL(blob);
+    window.open(url, "_blank");
     return true;
   } catch (error) {
     console.error(error);

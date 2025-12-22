@@ -80,7 +80,8 @@ export const eliminarJuicios = async (_id) => {
 
 export const descargarJuicio = async (id) => {
   try {
-    window.open(`${urlEstudio}/juicios/${id}/descargar`, "_blank");
+    const token = localStorage.getItem("token");
+    window.open(`${urlEstudio}/juicios/${id}/descargar?token=${token}`, "_blank");
     return true;
   } catch (error) {
     console.error(error);

@@ -82,7 +82,8 @@ export const eliminarDocumento = async (_id) => {
 
 export const descargarDocumento = async (id) => {
   try {
-    window.open(`${urlEstudio}/subirArchivos/descargar/${id}`, "_blank");
+    const token = localStorage.getItem("token");
+    window.open(`${urlEstudio}/subirArchivos/descargar/${id}?token=${token}`, "_blank");
     return true;
   } catch (error) {
     console.error(error);
