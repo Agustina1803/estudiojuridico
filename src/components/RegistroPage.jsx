@@ -27,7 +27,7 @@ export function RegistroPage() {
       formBasicPassword === import.meta.env.VITE_ADMIN_PASSWORD
     ) {
       user.role = "admin";
-      sessionStorage.setItem("user", JSON.stringify(user));
+     localStorage.setItem("user", JSON.stringify(user));
       navegacion("/app/inicioadmi");
       return;
     }

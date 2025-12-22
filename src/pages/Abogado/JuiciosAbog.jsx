@@ -4,6 +4,13 @@ import FormNuevoJuicio from "../../components/FormNuevoJuicio";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import BarraBusqueda from "../../components/BarraBusqueda";
+import {
+  listarJuicios,
+  crearJuicios,
+  actualizarJuicios,
+  eliminarJuicios,
+  descargarJuicio
+} from "../../helper/juicios.Api";
 
 const JuiciosAbog = () => {
   const columnas = [
@@ -21,20 +28,38 @@ const JuiciosAbog = () => {
     "nombreCliente",
     "juzgado",
     "fecha",
-    "seleccionarArchivo",
+    "archivoNombre",
   ];
-  const tipo = "juicios";
-  const [filas, setFilas] = useState([]);
+
+  const [filasFiltradas, setFilasFiltradas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
-  const [busquedaDeJuicio, setBusquedaDeJuicio] = useState("");
+  const [busquedaNumeroExpediente, setBusquedaNumeroExpediente] = useState("");
+
+  const obtenerFilasFiltradas = async () => {
+    try {
+      const data = await listarJuicios(busquedaNumeroExpediente);
+      const juiciosTransformados = data.map((juicios) => ({
+        ...juicios,
+        archivoNombre: (
+          <a
+            href={juicios.seleccionarArchivo?.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {juicios.seleccionarArchivo?.nombre || "archivo"}
+          </a>
+        ),
+      }));
+      setFilasFiltradas(juiciosTransformados);
+    } catch (error) {
+      console.error("Error al obtener el juicio:");
+    }
+  };
 
   useEffect(() => {
-    const juiciosGuardados = localStorage.getItem("juicios");
-    if (juiciosGuardados) {
-      setFilas(JSON.parse(juiciosGuardados));
-    }
-  }, []);
+    obtenerFilasFiltradas();
+  }, [busquedaNumeroExpediente]);
 
   const abrirModal = () => {
     setItemEditar(null);
@@ -47,29 +72,28 @@ const JuiciosAbog = () => {
   };
 
   const editar = (id) => {
-    const juicio = filas.find((item) => item.id === id);
-    setItemEditar(juicio);
+    const juicios = filasFiltradas.find((item) => item._id === id);
+    setItemEditar(juicios);
     setMostrarModal(true);
   };
 
-  const agregarJuicios = (juicio) => {
-    let actualizadas;
+  const agregarJuicios = async (formData, id) => {
+    let nuevoJuicio;
     if (itemEditar) {
-      actualizadas = filas.map((fila) =>
-        fila.id === juicio.id ? juicio : fila
-      );
+      nuevoJuicio = await actualizarJuicios(formData, id);
     } else {
-      actualizadas = [...filas, juicio];
+      nuevoJuicio = await crearJuicios(formData);
     }
-    setFilas(actualizadas);
-    localStorage.setItem(tipo, JSON.stringify(actualizadas));
-    cerrarModal();
+    if (nuevoJuicio) {
+      obtenerFilasFiltradas();
+      cerrarModal();
+    }
   };
 
-  const eliminar = (id) => {
-    const juicio = filas.find((item) => item.id === id);
-    Swal.fire({
-      title: `¿Eliminar a jucio ${juicio.nombreDeJuicio}?`,
+  const eliminar = async (id) => {
+    const juicios = filasFiltradas.find((item) => item._id === id);
+    const confirmada = await Swal.fire({
+      title: `¿Eliminar a jucio ${juicios.nombreDeJuicio}?`,
       text: "Este cambio no se puede revertir",
       icon: "warning",
       showCancelButton: true,
@@ -77,44 +101,41 @@ const JuiciosAbog = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const actualizadas = filas.filter((item) => item.id !== id);
-        setFilas(actualizadas);
-        localStorage.setItem(tipo, JSON.stringify(actualizadas));
+    });
+    if (confirmada.isConfirmed) {
+      const ok = await eliminarJuicios(juicios._id);
+      if (ok) {
         Swal.fire({
           title: "Eliminado",
-          text: "El juicio fue eliminado correctamente.",
+          text: "El juicio fue eliminada correctamente.",
           icon: "success",
         });
+        obtenerFilasFiltradas();
       }
-    });
+    }
   };
 
-  const descargar = (id) => {
-    const cliente = filas.find((item) => item.id === id);
-    Swal.fire({
-      icon: "success",
-      title: `¡${cliente.seleccionarArchivo} descargado!`,
-      timer: 2000,
-      showConfirmButton: false,
-    });
+  const descargar = async (id) => {
+    const respuesta = await descargarJuicio(id);
+    if (respuesta) {
+      Swal.fire({
+        icon: "success",
+        title: "¡Factura descargada!",
+ 
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Error al descargar la factura",
+       
+      });
+    }
   };
-
-  const filasFiltradas = filas.filter(
-    (fila) =>
-      busquedaDeJuicio === "" ||
-      fila.nombreDeJuicio
-        ?.toLowerCase()
-        .trim()
-        .includes(busquedaDeJuicio.toLowerCase()) ||
-      fila.numeroExpediente?.toString().trim().includes(busquedaDeJuicio)
-  );
 
   return (
     <>
       <BarraBusqueda
-        onSearch={setBusquedaDeJuicio}
+        onSearch={setBusquedaNumeroExpediente}
         placeholder="Buscar por  juicio o expediente..."
       />
 
@@ -124,9 +145,9 @@ const JuiciosAbog = () => {
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">
-            <Boton action="editar" onClick={() => editar(fila.id)} />
-            <Boton action="eliminar" onClick={() => eliminar(fila.id)} />
-            <Boton action="descargar" onClick={() => descargar(fila.id)} />
+            <Boton action="editar" onClick={() => editar(fila._id)} />
+            <Boton action="eliminar" onClick={() => eliminar(fila._id)} />
+            <Boton action="descargar" onClick={() => descargar(fila._id)} />
           </div>
         )}
       />

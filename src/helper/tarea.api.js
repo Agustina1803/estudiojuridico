@@ -28,7 +28,6 @@ export const crearTarea = async (tareaNueva) => {
       },
       body: JSON.stringify(tareaNueva),
     });
-    console.log("Body enviado (crear):", tareaNueva);
     if (!respuesta.ok) {
       throw new Error("Error al crear la tarea");
     }
@@ -54,7 +53,6 @@ export const actualizarTarea = async (tarea) => {
     if (!respuesta.ok) {
       throw new Error("Error al actualizar la tarea");
     }
-    console.log("Body enviado (update):", body);
     return await respuesta.json();
   } catch (error) {
     console.error(error);

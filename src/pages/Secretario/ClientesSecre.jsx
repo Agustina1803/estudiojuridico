@@ -4,6 +4,7 @@ import FormNuevoCliente from "../../components/FormNuevoCliente";
 import BarraBusqueda from "../../components/BarraBusqueda";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import { listarClientes, crearCliente, actualizarCliente, eliminarCliente } from "../../helper/cliente.Api";
 
 const ClientesSecre = () => {
   const columnas = [
@@ -14,19 +15,27 @@ const ClientesSecre = () => {
     "Teléfono",
     "Estado",
   ];
-  const claves = ["nombre", "identificador", "email", "telefono", "prioridad"];
-  const tipo = "clientes";
-  const [filas, setFilas] = useState([]);
+  const claves = ["nombre", "identificador", "email", "telefono", "estadoCliente"];
+  const [filasFiltradas, setFilasFiltradas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
-  const [busqueda, setBusqueda] = useState("");
+  const [busquedaIdentificador, setBusquedaIdentificador] = useState("");
+
+  const obtenerFilasFiltradas = async () => {
+    try {
+      const data = await listarClientes(busquedaIdentificador);
+      const clientesTransformados = data.map((cliente) => ({
+        ...cliente,
+      }));
+      setFilasFiltradas(clientesTransformados);
+    } catch (error) {
+      console.error("Error al obtener clientes:", error);
+    }
+  };
 
   useEffect(() => {
-    const clientesGuardados = localStorage.getItem("clientes");
-    if (clientesGuardados) {
-      setFilas(JSON.parse(clientesGuardados));
-    }
-  }, []);
+    obtenerFilasFiltradas();
+  }, [busquedaIdentificador]);
 
   const abrirModal = () => {
     setItemEditar(null);
@@ -39,30 +48,30 @@ const ClientesSecre = () => {
   };
 
   const editar = (id) => {
-    const cliente = filas.find((item) => item.id === id);
+    const cliente = filasFiltradas.find((item) => item._id === id);
     setItemEditar(cliente);
     setMostrarModal(true);
   };
 
-
-
-  const agregarCliente = (cliente) => {
-    let actualizadas;
+  const agregarCliente = async (cliente) => {
+    let nuevoCliente;
     if (itemEditar) {
-      actualizadas = filas.map((fila) =>
-        fila.id === cliente.id ? cliente : fila
-      );
+      nuevoCliente = await actualizarCliente({ ...cliente, _id: itemEditar._id });
     } else {
-      actualizadas = [...filas, cliente];
+      nuevoCliente = await crearCliente(cliente);
     }
-    setFilas(actualizadas);
-    localStorage.setItem(tipo, JSON.stringify(actualizadas));
-    cerrarModal();
+
+    if (nuevoCliente) {
+      obtenerFilasFiltradas();
+      cerrarModal();
+    }
   };
 
-  const eliminar = (id) => {
-    const cliente = filas.find((item) => item.id === id);
-    Swal.fire({
+  const eliminar = async (id) => {
+    const cliente = filasFiltradas.find((item) => item._id === id);
+    if (!cliente) return; // seguridad extra
+
+    const confirmado = await Swal.fire({
       title: `¿Eliminar al cliente ${cliente.nombre}?`,
       text: "Este cambio no se puede revertir",
       icon: "warning",
@@ -71,30 +80,24 @@ const ClientesSecre = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const actualizadas = filas.filter((item) => item.id !== id);
-        setFilas(actualizadas);
-        localStorage.setItem(tipo, JSON.stringify(actualizadas));
+    });
+
+    if (confirmado.isConfirmed) {
+      const ok = await eliminarCliente(cliente._id);
+      if (ok) {
         Swal.fire({
           title: "Eliminado",
-          text: "El cliente fue eliminada correctamente.",
+          text: "El cliente fue eliminado correctamente.",
           icon: "success",
         });
+        obtenerFilasFiltradas();
       }
-    });
+    }
   };
-
-const filasFiltradas = filas.filter(
-  (fila) =>
-    fila.nombre?.trim().toLowerCase().includes(busqueda.trim().toLowerCase()) ||
-    fila.identificador?.trim().toLowerCase().includes(busqueda.trim().toLowerCase()) ||
-    fila.email?.trim().toLowerCase().includes(busqueda.trim().toLowerCase())
-);
 
   return (
     <>
-      <BarraBusqueda onSearch={setBusqueda} placeholder="Buscar por cliente, DNI/CUIT..."/>
+      <BarraBusqueda onSearch={setBusquedaIdentificador} placeholder="Buscar por DNI..." />
 
       <Tablageneral
         columnas={columnas}
@@ -102,8 +105,8 @@ const filasFiltradas = filas.filter(
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">
-            <Boton action="editar" onClick={() => editar(fila.id)} />
-            <Boton action="eliminar" onClick={() => eliminar(fila.id)} />
+            <Boton action="editar" onClick={() => editar(fila._id)} />
+            <Boton action="eliminar" onClick={() => eliminar(fila._id)} />
           </div>
         )}
       />
