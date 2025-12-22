@@ -6,16 +6,9 @@ import { useState, useEffect } from "react";
 import BarraBusqueda from "../../components/BarraBusqueda";
 import BarraBusquedaFecha from "../../components/BarraBusquedaFecha";
 import "../../styles/estados.css";
-import {
-  listarTareas,
-  crearTarea,
-  actualizarTarea,
-  eliminarTarea,
-} from "../../helper/tarea.api";
-import { listarAbogados } from "../../helper/usuario.Api";
 
 const TareasAbog = () => {
-   const columnas = [
+  const columnas = [
     "Nº",
     "Descripcion",
     "Responsable",
@@ -23,39 +16,20 @@ const TareasAbog = () => {
     "Prioridad",
     "Estado",
   ];
-  const claves = [
-    "descripcion",
-    "abogadoNombre",
-    "fecha",
-    "prioridad",
-    "estado",
-  ];
-
-  const [filasFiltradas, setFilasFiltradas] = useState([]);
+  const claves = ["descripcion", "responsable", "fecha", "prioridad", "estado"];
+  const tipo = "tareas";
+  const [filas, setFilas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
-  const [busquedaEstado, setbusquedaEstado] = useState("");
+  const [busquedaAbogado, setbusquedaAbogado] = useState("");
   const [busquedaFecha, setbusquedaFecha] = useState("");
 
-  const obtenerFilasFiltradas = async () => {
-    try {
-      const data = await listarTareas(busquedaEstado, busquedaFecha);
-      const tareaTransformada = data.map((tarea) => ({
-        ...tarea,
-        abogadoNombre:
-          tarea.abogado && typeof tarea.abogado === "object"
-            ? `${tarea.abogado.nombre} ${tarea.abogado.apellido}`
-            : tarea.abogado,
-      }));
-      setFilasFiltradas(tareaTransformada);
-    } catch (error) {
-      console.error("Error al obtener la tarea:", error);
-    }
-  };
-
   useEffect(() => {
-    obtenerFilasFiltradas();
-  }, [busquedaEstado, busquedaFecha]);
+    const tareasGuardadas = localStorage.getItem("tareas");
+    if (tareasGuardadas) {
+      setFilas(JSON.parse(tareasGuardadas));
+    }
+  }, []);
 
   const abrirModal = () => {
     setItemEditar(null);
@@ -68,38 +42,32 @@ const TareasAbog = () => {
   };
 
   const editar = (id) => {
-    const tarea = filasFiltradas.find((item) => item._id === id);
-    setItemEditar(tarea);
+    console.log("Editar tarea con id:", id);
+    console.log("Filas actuales:", filas);
+    const cliente = filas.find((item) => item.id === id);
+
+    setItemEditar(cliente);
     setMostrarModal(true);
   };
 
-  const [abogados, setAbogados] = useState([]);
-  useEffect(() => {
-    const cargarAbogados = async () => {
-      const data = await listarAbogados();
-      setAbogados(data);
-    };
-    cargarAbogados();
-  }, []);
-
-  const agregarTarea = async (tarea) => {
-    let nuevaTarea;
+  const agregarTareas = (nuevatarea) => {
+    let actualizadas;
     if (itemEditar) {
-      nuevaTarea = await actualizarTarea({ ...tarea, _id: itemEditar._id });
+      actualizadas = filas.map((fila) =>
+        fila.id === nuevatarea.id ? nuevatarea : fila
+      );
     } else {
-      nuevaTarea = await crearTarea(tarea);
+      actualizadas = [...filas, nuevatarea];
     }
-
-    if (nuevaTarea) {
-      obtenerFilasFiltradas();
-      cerrarModal();
-    }
+    setFilas(actualizadas);
+    localStorage.setItem(tipo, JSON.stringify(actualizadas));
+    cerrarModal();
   };
 
-  const eliminar = async (id) => {
-    const tarea = filasFiltradas.find((item) => item._id === id);
-    const confirmado = await Swal.fire({
-      title: `¿Eliminar la tarea: ${tarea.descripcion}?`,
+  const eliminar = (id) => {
+    const cliente = filas.find((item) => item.id === id);
+    Swal.fire({
+      title: `¿Eliminar la ${cliente.descripcion} ?`,
       text: "Este cambio no se puede revertir",
       icon: "warning",
       showCancelButton: true,
@@ -107,40 +75,60 @@ const TareasAbog = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
-    });
-
-    if (confirmado.isConfirmed) {
-      const ok = await eliminarTarea(tarea._id);
-      if (ok) {
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const actualizadas = filas.filter((item) => item.id !== id);
+        setFilas(actualizadas);
+        localStorage.setItem(tipo, JSON.stringify(actualizadas));
         Swal.fire({
           title: "Eliminado",
           text: "La tarea fue eliminada correctamente.",
           icon: "success",
         });
-        obtenerFilasFiltradas();
       }
-    }
+    });
   };
-  
+
+  const filasFiltradas = filas
+    .filter(
+      (fila) =>
+        busquedaAbogado === "" ||
+        fila.abogado
+          ?.toLowerCase()
+          .trim()
+          .includes(busquedaAbogado.toLowerCase())
+    )
+    .filter(
+      (fila) =>
+        busquedaFecha === "" || fila.fecha?.trim().startsWith(busquedaFecha)
+    );
+
+  const filasConColores = filasFiltradas.map((fila) => ({
+    ...fila,
+    estado: (
+      <span className={`estado-${fila.estado?.toLowerCase()}`}>
+        {fila.estado}
+      </span>
+    ),
+  }));
 
   return (
     <>
       <div className="d-flex justify-content-evenly">
         <BarraBusqueda
-          onSearch={setbusquedaEstado}
-          placeholder="Buscar por cliente o monto..."
+          onSearch={setbusquedaAbogado}
+          placeholder="Buscar por responsable..."
         />
-
         <BarraBusquedaFecha onDateChange={setbusquedaFecha} />
       </div>
       <Tablageneral
         columnas={columnas}
-        filas={filasFiltradas}
+        filas={filasConColores}
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">
-            <Boton action="editar" onClick={() => editar(fila._id)} />
-            <Boton action="eliminar" onClick={() => eliminar(fila._id)} />
+            <Boton action="editar" onClick={() => editar(fila.id)} />
+            <Boton action="eliminar" onClick={() => eliminar(fila.id)} />
           </div>
         )}
       />
@@ -150,9 +138,8 @@ const TareasAbog = () => {
       <FormNuevaTarea
         show={mostrarModal}
         onHide={cerrarModal}
-        onGuardar={agregarTarea}
+        onGuardar={agregarTareas}
         itemEditar={itemEditar}
-        abogados={abogados}
       />
     </>
   );
