@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Boton from "../../components/Boton";
 import { jsPDF } from "jspdf";
 import Tablageneral from "../../components/TablaGeneral";
+import { obtenerMovimientosAgenda } from "../../helper/reporte.Api";
 
 
 const RegistroAdmin = () => {
@@ -14,8 +15,11 @@ const RegistroAdmin = () => {
   const claves = ["nombre", "tipoEvento", "fecha"];
   const [filas, setFilas] = useState([]);
   useEffect(() => {
-    const agenda = JSON.parse(localStorage.getItem("movimientosSecreAgenda")) || [];
-    setFilas(agenda);
+    const fetchMovimientos = async () => {
+      const data = await obtenerMovimientosAgenda();
+      setFilas(data);
+    };
+    fetchMovimientos();
   }, []);
 
 
@@ -23,19 +27,19 @@ const RegistroAdmin = () => {
     const doc = new jsPDF();
     doc.setFontSize(14);
     doc.text("Historial de Movimientos - Agenda", 20, 20);
-    doc.setFontSize(12);
+    doc.setFontSize(10);
     doc.text("Nº", 10, 30);
-    doc.text("Nombre Cliente", 30, 30);
-    doc.text("Tipo de Evento", 100, 30);
-    doc.text("Fecha", 150, 30);
+    doc.text("Nombre Cliente", 25, 30);
+    doc.text("Tipo de Evento", 80, 30);
+    doc.text("Fecha", 140, 30);
 
     let y = 40;
     filas.forEach((mov, index) => {
       doc.text(`${index + 1}`, 10, y);
-      doc.text(mov.nombre, 30, y);
-      doc.text(mov.tipoEvento, 110, y);
-      doc.text(mov.fecha, 160, y);
-      y += 10;
+      doc.text(mov.nombre.substring(0, 25), 25, y);
+      doc.text(mov.tipoEvento, 80, y);
+      doc.text(mov.fecha, 140, y);
+      y += 8;
 
       if (y > 280) {
         doc.addPage();
