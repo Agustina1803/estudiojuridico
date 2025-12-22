@@ -1,21 +1,19 @@
 const urlEstudio = import.meta.env.VITE_API_DESARROLLO;
 
-export const listarFacturas = async (
+export const listarArchivos = async (
   nombreCliente = "",
-  estado = "",
   fecha = ""
 ) => {
   try {
     const queryParams = new URLSearchParams();
     if (nombreCliente) queryParams.append("nombreCliente", nombreCliente);
-    if (estado) queryParams.append("estado", estado);
     if (fecha) queryParams.append("fecha", fecha);
 
     const respuesta = await fetch(
-      `${urlEstudio}/facturacion?${queryParams.toString()}`
+      `${urlEstudio}/subirArchivos?${queryParams.toString()}`
     );
     if (!respuesta.ok) {
-      throw new Error("Error al listar las facturas");
+      throw new Error("Error al listar los documemntos");
     }
     return await respuesta.json();
   } catch (error) {
@@ -24,17 +22,17 @@ export const listarFacturas = async (
   }
 };
 
-export const crearFacturas = async (formData) => {
+export const crearArchivos = async (formData) => {
   try {
     const token = localStorage.getItem("token");
-    const respuesta = await fetch(`${urlEstudio}/facturacion`, {
+    const respuesta = await fetch(`${urlEstudio}/subirArchivos`, {
       method: "POST",
       headers: {
         "x-token": token,
       },
       body: formData,
     });
-    if (!respuesta.ok) throw new Error("Error al crear la factura");
+    if (!respuesta.ok) throw new Error("Error al crear el documento");
     return await respuesta.json();
   } catch (error) {
     console.error(error);
@@ -42,10 +40,10 @@ export const crearFacturas = async (formData) => {
   }
 };
 
-export const actualizarFacturas = async (formData, id) => {
+export const actualizarDocumentos = async (formData, id) => {
   try {
     const token = localStorage.getItem("token");
-    const respuesta = await fetch(`${urlEstudio}/facturacion/${id}`, {
+    const respuesta = await fetch(`${urlEstudio}/subirArchivos/${id}`, {
       method: "PUT",
       headers: {
         "x-token": token,
@@ -53,7 +51,7 @@ export const actualizarFacturas = async (formData, id) => {
       body: formData,
     });
     if (!respuesta.ok) {
-      throw new Error("Error al actualizar la factura");
+      throw new Error("Error al actualizar el documento");
     }
     return await respuesta.json();
   } catch (error) {
@@ -62,10 +60,10 @@ export const actualizarFacturas = async (formData, id) => {
   }
 };
 
-export const eliminarFacturas = async (_id) => {
+export const eliminarDocumento = async (_id) => {
   try {
     const token = localStorage.getItem("token");
-    const respuesta = await fetch(`${urlEstudio}/facturacion/${_id}`, {
+    const respuesta = await fetch(`${urlEstudio}/subirArchivos/${_id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -73,7 +71,7 @@ export const eliminarFacturas = async (_id) => {
       },
     });
     if (!respuesta.ok) {
-      throw new Error("Error al eliminar la factura");
+      throw new Error("Error al eliminar el archivo");
     }
     return await respuesta.json();
   } catch (error) {
@@ -82,17 +80,10 @@ export const eliminarFacturas = async (_id) => {
   }
 };
 
-export const descargarFactura = async (id) => {
+export const descargarDocumento = async (id) => {
   try {
     const token = localStorage.getItem("token");
-    const respuesta = await fetch(`${urlEstudio}/facturacion/${id}/descargar`, {
-      method: "GET",
-      headers: { "x-token": token },
-    });
-    if (!respuesta.ok) throw new Error("Error al descargar la factura");
-    const blob = await respuesta.blob();
-    const url = window.URL.createObjectURL(blob);
-    window.open(url, "_blank");
+    window.open(`${urlEstudio}/subirArchivos/descargar/${id}?token=${token}`, "_blank");
     return true;
   } catch (error) {
     console.error(error);

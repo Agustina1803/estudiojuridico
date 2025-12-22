@@ -5,6 +5,13 @@ import { useState, useEffect } from "react";
 import FormSubirArchivo from "../../components/FormSubirArchivo";
 import BarraBusqueda from "../../components/BarraBusqueda";
 import BarraBusquedaFecha from "../../components/BarraBusquedaFecha";
+import {
+ listarArchivos,
+  crearArchivos,
+  actualizarDocumentos,
+   eliminarDocumento,
+   descargarDocumento
+} from "../../helper/subirArchivo.Api";
 
 const DocumentosSecre = () => {
   const columnas = [
@@ -15,24 +22,46 @@ const DocumentosSecre = () => {
     "Fecha",
   ];
   const claves = [
-    "seleccionarArchivo",
+    "archivoNombre",
     "nombreCliente",
     "tipodearchivo",
     "fecha",
   ];
-  const tipo = "documentos";
-  const [filas, setFilas] = useState([]);
+
+ const [filasFiltradas, setFilasFiltradas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
-  const [busquedaNombre, setbusquedaNombre] = useState("");
+  const [busquedaCliente, setBusquedaCliente] = useState("")
   const [busquedaFecha, setbusquedaFecha] = useState("");
 
-  useEffect(() => {
-    const documentosGuardados = localStorage.getItem("documentos");
-    if (documentosGuardados) {
-      setFilas(JSON.parse(documentosGuardados));
-    }
-  }, []);
+ const obtenerFilasFiltradas = async () => {
+     try {
+       const data = await  listarArchivos(
+         busquedaCliente,
+         busquedaFecha
+       );
+       const ArchivoTransformado = data.map((archivo) => ({
+         ...archivo,
+         archivoNombre: (
+           <a
+             href={archivo.seleccionarArchivo?.url}
+             target="_blank"
+             rel="noopener noreferrer"
+           >
+            
+             {archivo.seleccionarArchivo?.nombre || "archivo"}
+           </a>
+         ),
+       }));
+       setFilasFiltradas(ArchivoTransformado);
+     } catch (error) {
+       console.error("Error al obtener el archivo:", error);
+     }
+   };
+ 
+   useEffect(() => {
+     obtenerFilasFiltradas();
+   }, [busquedaCliente, busquedaFecha]);
 
   const abrirModal = () => {
     setItemEditar(null);
@@ -45,15 +74,15 @@ const DocumentosSecre = () => {
   };
 
   const editar = (id) => {
-    const cliente = filas.find((item) => item.id === id);
-    setItemEditar(cliente);
+    const archivos = filasFiltradas.find((item) => item._id === id);
+    setItemEditar(archivos);
     setMostrarModal(true);
   };
 
-  const eliminar = (id) => {
-    const cliente = filas.find((item) => item.id === id);
-    Swal.fire({
-      title: `¿Eliminar ${cliente.seleccionarArchivo}? `,
+  const eliminar = async (id) => {
+    const archivos = filasFiltradas.find((item) => item._id === id);
+    const resultado = await Swal.fire({
+      title: `¿Eliminar ${archivos.seleccionarArchivo?.nombre || 'este archivo'}? `,
       text: "Este cambio no se puede revertir",
       icon: "warning",
       showCancelButton: true,
@@ -61,60 +90,56 @@ const DocumentosSecre = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const actualizadas = filas.filter((item) => item.id !== id);
-        setFilas(actualizadas);
-        localStorage.setItem(tipo, JSON.stringify(actualizadas));
+    });
+    if (resultado.isConfirmed) {
+      const ok = await eliminarDocumento(archivos._id);
+      if (ok) {
         Swal.fire({
           title: "Eliminado",
-          text: "El documento fue eliminado correctamente.",
+          text: "El archivo fue eliminado correctamente.",
           icon: "success",
         });
+        obtenerFilasFiltradas();
       }
-    });
-  };
-  const agregarDocumento = (documentos) => {
-    let actualizadas;
-    if (itemEditar) {
-      actualizadas = filas.map((fila) =>
-        fila.id === documentos.id ? documentos : fila
-      );
-    } else {
-      actualizadas = [...filas, documentos];
     }
-    setFilas(actualizadas);
-    localStorage.setItem(tipo, JSON.stringify(actualizadas));
-    cerrarModal();
+  };
+  const agregarDocumento = async (formData, id) => {
+    let nuevoDocumento;
+    if (itemEditar) {
+      nuevoDocumento = await actualizarDocumentos(formData, id);
+    } else {
+      nuevoDocumento = await crearArchivos(formData);
+    }
+    if (nuevoDocumento) {
+      obtenerFilasFiltradas();
+      cerrarModal();
+    }
   };
 
-  const descargar = (id) => {
-    const cliente = filas.find((item) => item.id === id);
-    Swal.fire({
-      icon: "success",
-      title: `¡${cliente.seleccionarArchivo} descargado!`,
-      timer: 2000,
-      showConfirmButton: false,
-    });
-  };
 
-  const filasFiltradas = filas
-    .filter(
-      (fila) =>
-        busquedaNombre === "" ||
-        fila.nombreCliente
-          ?.toLowerCase()
-          .trim()
-          .includes(busquedaNombre.toLowerCase()) )
-    .filter(
-      (fila) =>
-        busquedaFecha === "" || fila.fecha?.trim().startsWith(busquedaFecha)
-    );
 
+    const descargar = async (id) => {
+      const respuesta = await descargarDocumento(id);
+      if (respuesta) {
+        Swal.fire({
+          icon: "success",
+          title: "¡Documento descargado!",
+
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error al descargar el documento",
+          
+        });
+      }
+    };
+
+  
   return (
     <>
       <div className="d-flex justify-content-evenly">
-        <BarraBusqueda onSearch={ setbusquedaNombre} placeholder="Buscar por cliente..."/>
+        <BarraBusqueda onSearch={ setBusquedaCliente} placeholder="Buscar por cliente..."/>
         <BarraBusquedaFecha onDateChange={setbusquedaFecha} />
       </div>
       <Tablageneral
@@ -123,9 +148,9 @@ const DocumentosSecre = () => {
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">
-            <Boton action="editar" onClick={() => editar(fila.id)} />
-            <Boton action="eliminar" onClick={() => eliminar(fila.id)} />
-            <Boton action="descargar" onClick={() => descargar(fila.id)} />
+            <Boton action="editar" onClick={() => editar(fila._id)} />
+            <Boton action="eliminar" onClick={() => eliminar(fila._id)} />
+            <Boton action="descargar" onClick={() => descargar(fila._id)} />
           </div>
         )}
       />

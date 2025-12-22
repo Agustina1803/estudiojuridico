@@ -31,7 +31,7 @@ const JuiciosAbog = () => {
     "archivoNombre",
   ];
 
-  const [filasFiltrada, setFilasFiltradas] = useState([]);
+  const [filasFiltradas, setFilasFiltradas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
   const [busquedaNumeroExpediente, setBusquedaNumeroExpediente] = useState("");
@@ -72,7 +72,7 @@ const JuiciosAbog = () => {
   };
 
   const editar = (id) => {
-    const juicios = filasFiltrada.find((item) => item._id === id);
+    const juicios = filasFiltradas.find((item) => item._id === id);
     setItemEditar(juicios);
     setMostrarModal(true);
   };
@@ -91,7 +91,7 @@ const JuiciosAbog = () => {
   };
 
   const eliminar = async (id) => {
-    const juicios = filasFiltrada.find((item) => item._id === id);
+    const juicios = filasFiltradas.find((item) => item._id === id);
     const confirmada = await Swal.fire({
       title: `¿Eliminar a jucio ${juicios.nombreDeJuicio}?`,
       text: "Este cambio no se puede revertir",
@@ -121,15 +121,13 @@ const JuiciosAbog = () => {
       Swal.fire({
         icon: "success",
         title: "¡Factura descargada!",
-        timer: 2000,
-        showConfirmButton: false,
+ 
       });
     } else {
       Swal.fire({
         icon: "error",
         title: "Error al descargar la factura",
-        timer: 2000,
-        showConfirmButton: false,
+       
       });
     }
   };
@@ -143,7 +141,7 @@ const JuiciosAbog = () => {
 
       <Tablageneral
         columnas={columnas}
-        filas={filasFiltrada}
+        filas={filasFiltradas}
         claves={claves}
         acciones={(fila) => (
           <div className="d-flex gap-2 align-items-center justify-content-center">

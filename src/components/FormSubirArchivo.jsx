@@ -1,6 +1,5 @@
 import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { v4 as uuidv4 } from "uuid";
 import Swal from "sweetalert2";
 import { useEffect } from "react";
 
@@ -22,34 +21,45 @@ const FormSubirArchivo = ({ show, onHide, onGuardar, itemEditar = null }) => {
 
   useEffect(() => {
     if (itemEditar) {
-      Object.entries(itemEditar).forEach(([key, value]) => {
-        setValue(key, value || "");
-      });
+      setValue("nombreCliente", itemEditar.nombreCliente || "");
+      setValue("tipodearchivo", itemEditar.tipodearchivo || "");
+      setValue("fecha", itemEditar.fecha ? itemEditar.fecha.split("T")[0] : "");
     } else {
       reset();
     }
   }, [itemEditar, setValue, reset]);
 
-  const onSubmit = (data) => {
-    const documento = {
-      id: itemEditar ? itemEditar.id : uuidv4(),
-      seleccionarArchivo: "archivo_simulado.pdf",
-      nombreCliente: data.nombreCliente,
-      tipodearchivo: data.tipodearchivo,
-      fecha: data.fecha,
-    };
-    Swal.fire({
-      icon: "success",
-      title: `¡Archivo ${documento.seleccionarArchivo} agregado!`,
-      text: "El archivo fue agregado exitosamente.",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-
-    reset();
-    onHide();
-    onGuardar(documento);
-  };
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+      formData.append("nombreCliente", data.nombreCliente);
+      formData.append("tipodearchivo", data.tipodearchivo);
+      formData.append(
+        "fecha",
+        new Date(`${data.fecha}T00:00:00`).toISOString()
+      );
+      if (data.seleccionarArchivo && data.seleccionarArchivo[0]) {
+        formData.append("seleccionarArchivo", data.seleccionarArchivo[0]);
+      }
+      await onGuardar(formData, itemEditar?._id);
+      Swal.fire({
+        icon: "success",
+        title: itemEditar ? "¡Documento actualizado!" : "¡Documento agregado!",
+        text: itemEditar
+          ? "El documento fue actualizado exitosamente."
+          : "El documento fue agregado exitosamente.",
+      });
+        reset();
+      onHide();
+    } 
+    catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error al guardar el documento",
+        text: "Hubo un problema al guardar el documento. Por favor, intenta nuevamente.",
+      });
+    }
+  }
   const handleCancel = () => {
     reset();
     onHide();
