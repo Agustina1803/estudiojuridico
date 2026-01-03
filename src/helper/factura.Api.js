@@ -20,7 +20,7 @@ export const listarFacturas = async (
     return await respuesta.json();
   } catch (error) {
     console.error(error);
-    return [];
+    return null;
   }
 };
 
