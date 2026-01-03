@@ -63,8 +63,7 @@ const FacturacionAbog = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            {" "}
-            {factura.seleccionarArchivo?.nombre || "archivo"}{" "}
+            {factura.seleccionarArchivo?.nombre || "archivo"}
           </a>
         ),
       }));
@@ -120,6 +119,7 @@ const FacturacionAbog = () => {
     } else {
       nuevaFactura = await crearFacturas(formData);
     }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     cerrarCargando();
     if (nuevaFactura) {
       exitoAlert(nuevaFactura.mensaje || "Operación realizada con éxito");
