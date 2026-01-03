@@ -4,7 +4,19 @@ import FormNuevoCliente from "../../components/FormNuevoCliente";
 import BarraBusqueda from "../../components/BarraBusqueda";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
-import { listarClientes, crearCliente, actualizarCliente, eliminarCliente } from "../../helper/cliente.Api";
+import {
+  listarClientes,
+  crearCliente,
+  actualizarCliente,
+  eliminarCliente,
+} from "../../helper/cliente.Api";
+import {
+  exitoAlert,
+  errorAlert,
+  mostrarConfirmacion,
+  cargando,
+  cerrarCargando,
+} from "../../helper/alert.Api";
 
 const ClientesSecre = () => {
   const columnas = [
@@ -15,21 +27,27 @@ const ClientesSecre = () => {
     "Teléfono",
     "Estado",
   ];
-  const claves = ["nombre", "identificador", "email", "telefono", "estadoCliente"];
+  const claves = [
+    "nombre",
+    "identificador",
+    "email",
+    "telefono",
+    "estadoCliente",
+  ];
   const [filasFiltradas, setFilasFiltradas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
   const [busquedaIdentificador, setBusquedaIdentificador] = useState("");
 
   const obtenerFilasFiltradas = async () => {
-    try {
-      const data = await listarClientes(busquedaIdentificador);
+    const data = await listarClientes(busquedaIdentificador);
+    if (data) {
       const clientesTransformados = data.map((cliente) => ({
         ...cliente,
       }));
       setFilasFiltradas(clientesTransformados);
-    } catch (error) {
-      console.error("Error al obtener clientes:", error);
+    } else {
+      errorAlert("Error al obtener clientes");
     }
   };
 
@@ -56,7 +74,10 @@ const ClientesSecre = () => {
   const agregarCliente = async (cliente) => {
     let nuevoCliente;
     if (itemEditar) {
-      nuevoCliente = await actualizarCliente({ ...cliente, _id: itemEditar._id });
+      nuevoCliente = await actualizarCliente({
+        ...cliente,
+        _id: itemEditar._id,
+      });
     } else {
       nuevoCliente = await crearCliente(cliente);
     }
@@ -97,7 +118,10 @@ const ClientesSecre = () => {
 
   return (
     <>
-      <BarraBusqueda onSearch={setBusquedaIdentificador} placeholder="Buscar por DNI..." />
+      <BarraBusqueda
+        onSearch={setBusquedaIdentificador}
+        placeholder="Buscar por DNI..."
+      />
 
       <Tablageneral
         columnas={columnas}
