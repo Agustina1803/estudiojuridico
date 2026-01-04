@@ -1,6 +1,7 @@
 import Tablageneral from "../../components/TablaGeneral";
 import Boton from "../../components/Boton";
 import FormNuevoCliente from "../../components/FormNuevoCliente";
+import BarraBusqueda from "../../components/BarraBusqueda";
 import { useState, useEffect } from "react";
 import {
   listarClientes,
@@ -8,7 +9,6 @@ import {
   actualizarCliente,
   eliminarCliente,
 } from "../../helper/cliente.Api";
-import BarraBusqueda from "../../components/BarraBusqueda";
 import {
   exitoAlert,
   errorAlert,
@@ -26,7 +26,7 @@ const ClientesAbog = () => {
     "Teléfono",
     "Estado",
   ];
-  const claves = ["nombre", "identificador", "email", "telefono", "prioridad"];
+  const claves = ["nombre", "identificador", "email", "telefono", "estadoCliente"];
   const [filasFiltradas, setFilasFiltradas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
