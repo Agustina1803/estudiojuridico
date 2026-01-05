@@ -85,14 +85,25 @@ export const eliminarFacturas = async (_id) => {
 export const descargarFactura = async (id) => {
   try {
     const token = localStorage.getItem("token");
-    const respuesta = await fetch(`${urlEstudio}/facturacion/${id}/descargar`, {
-      method: "GET",
+    const respuesta = await fetch(`${urlEstudio}/facturacion/${id}`, {
       headers: { "x-token": token },
     });
-    if (!respuesta.ok) throw new Error("Error al descargar la factura");
-    const blob = await respuesta.blob();
+        if (!respuesta.ok)
+      throw new Error("Error al obtener datos de factura");
+    const factura = await respuesta.json();
+    const respuestaRecibida = await fetch(
+      `${urlEstudio}/facturacion/descargar/${id}`,
+      {
+        headers: { "x-token": token },
+      }
+    );
+    if (!respuestaRecibida.ok) throw new Error("Error al descargar factura");
+    const blob = await respuestaRecibida.blob();
     const url = window.URL.createObjectURL(blob);
-    window.open(url, "_blank");
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = factura.seleccionarArchivo.nombre;
+    link.click();
     return true;
   } catch (error) {
     console.error(error);

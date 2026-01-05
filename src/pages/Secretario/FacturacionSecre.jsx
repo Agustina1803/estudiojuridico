@@ -128,6 +128,7 @@ const obtenerFilasFiltradas = async () => {
       errorAlert("Error al guardar la factura");
     }
   };
+  
   const descargar = async (id) => {
     cargando("Descargando factura...");
     const respuesta = await descargarFactura(id);

@@ -80,16 +80,20 @@ export const eliminarDocumento = async (_id) => {
 export const descargarDocumento = async (id) => {
   try {
     const token = localStorage.getItem("token");
-    const respuestaMeta = await fetch(`${urlEstudio}/subirArchivos/${id}`, {
-      headers: { "x-token": token }
+    const respuesta = await fetch(`${urlEstudio}/subirArchivos/${id}`, {
+      headers: { "x-token": token },
     });
-    if (!respuestaMeta.ok) throw new Error("Error al obtener datos del archivo");
-    const archivo = await respuestaMeta.json();
-    const respuesta = await fetch(`${urlEstudio}/subirArchivos/descargar/${id}`, {
-      headers: { "x-token": token }
-    });
-    if (!respuesta.ok) throw new Error("Error al descargar documento");
-    const blob = await respuesta.blob();
+    if (!respuesta.ok)
+      throw new Error("Error al obtener datos del archivo");
+    const archivo = await respuesta.json();
+    const respuestaRecibida = await fetch(
+      `${urlEstudio}/subirArchivos/descargar/${id}`,
+      {
+        headers: { "x-token": token },
+      }
+    );
+    if (!respuestaRecibida.ok) throw new Error("Error al descargar documento");
+    const blob = await respuestaRecibida.blob();
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
@@ -101,4 +105,3 @@ export const descargarDocumento = async (id) => {
     return false;
   }
 };
-

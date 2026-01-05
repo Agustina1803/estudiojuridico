@@ -102,7 +102,7 @@ const FacturacionAbog = () => {
       const respuesta = await eliminarFacturas(factura._id);
       cerrarCargando();
       if (respuesta) {
-        exitoAlert(respuesta.mensaje || "Factura eliminada correctamente");
+        exitoAlert(respuesta.mensaje);
         obtenerFilasFiltradas();
       } else {
         errorAlert("No se pudo eliminar la factura");
@@ -128,6 +128,7 @@ const FacturacionAbog = () => {
       errorAlert("Error al guardar la factura");
     }
   };
+  
   const descargar = async (id) => {
     cargando("Descargando factura...");
     const respuesta = await descargarFactura(id);
