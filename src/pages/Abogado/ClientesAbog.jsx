@@ -108,7 +108,7 @@ const ClientesAbog = () => {
     <>
       <BarraBusqueda
         onSearch={setBusquedaIdentificador}
-        placeholder="Buscar por cliente, DNI/CUIT..."
+        placeholder="Buscar por  DNI/CUIT..."
       />
 
       <Tablageneral

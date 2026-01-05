@@ -70,42 +70,45 @@ const ClientesSecre = () => {
     setMostrarModal(true);
   };
 
-   const eliminar = async (id) => {
-     const cliente = filasFiltradas.find((item) => item._id === id);
-     const confirmado = await mostrarConfirmacion(
-       `¿Eliminar al cliente ${cliente.nombre}?`
-     );
-     if (confirmado) {
-       cargando("Eliminando cliente...");
-       const ok = await eliminarCliente(cliente._id);
-       cerrarCargando();
-       if (ok) {
-         exitoAlert("El cliente fue eliminado correctamente");
-         obtenerFilasFiltradas();
-       } else {
-         errorAlert("No se pudo eliminar el cliente");
-       }
-     }
-   };
- 
-   const agregarCliente = async (cliente) => {
-     cargando(itemEditar ? "Actualizando cliente..." : "Creando cliente...");
-     let nuevoCliente;
-     if (itemEditar) {
-       nuevoCliente= await actualizarCliente({ ...cliente, _id: itemEditar._id });
-     } else {
-       nuevoCliente = await crearCliente(cliente);
-     }
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-     cerrarCargando();
-     if (nuevoCliente) {
-       exitoAlert("Operación realizada con éxito");
-       obtenerFilasFiltradas();
-       cerrarModal();
-     } else {
-       errorAlert("Error al guardar el cliente");
-     }
-   };
+  const eliminar = async (id) => {
+    const cliente = filasFiltradas.find((item) => item._id === id);
+    const confirmado = await mostrarConfirmacion(
+      `¿Eliminar al cliente ${cliente.nombre}?`
+    );
+    if (confirmado) {
+      cargando("Eliminando cliente...");
+      const ok = await eliminarCliente(cliente._id);
+      cerrarCargando();
+      if (ok) {
+        exitoAlert("El cliente fue eliminado correctamente");
+        obtenerFilasFiltradas();
+      } else {
+        errorAlert("No se pudo eliminar el cliente");
+      }
+    }
+  };
+
+  const agregarCliente = async (cliente) => {
+    cargando(itemEditar ? "Actualizando cliente..." : "Creando cliente...");
+    let nuevoCliente;
+    if (itemEditar) {
+      nuevoCliente = await actualizarCliente({
+        ...cliente,
+        _id: itemEditar._id,
+      });
+    } else {
+      nuevoCliente = await crearCliente(cliente);
+    }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    cerrarCargando();
+    if (nuevoCliente) {
+      exitoAlert("Operación realizada con éxito");
+      obtenerFilasFiltradas();
+      cerrarModal();
+    } else {
+      errorAlert("Error al guardar el cliente");
+    }
+  };
 
   return (
     <>
