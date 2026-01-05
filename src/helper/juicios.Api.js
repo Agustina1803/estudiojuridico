@@ -81,7 +81,7 @@ export const eliminarJuicios = async (_id) => {
 export const descargarJuicio = async (id) => {
   try {
     const token = localStorage.getItem("token");
-    const respuesta = await fetch(`${urlEstudio}/juicio/descargar/${id}`, {
+    const respuesta = await fetch(`${urlEstudio}/juicios/${id}`, {
       headers: { "x-token": token },
     });
     if (!respuesta.ok) {
@@ -89,7 +89,7 @@ export const descargarJuicio = async (id) => {
     }
     const juicio = await respuesta.json();
     const respuestaRecibida = await fetch(
-      `${urlEstudio}/juicio/descargar/${id}`,
+      `${urlEstudio}/juicios/descargar/${id}`,
       {
         headers: { "x-token": token },
       }
@@ -101,7 +101,7 @@ export const descargarJuicio = async (id) => {
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = juicio.selecionarArchivo.nombre;
+    link.download = juicio.seleccionarArchivo.nombre;;
     link.click();
     return true;
   } catch (error) {
