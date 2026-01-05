@@ -203,8 +203,17 @@ const FormNuevoJuicio = ({ show, onHide, onGuardar, itemEditar = null }) => {
               <small className="text-danger">{errors.fecha.message}</small>
             )}
           </Form.Group>
-          <Form.Group className="mb-3" controlId="seleccionarArchivo">
-            <Form.Label>Seleccionar archivo</Form.Label>
+       <Form.Group className="mb-3" controlId="seleccionarArchivo">
+            <Form.Label className="mt-2 m-2">Archivo</Form.Label>
+            {itemEditar && (
+              <a
+                href={itemEditar.seleccionarArchivo?.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {itemEditar.seleccionarArchivo?.nombre || "Ver archivo"}
+              </a>
+            )}
             <Form.Control type="file" {...register("seleccionarArchivo")} />
             {errors.seleccionarArchivo && (
               <small className="text-danger">
