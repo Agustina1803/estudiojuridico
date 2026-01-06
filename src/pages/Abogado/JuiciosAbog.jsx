@@ -18,7 +18,7 @@ import {
   cargando,
   cerrarCargando,
 } from "../../helper/alert.Api";
-import { eliminarDocumento } from "../../helper/subirArchivo.Api";
+
 
 const JuiciosAbog = () => {
   const columnas = [
@@ -117,9 +117,10 @@ const JuiciosAbog = () => {
         exitoAlert("Expediente eliminado correctamente");
         obtenerFilasFiltradas();
       }
-    }else{
+    else{
        errorAlert("No se pudo eliminar el documento");
     }
+  }
   };
 
   const descargar = async (id) => {
