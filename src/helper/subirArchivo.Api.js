@@ -15,7 +15,7 @@ export const listarArchivos = async (nombreCliente = "", fecha = "") => {
     return await respuesta.json();
   } catch (error) {
     console.error(error);
-    return [];
+    return null;
   }
 };
 
