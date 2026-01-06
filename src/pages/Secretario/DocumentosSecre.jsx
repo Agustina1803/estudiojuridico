@@ -1,17 +1,23 @@
 import Tablageneral from "../../components/TablaGeneral";
 import Boton from "../../components/Boton";
-import Swal from "sweetalert2";
 import { useState, useEffect } from "react";
 import FormSubirArchivo from "../../components/FormSubirArchivo";
 import BarraBusqueda from "../../components/BarraBusqueda";
 import BarraBusquedaFecha from "../../components/BarraBusquedaFecha";
 import {
- listarArchivos,
+  listarArchivos,
   crearArchivos,
   actualizarDocumentos,
-   eliminarDocumento,
-   descargarDocumento
+  eliminarDocumento,
+  descargarDocumento,
 } from "../../helper/subirArchivo.Api";
+import {
+  exitoAlert,
+  errorAlert,
+  mostrarConfirmacion,
+  cargando,
+  cerrarCargando,
+} from "../../helper/alert.Api";
 
 const DocumentosSecre = () => {
   const columnas = [
@@ -21,47 +27,38 @@ const DocumentosSecre = () => {
     "Tipo de Evento",
     "Fecha",
   ];
-  const claves = [
-    "archivoNombre",
-    "nombreCliente",
-    "tipodearchivo",
-    "fecha",
-  ];
+  const claves = ["archivoNombre", "nombreCliente", "tipodearchivo", "fecha"];
 
- const [filasFiltradas, setFilasFiltradas] = useState([]);
+  const [filasFiltradas, setFilasFiltradas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
-  const [busquedaCliente, setBusquedaCliente] = useState("")
+  const [busquedaCliente, setBusquedaCliente] = useState("");
   const [busquedaFecha, setbusquedaFecha] = useState("");
 
- const obtenerFilasFiltradas = async () => {
-     try {
-       const data = await  listarArchivos(
-         busquedaCliente,
-         busquedaFecha
-       );
-       const ArchivoTransformado = data.map((archivo) => ({
-         ...archivo,
-         archivoNombre: (
-           <a
-             href={archivo.seleccionarArchivo?.url}
-             target="_blank"
-             rel="noopener noreferrer"
-           >
-            
-             {archivo.seleccionarArchivo?.nombre || "archivo"}
-           </a>
-         ),
-       }));
-       setFilasFiltradas(ArchivoTransformado);
-     } catch (error) {
-       console.error("Error al obtener el archivo:", error);
-     }
-   };
- 
-   useEffect(() => {
-     obtenerFilasFiltradas();
-   }, [busquedaCliente, busquedaFecha]);
+  const obtenerFilasFiltradas = async () => {
+    const data = await listarArchivos(busquedaCliente, busquedaFecha);
+    if (data) {
+      const ArchivoTransformado = data.map((archivo) => ({
+        ...archivo,
+        archivoNombre: (
+          <a
+            href={archivo.seleccionarArchivo?.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {archivo.seleccionarArchivo?.nombre || "archivo"}
+          </a>
+        ),
+      }));
+      setFilasFiltradas(ArchivoTransformado);
+    } else {
+      errorAlert("Error al obtener los documentos");
+    }
+  };
+
+  useEffect(() => {
+    obtenerFilasFiltradas();
+  }, [busquedaCliente, busquedaFecha]);
 
   const abrirModal = () => {
     setItemEditar(null);
@@ -81,65 +78,59 @@ const DocumentosSecre = () => {
 
   const eliminar = async (id) => {
     const archivos = filasFiltradas.find((item) => item._id === id);
-    const resultado = await Swal.fire({
-      title: `¿Eliminar ${archivos.seleccionarArchivo?.nombre || 'este archivo'}? `,
-      text: "Este cambio no se puede revertir",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-    });
-    if (resultado.isConfirmed) {
-      const ok = await eliminarDocumento(archivos._id);
-      if (ok) {
-        Swal.fire({
-          title: "Eliminado",
-          text: "El archivo fue eliminado correctamente.",
-          icon: "success",
-        });
+    const resultado = await mostrarConfirmacion(
+      `¿Deseas eliminar el archivo "${archivos.archivoNombre.props.children}"? Esta acción no se puede deshacer.`
+    );
+    if (resultado) {
+      const respuesta = await eliminarDocumento(archivos._id);
+      if (respuesta) {
+        exitoAlert("Documento eliminado correctamente");
         obtenerFilasFiltradas();
       }
+    } else {
+      errorAlert("No se pudo eliminar el documento");
     }
   };
+
   const agregarDocumento = async (formData, id) => {
+    cargando(
+      itemEditar ? "Actualizando documento..." : "Subiendo documento..."
+    );
     let nuevoDocumento;
     if (itemEditar) {
       nuevoDocumento = await actualizarDocumentos(formData, id);
     } else {
       nuevoDocumento = await crearArchivos(formData);
     }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    cerrarCargando();
     if (nuevoDocumento) {
+      exitoAlert(nuevoDocumento.mensaje || "Operación realizada con éxito");
       obtenerFilasFiltradas();
       cerrarModal();
+    } else {
+      errorAlert("Error al guardar el documento");
     }
   };
 
+  const descargar = async (id) => {
+    cargando("Descargando documento...");
+    const respuesta = await descargarDocumento(id);
+    cerrarCargando();
+    if (respuesta) {
+      exitoAlert("¡Documento descargado!");
+    } else {
+      errorAlert("Error al descargar el documento");
+    }
+  };
 
-
-    const descargar = async (id) => {
-      const respuesta = await descargarDocumento(id);
-      if (respuesta) {
-        Swal.fire({
-          icon: "success",
-          title: "¡Documento descargado!",
-
-        });
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Error al descargar el documento",
-          
-        });
-      }
-    };
-
-  
   return (
     <>
       <div className="d-flex justify-content-evenly">
-        <BarraBusqueda onSearch={ setBusquedaCliente} placeholder="Buscar por cliente..."/>
+        <BarraBusqueda
+          onSearch={setBusquedaCliente}
+          placeholder="Buscar por cliente..."
+        />
         <BarraBusquedaFecha onDateChange={setbusquedaFecha} />
       </div>
       <Tablageneral

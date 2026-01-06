@@ -9,8 +9,16 @@ import {
   crearJuicios,
   actualizarJuicios,
   eliminarJuicios,
-  descargarJuicio
+  descargarJuicio,
 } from "../../helper/juicios.Api";
+import {
+  exitoAlert,
+  errorAlert,
+  mostrarConfirmacion,
+  cargando,
+  cerrarCargando,
+} from "../../helper/alert.Api";
+
 
 const JuiciosAbog = () => {
   const columnas = [
@@ -53,7 +61,7 @@ const JuiciosAbog = () => {
       }));
       setFilasFiltradas(juiciosTransformados);
     } catch (error) {
-      console.error("Error al obtener el juicio:");
+      errorAlert("Error al obtener los expedientes");
     }
   };
 
@@ -78,57 +86,51 @@ const JuiciosAbog = () => {
   };
 
   const agregarJuicios = async (formData, id) => {
+    cargando(
+      itemEditar ? "Actualizando expediente..." : "Subiendo expediente..."
+    );
     let nuevoJuicio;
     if (itemEditar) {
       nuevoJuicio = await actualizarJuicios(formData, id);
     } else {
       nuevoJuicio = await crearJuicios(formData);
     }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    cerrarCargando();
     if (nuevoJuicio) {
+      exitoAlert(nuevoJuicio.mensaje || "Operación realizada con éxito");
       obtenerFilasFiltradas();
       cerrarModal();
+    } else {
+      errorAlert("Error al guardar el documento");
     }
   };
 
   const eliminar = async (id) => {
     const juicios = filasFiltradas.find((item) => item._id === id);
-    const confirmada = await Swal.fire({
-      title: `¿Eliminar a jucio ${juicios.nombreDeJuicio}?`,
-      text: "Este cambio no se puede revertir",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-    });
-    if (confirmada.isConfirmed) {
-      const ok = await eliminarJuicios(juicios._id);
-      if (ok) {
-        Swal.fire({
-          title: "Eliminado",
-          text: "El juicio fue eliminada correctamente.",
-          icon: "success",
-        });
+    const confirmada = await mostrarConfirmacion(
+      `¿Deseas eliminar el archivo "${juicios.archivoNombre.props.children}"? Esta acción no se puede deshacer.`
+    );
+    if (confirmada) {
+      const respuesta = await eliminarJuicios(juicios._id);
+      if (respuesta) {
+        exitoAlert("Expediente eliminado correctamente");
         obtenerFilasFiltradas();
       }
+    else{
+       errorAlert("No se pudo eliminar el documento");
     }
+  }
   };
 
   const descargar = async (id) => {
+     cargando("Descargando expediente...");
     const respuesta = await descargarJuicio(id);
-    if (respuesta) {
-      Swal.fire({
-        icon: "success",
-        title: "¡Factura descargada!",
- 
-      });
+    cerrarCargando();
+ if (respuesta) {
+      exitoAlert("¡Expediente descargado!");
     } else {
-      Swal.fire({
-        icon: "error",
-        title: "Error al descargar la factura",
-       
-      });
+      errorAlert("Error al descargar el expediente");
     }
   };
 

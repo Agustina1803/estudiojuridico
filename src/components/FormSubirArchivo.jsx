@@ -49,17 +49,16 @@ const FormSubirArchivo = ({ show, onHide, onGuardar, itemEditar = null }) => {
           ? "El documento fue actualizado exitosamente."
           : "El documento fue agregado exitosamente.",
       });
-        reset();
+      reset();
       onHide();
-    } 
-    catch (error) {
+    } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Error al guardar el documento",
         text: "Hubo un problema al guardar el documento. Por favor, intenta nuevamente.",
       });
     }
-  }
+  };
   const handleCancel = () => {
     reset();
     onHide();
@@ -131,13 +130,17 @@ const FormSubirArchivo = ({ show, onHide, onGuardar, itemEditar = null }) => {
             )}
           </Form.Group>
           <Form.Group className="mb-3" controlId="seleccionarArchivo">
-            <Form.Label>Seleccionar archivo</Form.Label>
-            <Form.Control
-              type="file"
-              {...register("seleccionarArchivo", {
-                required: "El archivo es obligatorio",
-              })}
-            />
+            <Form.Label className="mt-2 m-2">Archivo</Form.Label>
+            {itemEditar && (
+              <a
+                href={itemEditar.seleccionarArchivo?.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {itemEditar.seleccionarArchivo?.nombre || "Ver archivo"}
+              </a>
+            )}
+            <Form.Control type="file" {...register("seleccionarArchivo")} />
             {errors.seleccionarArchivo && (
               <small className="text-danger">
                 {errors.seleccionarArchivo.message}

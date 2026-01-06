@@ -12,9 +12,16 @@ import {
   eliminarCita,
 } from "../../helper/cita.Api";
 import { listarAbogados } from "../../helper/usuario.Api";
+import {
+  exitoAlert,
+  errorAlert,
+  mostrarConfirmacion,
+  cargando,
+  cerrarCargando,
+} from "../../helper/alert.Api";
 
 const AgendaAbog = () => {
- const columnas = [
+  const columnas = [
     "Nº",
     "Fecha",
     "Hora",
@@ -36,10 +43,11 @@ const AgendaAbog = () => {
   const [itemEditar, setItemEditar] = useState(null);
   const [busquedaNombre, setNombre] = useState("");
   const [busquedaFecha, setFecha] = useState("");
+  const [abogados, setAbogados] = useState([]);
 
   const obtenerFilasFiltradas = async () => {
-    try {
-      const data = await listarCitas(busquedaNombre, busquedaFecha);
+    const data = await listarCitas(busquedaNombre, busquedaFecha);
+    if (data) {
       const citasTransformadas = data.map((cita) => ({
         ...cita,
         abogadoNombre:
@@ -48,8 +56,8 @@ const AgendaAbog = () => {
             : cita.abogado,
       }));
       setFilasFiltradas(citasTransformadas);
-    } catch (error) {
-      console.error("Error al obtener citas:", error);
+    } else {
+      errorAlert("Error al obtener citas");
     }
   };
 
@@ -73,7 +81,6 @@ const AgendaAbog = () => {
     setMostrarModal(true);
   };
 
-  const [abogados, setAbogados] = useState([]);
   useEffect(() => {
     const cargarAbogados = async () => {
       const data = await listarAbogados();
@@ -84,41 +91,38 @@ const AgendaAbog = () => {
 
   const eliminar = async (id) => {
     const cita = filasFiltradas.find((item) => item._id === id);
-    const confirmado = await Swal.fire({
-      title: `¿Eliminar la ${cita.tipoEvento} del cliente ${cita.cliente}?`,
-      text: "Este cambio no se puede revertir",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-    });
-
-    if (confirmado.isConfirmed) {
+    const confirmado = await mostrarConfirmacion(
+      `¿Eliminar la ${cita.tipoEvento} del cliente ${cita.cliente}?`
+    );
+    if (confirmado) {
+      cargando("Eliminando cita...");
       const ok = await eliminarCita(cita._id);
+      cerrarCargando();
       if (ok) {
-        Swal.fire({
-          title: "Eliminado",
-          text: "La cita fue eliminada correctamente.",
-          icon: "success",
-        });
+        exitoAlert("La cita fue eliminada correctamente");
         obtenerFilasFiltradas();
+      } else {
+        errorAlert("No se pudo eliminar la cita");
       }
     }
   };
 
   const agregarCita = async (cita) => {
+    cargando(itemEditar ? "Actualizando cita..." : "Creando cita...");
     let nuevaCita;
     if (itemEditar) {
       nuevaCita = await actualizarCita({ ...cita, _id: itemEditar._id });
     } else {
       nuevaCita = await crearCita(cita);
     }
-
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    cerrarCargando();
     if (nuevaCita) {
+      exitoAlert("Operación realizada con éxito");
       obtenerFilasFiltradas();
       cerrarModal();
+    } else {
+      errorAlert("Error al guardar la cita");
     }
   };
 

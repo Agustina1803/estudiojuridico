@@ -14,18 +14,19 @@ export const listarAbogados = async () => {
   }
 };
 
-export const listarUsuarios = async (role = "", search = "") => {
+export const listarUsuarios = async ( search = "") => {
   try {
     const token = localStorage.getItem("token");
     const queryParams = new URLSearchParams();
-    if (role) queryParams.append("role", role);
     if (search) queryParams.append("search", search);
+
     const url = queryParams.toString()
       ? `${urlUsuarios}?${queryParams.toString()}`
       : urlUsuarios;
     const respuesta = await fetch(url, { 
       headers: { 
-        "x-token": token
+        "x-token": token,
+        "Content-Type": "application/json",
        } });
     if (!respuesta.ok) {
       throw new Error("Error al obtener usuarios");

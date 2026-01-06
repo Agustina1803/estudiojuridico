@@ -1,6 +1,5 @@
 import Tablageneral from "../../components/TablaGeneral";
 import Boton from "../../components/Boton";
-import Swal from "sweetalert2";
 import { useState, useEffect } from "react";
 import FormNuevaFactura from "../../components/FormNuevaFactura";
 import BarraBusqueda from "../../components/BarraBusqueda";
@@ -14,6 +13,13 @@ import {
   eliminarFacturas,
   descargarFactura,
 } from "../../helper/factura.Api";
+import {
+  exitoAlert,
+  errorAlert,
+  mostrarConfirmacion,
+  cargando,
+  cerrarCargando,
+} from "../../helper/alert.Api";
 
 const FacturacionSecre = () => {
   const columnas = [
@@ -41,14 +47,13 @@ const FacturacionSecre = () => {
   const [busquedaEstado, setEstado] = useState("");
   const [busquedaFecha, setFecha] = useState("");
 
-
-  const obtenerFilasFiltradas = async () => {
-    try {
-      const data = await listarFacturas(
-        busquedaCliente,
-        busquedaEstado,
-        busquedaFecha
-      );
+const obtenerFilasFiltradas = async () => {
+    const data = await listarFacturas(
+      busquedaCliente,
+      busquedaEstado,
+      busquedaFecha
+    );
+    if (data) {
       const facturaTransformada = data.map((factura) => ({
         ...factura,
         archivoNombre: (
@@ -57,14 +62,13 @@ const FacturacionSecre = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-           
             {factura.seleccionarArchivo?.nombre || "archivo"}
           </a>
         ),
       }));
       setFilasFiltradas(facturaTransformada);
-    } catch (error) {
-      console.error("Error al obtener la factura:", error);
+    } else {
+      errorAlert("Error al obtener las facturas");
     }
   };
 
@@ -89,59 +93,50 @@ const FacturacionSecre = () => {
   };
 
   const eliminar = async (id) => {
-    const facturas = filasFiltradas.find((item) => item._id === id);
-    const confirmada = await Swal.fire({
-      title: `¿Eliminar la factura del cliente ${facturas.nombreCliente}?`,
-      text: "Este cambio no se puede revertir",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-    });
-    if (confirmada.isConfirmed) {
-      const ok = await eliminarFacturas(facturas._id);
-      if (ok) {
-        Swal.fire({
-          title: "Eliminado",
-          text: "La tarea fue eliminada correctamente.",
-          icon: "success",
-        });
+    const factura = filasFiltradas.find((item) => item._id === id);
+    const confirmado = await mostrarConfirmacion(
+      `¿Eliminar la factura del cliente ${factura.nombreCliente}?`
+    );
+    if (confirmado) {
+      cargando("Eliminando factura...");
+      const respuesta = await eliminarFacturas(factura._id);
+      cerrarCargando();
+      if (respuesta) {
+        exitoAlert(respuesta.mensaje || "Factura eliminada correctamente");
         obtenerFilasFiltradas();
+      } else {
+        errorAlert("No se pudo eliminar la factura");
       }
     }
   };
 
   const agregarFactura = async (formData, id) => {
+    cargando(itemEditar ? "Actualizando factura..." : "Creando factura...");
     let nuevaFactura;
     if (itemEditar) {
       nuevaFactura = await actualizarFacturas(formData, id);
     } else {
       nuevaFactura = await crearFacturas(formData);
     }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    cerrarCargando();
     if (nuevaFactura) {
+      exitoAlert(nuevaFactura.mensaje || "Operación realizada con éxito");
       obtenerFilasFiltradas();
       cerrarModal();
+    } else {
+      errorAlert("Error al guardar la factura");
     }
   };
-
+  
   const descargar = async (id) => {
+    cargando("Descargando factura...");
     const respuesta = await descargarFactura(id);
+    cerrarCargando();
     if (respuesta) {
-      Swal.fire({
-        icon: "success",
-        title: "¡Factura descargada!",
-        timer: 2000,
-        showConfirmButton: false,
-      });
+      exitoAlert("¡Factura descargada!");
     } else {
-      Swal.fire({
-        icon: "error",
-        title: "Error al descargar la factura",
-        timer: 2000,
-        showConfirmButton: false,
-      });
+      errorAlert("Error al descargar la factura");
     }
   };
 

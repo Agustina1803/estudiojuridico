@@ -128,7 +128,7 @@ const TareasAbog = () => {
       <div className="d-flex justify-content-evenly">
         <BarraBusqueda
           onSearch={setbusquedaEstado}
-          placeholder="Buscar por cliente o monto..."
+          placeholder="Buscar por cliente..."
         />
 
         <BarraBusquedaFecha onDateChange={setbusquedaFecha} />

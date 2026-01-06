@@ -1,9 +1,6 @@
 const urlEstudio = import.meta.env.VITE_API_DESARROLLO;
 
-export const listarArchivos = async (
-  nombreCliente = "",
-  fecha = ""
-) => {
+export const listarArchivos = async (nombreCliente = "", fecha = "") => {
   try {
     const queryParams = new URLSearchParams();
     if (nombreCliente) queryParams.append("nombreCliente", nombreCliente);
@@ -18,7 +15,7 @@ export const listarArchivos = async (
     return await respuesta.json();
   } catch (error) {
     console.error(error);
-    return [];
+    return null;
   }
 };
 
@@ -83,7 +80,25 @@ export const eliminarDocumento = async (_id) => {
 export const descargarDocumento = async (id) => {
   try {
     const token = localStorage.getItem("token");
-    window.open(`${urlEstudio}/subirArchivos/descargar/${id}?token=${token}`, "_blank");
+    const respuesta = await fetch(`${urlEstudio}/subirArchivos/${id}`, {
+      headers: { "x-token": token },
+    });
+    if (!respuesta.ok)
+      throw new Error("Error al obtener datos del archivo");
+    const archivo = await respuesta.json();
+    const respuestaRecibida = await fetch(
+      `${urlEstudio}/subirArchivos/descargar/${id}`,
+      {
+        headers: { "x-token": token },
+      }
+    );
+    if (!respuestaRecibida.ok) throw new Error("Error al descargar documento");
+    const blob = await respuestaRecibida.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = archivo.seleccionarArchivo.nombre;
+    link.click();
     return true;
   } catch (error) {
     console.error(error);

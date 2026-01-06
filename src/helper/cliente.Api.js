@@ -1,8 +1,10 @@
 const urlEstudio = import.meta.env.VITE_API_DESARROLLO;
 
-export const listarClientes = async () => {
+export const listarClientes = async (identificador = "") => {
   try {
-    const respuesta = await fetch(`${urlEstudio}/clientes`);
+    const queryParams = new URLSearchParams();
+    if (identificador) queryParams.append("identificador", identificador);
+    const respuesta = await fetch(`${urlEstudio}/clientes?${queryParams.toString()}`);
     if (!respuesta.ok) {
       throw new Error("Error al listar los clientes");
     }

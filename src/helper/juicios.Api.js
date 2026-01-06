@@ -81,7 +81,28 @@ export const eliminarJuicios = async (_id) => {
 export const descargarJuicio = async (id) => {
   try {
     const token = localStorage.getItem("token");
-    window.open(`${urlEstudio}/juicios/${id}/descargar?token=${token}`, "_blank");
+    const respuesta = await fetch(`${urlEstudio}/juicios/${id}`, {
+      headers: { "x-token": token },
+    });
+    if (!respuesta.ok) {
+      throw new Error("Error al obtener datos del juicio");
+    }
+    const juicio = await respuesta.json();
+    const respuestaRecibida = await fetch(
+      `${urlEstudio}/juicios/descargar/${id}`,
+      {
+        headers: { "x-token": token },
+      }
+    );
+    if(!respuestaRecibida.ok){
+      throw new Error("Error al descargar el juicio");
+    }
+    const blob = await respuestaRecibida.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = juicio.seleccionarArchivo.nombre;;
+    link.click();
     return true;
   } catch (error) {
     console.error(error);

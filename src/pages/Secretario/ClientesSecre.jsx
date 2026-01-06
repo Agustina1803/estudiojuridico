@@ -3,8 +3,19 @@ import Boton from "../../components/Boton";
 import FormNuevoCliente from "../../components/FormNuevoCliente";
 import BarraBusqueda from "../../components/BarraBusqueda";
 import { useState, useEffect } from "react";
-import Swal from "sweetalert2";
-import { listarClientes, crearCliente, actualizarCliente, eliminarCliente } from "../../helper/cliente.Api";
+import {
+  listarClientes,
+  crearCliente,
+  actualizarCliente,
+  eliminarCliente,
+} from "../../helper/cliente.Api";
+import {
+  exitoAlert,
+  errorAlert,
+  mostrarConfirmacion,
+  cargando,
+  cerrarCargando,
+} from "../../helper/alert.Api";
 
 const ClientesSecre = () => {
   const columnas = [
@@ -15,21 +26,27 @@ const ClientesSecre = () => {
     "Teléfono",
     "Estado",
   ];
-  const claves = ["nombre", "identificador", "email", "telefono", "estadoCliente"];
+  const claves = [
+    "nombre",
+    "identificador",
+    "email",
+    "telefono",
+    "estadoCliente",
+  ];
   const [filasFiltradas, setFilasFiltradas] = useState([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [itemEditar, setItemEditar] = useState(null);
   const [busquedaIdentificador, setBusquedaIdentificador] = useState("");
 
   const obtenerFilasFiltradas = async () => {
-    try {
-      const data = await listarClientes(busquedaIdentificador);
+    const data = await listarClientes(busquedaIdentificador);
+    if (data) {
       const clientesTransformados = data.map((cliente) => ({
         ...cliente,
       }));
       setFilasFiltradas(clientesTransformados);
-    } catch (error) {
-      console.error("Error al obtener clientes:", error);
+    } else {
+      errorAlert("Error al obtener clientes");
     }
   };
 
@@ -53,51 +70,52 @@ const ClientesSecre = () => {
     setMostrarModal(true);
   };
 
-  const agregarCliente = async (cliente) => {
-    let nuevoCliente;
-    if (itemEditar) {
-      nuevoCliente = await actualizarCliente({ ...cliente, _id: itemEditar._id });
-    } else {
-      nuevoCliente = await crearCliente(cliente);
-    }
-
-    if (nuevoCliente) {
-      obtenerFilasFiltradas();
-      cerrarModal();
+  const eliminar = async (id) => {
+    const cliente = filasFiltradas.find((item) => item._id === id);
+    const confirmado = await mostrarConfirmacion(
+      `¿Eliminar al cliente ${cliente.nombre}?`
+    );
+    if (confirmado) {
+      cargando("Eliminando cliente...");
+      const ok = await eliminarCliente(cliente._id);
+      cerrarCargando();
+      if (ok) {
+        exitoAlert("El cliente fue eliminado correctamente");
+        obtenerFilasFiltradas();
+      } else {
+        errorAlert("No se pudo eliminar el cliente");
+      }
     }
   };
 
-  const eliminar = async (id) => {
-    const cliente = filasFiltradas.find((item) => item._id === id);
-    if (!cliente) return; // seguridad extra
-
-    const confirmado = await Swal.fire({
-      title: `¿Eliminar al cliente ${cliente.nombre}?`,
-      text: "Este cambio no se puede revertir",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-    });
-
-    if (confirmado.isConfirmed) {
-      const ok = await eliminarCliente(cliente._id);
-      if (ok) {
-        Swal.fire({
-          title: "Eliminado",
-          text: "El cliente fue eliminado correctamente.",
-          icon: "success",
-        });
-        obtenerFilasFiltradas();
-      }
+  const agregarCliente = async (cliente) => {
+    cargando(itemEditar ? "Actualizando cliente..." : "Creando cliente...");
+    let nuevoCliente;
+    if (itemEditar) {
+      nuevoCliente = await actualizarCliente({
+        ...cliente,
+        _id: itemEditar._id,
+      });
+    } else {
+      nuevoCliente = await crearCliente(cliente);
+    }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    cerrarCargando();
+    if (nuevoCliente) {
+      exitoAlert("Operación realizada con éxito");
+      obtenerFilasFiltradas();
+      cerrarModal();
+    } else {
+      errorAlert("Error al guardar el cliente");
     }
   };
 
   return (
     <>
-      <BarraBusqueda onSearch={setBusquedaIdentificador} placeholder="Buscar por DNI..." />
+      <BarraBusqueda
+        onSearch={setBusquedaIdentificador}
+        placeholder="Buscar por DNI..."
+      />
 
       <Tablageneral
         columnas={columnas}
