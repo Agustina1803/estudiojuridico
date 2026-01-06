@@ -1,6 +1,5 @@
 import Tablageneral from "../../components/TablaGeneral";
 import Boton from "../../components/Boton";
-import Swal from "sweetalert2";
 import FormAltaUsuario from "../Administrador/FormAltaUsuario";
 import { useState, useEffect } from "react";
 import BarraBusqueda from "../../components/BarraBusqueda";
@@ -10,6 +9,13 @@ import {
   actualizarUsuario,
   eliminarUsuario,
 } from "../../helper/usuario.Api";
+import {
+  exitoAlert,
+  errorAlert,
+  mostrarConfirmacion,
+  cargando,
+  cerrarCargando,
+} from "../../helper/alert.Api";
 
 const UsuariosAdmi = () => {
   const columnas = ["Nº", "Nombre", "Apellido", "Email", "Telefono", "Rol"];
@@ -27,7 +33,7 @@ const UsuariosAdmi = () => {
       }));
       setFilasFiltradas(usuariosTransformados);
     } catch (error) {
-      console.error("Error al obtener usuarios");
+       errorAlert("Error al obtener citas");
     }
   };
 
@@ -52,35 +58,27 @@ const UsuariosAdmi = () => {
   };
 
   const eliminar = async (id) => {
-  const usuarios = filasFiltradas.find((item) => item._id === id);
-  const confirmado = await   Swal.fire({
-      title: `¿Eliminar a el usuario ${usuarios.nombre} ${usuarios.apellido}?`,
-      text: "Este cambio no se puede revertir",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-    });
-    if (confirmado.isConfirmed) {
-          const ok = await eliminarUsuario(usuarios._id);
-          if (ok) {
-            Swal.fire({
-              title: "Eliminado",
-              text: "El usuario fue eliminada correctamente.",
-              icon: "success",
-            });
-            obtenerFilasFiltradas();
-          }
-        }
-      };
-    
+    const usuarios = filasFiltradas.find((item) => item._id === id);
+    const confirmado = await mostrarConfirmacion(
+ `¿Eliminar a el usuario ${usuarios.nombre} ${usuarios.apellido}?`,
+   );
+    if (confirmado) {
+        cargando("Eliminando usuario...");
+      const ok = await eliminarUsuario(usuarios._id);
+       cerrarCargando();
+      if (ok) {
+        exitoAlert("El usuario fue eliminado correctamente");
+        obtenerFilasFiltradas();
+      }else{
+        errorAlert("No se pudo eliminar la cita");
+      }
+    }
+  };
 
   const agegarUsuario = async (user) => {
     let nuevoUsuario;
     if (itemEditar) {
-     nuevoUsuario = await actualizarUsuario({ ...user, _id: itemEditar._id });
+      nuevoUsuario = await actualizarUsuario({ ...user, _id: itemEditar._id });
     } else {
       nuevoUsuario = await crearUsuario(user);
     }
@@ -90,8 +88,6 @@ const UsuariosAdmi = () => {
       cerrarModal();
     }
   };
-
-
 
   return (
     <>
