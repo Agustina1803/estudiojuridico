@@ -76,6 +76,23 @@ const DocumentosAbog = () => {
     setItemEditar(archivos);
     setMostrarModal(true);
   };
+
+  const eliminar = async (id) => {
+    const archivos = filasFiltradas.find((item) => item._id === id);
+    const resultado = await mostrarConfirmacion(
+      `¿Deseas eliminar el archivo "${archivos.archivoNombre.props.children}"? Esta acción no se puede deshacer.`
+    );
+    if (resultado) {
+      const respuesta = await eliminarDocumento(archivos._id);
+      if (respuesta) {
+        exitoAlert("Documento eliminado correctamente");
+        obtenerFilasFiltradas();
+      }
+    } else {
+      errorAlert("No se pudo eliminar el documento");
+    }
+  };
+
   const agregarDocumento = async (formData, id) => {
     cargando(
       itemEditar ? "Actualizando documento..." : "Subiendo documento..."
