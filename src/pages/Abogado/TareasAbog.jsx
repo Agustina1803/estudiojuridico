@@ -91,7 +91,7 @@ const TareasAbog = () => {
     }
 
     if (nuevaTarea) {
-      obtenerFilasFiltradas();
+      await obtenerFilasFiltradas();
       cerrarModal();
     }
   };
@@ -117,7 +117,7 @@ const TareasAbog = () => {
           text: "La tarea fue eliminada correctamente.",
           icon: "success",
         });
-        obtenerFilasFiltradas();
+        await obtenerFilasFiltradas();
       }
     }
   };

@@ -1,6 +1,5 @@
 import Tablageneral from "../../components/TablaGeneral";
 import Boton from "../../components/Boton";
-import Swal from "sweetalert2";
 import FormAgregarCita from "../../components/FormAgregarCita";
 import { useState, useEffect } from "react";
 import BarraBusqueda from "../../components/BarraBusqueda";
@@ -100,7 +99,7 @@ const AgendaAbog = () => {
       cerrarCargando();
       if (ok) {
         exitoAlert("La cita fue eliminada correctamente");
-        obtenerFilasFiltradas();
+        await obtenerFilasFiltradas();
       } else {
         errorAlert("No se pudo eliminar la cita");
       }
@@ -119,7 +118,7 @@ const AgendaAbog = () => {
     cerrarCargando();
     if (nuevaCita) {
       exitoAlert("Operación realizada con éxito");
-      obtenerFilasFiltradas();
+      await obtenerFilasFiltradas();
       cerrarModal();
     } else {
       errorAlert("Error al guardar la cita");

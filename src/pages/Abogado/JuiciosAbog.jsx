@@ -99,7 +99,7 @@ const JuiciosAbog = () => {
     cerrarCargando();
     if (nuevoJuicio) {
       exitoAlert(nuevoJuicio.mensaje || "Operación realizada con éxito");
-      obtenerFilasFiltradas();
+      await obtenerFilasFiltradas();
       cerrarModal();
     } else {
       errorAlert("Error al guardar el documento");
@@ -115,7 +115,7 @@ const JuiciosAbog = () => {
       const respuesta = await eliminarJuicios(juicios._id);
       if (respuesta) {
         exitoAlert("Expediente eliminado correctamente");
-        obtenerFilasFiltradas();
+        await obtenerFilasFiltradas();
       }
     else{
        errorAlert("No se pudo eliminar el documento");

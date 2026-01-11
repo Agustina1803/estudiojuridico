@@ -99,7 +99,7 @@ const AgendaSecre = () => {
       cerrarCargando();
       if (ok) {
         exitoAlert("La cita fue eliminada correctamente");
-        obtenerFilasFiltradas();
+        await obtenerFilasFiltradas();
       } else {
         errorAlert("No se pudo eliminar la cita");
       }
@@ -118,7 +118,7 @@ const AgendaSecre = () => {
     cerrarCargando();
     if (nuevaCita) {
       exitoAlert("Operación realizada con éxito");
-      obtenerFilasFiltradas();
+      await obtenerFilasFiltradas();
       cerrarModal();
     } else {
       errorAlert("Error al guardar la cita");

@@ -103,7 +103,7 @@ const obtenerFilasFiltradas = async () => {
       cerrarCargando();
       if (respuesta) {
         exitoAlert(respuesta.mensaje || "Factura eliminada correctamente");
-        obtenerFilasFiltradas();
+        await obtenerFilasFiltradas();
       } else {
         errorAlert("No se pudo eliminar la factura");
       }
@@ -122,7 +122,7 @@ const obtenerFilasFiltradas = async () => {
     cerrarCargando();
     if (nuevaFactura) {
       exitoAlert(nuevaFactura.mensaje || "Operación realizada con éxito");
-      obtenerFilasFiltradas();
+      await obtenerFilasFiltradas();
       cerrarModal();
     } else {
       errorAlert("Error al guardar la factura");
