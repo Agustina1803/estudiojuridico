@@ -12,8 +12,12 @@ export const listarCitas = async (cliente = "", fecha = "") => {
     const queryParams = new URLSearchParams();
     if (cliente) queryParams.append("cliente", cliente);
     if (fecha) queryParams.append("fecha", fecha);
+    const token = localStorage.getItem("token");
     const respuesta = await fetch(
-      `${urlEstudio}/citas?${queryParams.toString()}`
+      `${urlEstudio}/citas?${queryParams.toString()}`,
+      {
+        headers: { "Authorization": `Bearer ${token}` },
+      }
     );
     if (!respuesta.ok) {
       throw new Error("Error al listar las citas");
@@ -32,7 +36,7 @@ export const crearCita = async (citaNueva) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify(citaNueva),
     });
@@ -70,7 +74,7 @@ export const actualizarCita = async (cita) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify(body),
     });
@@ -106,7 +110,7 @@ export const eliminarCita = async (_id) => {
     const token = localStorage.getItem("token");
     const respuestaGet = await fetch(`${urlEstudio}/citas/${_id}`, {
       headers: {
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
     });
 
@@ -120,7 +124,7 @@ export const eliminarCita = async (_id) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
     });
     if (!respuesta.ok) {
