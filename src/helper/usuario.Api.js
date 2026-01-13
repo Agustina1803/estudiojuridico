@@ -24,9 +24,9 @@ export const listarUsuarios = async ( search = "") => {
     const url = queryParams.toString()
       ? `${urlUsuarios}?${queryParams.toString()}`
       : urlUsuarios;
-    const respuesta = await fetch(url, { 
-      headers: { 
-        "x-token": token,
+    const respuesta = await fetch(url, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json",
        } });
     if (!respuesta.ok) {
@@ -46,7 +46,7 @@ export const crearUsuario = async (usuarioNuevo) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify(usuarioNuevo),
     });
@@ -68,7 +68,7 @@ export const actualizarUsuario = async (usuario) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify(body),
     });
@@ -89,7 +89,7 @@ export const eliminarUsuario = async (id) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
     });
     if (!respuesta.ok) {

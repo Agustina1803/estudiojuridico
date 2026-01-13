@@ -5,8 +5,12 @@ export const listarJuicios = async (numeroExpediente = "") => {
     const queryParams = new URLSearchParams();
     if (numeroExpediente)
       queryParams.append("numeroExpediente", numeroExpediente);
+    const token = localStorage.getItem("token");
     const respuesta = await fetch(
-      `${urlEstudio}/juicios?${queryParams.toString()}`
+      `${urlEstudio}/juicios?${queryParams.toString()}`,
+      {
+        headers: { "Authorization": `Bearer ${token}` },
+      }
     );
     if (!respuesta.ok) {
       throw new Error("Error al listar los juicios");
@@ -24,7 +28,7 @@ export const crearJuicios = async (formData) => {
     const respuesta = await fetch(`${urlEstudio}/juicios`, {
       method: "POST",
       headers: {
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
       body: formData,
     });
@@ -44,7 +48,7 @@ export const actualizarJuicios = async (formData, id) => {
     const respuesta = await fetch(`${urlEstudio}/juicios/${id}`, {
       method: "PUT",
       headers: {
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
       body: formData,
     });
@@ -65,7 +69,7 @@ export const eliminarJuicios = async (_id) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
     });
     if (!respuesta.ok) {
@@ -82,7 +86,7 @@ export const descargarJuicio = async (id) => {
   try {
     const token = localStorage.getItem("token");
     const respuesta = await fetch(`${urlEstudio}/juicios/${id}`, {
-      headers: { "x-token": token },
+      headers: { "Authorization": `Bearer ${token}` },
     });
     if (!respuesta.ok) {
       throw new Error("Error al obtener datos del juicio");
@@ -91,7 +95,7 @@ export const descargarJuicio = async (id) => {
     const respuestaRecibida = await fetch(
       `${urlEstudio}/juicios/descargar/${id}`,
       {
-        headers: { "x-token": token },
+        headers: { "Authorization": `Bearer ${token}` },
       }
     );
     if(!respuestaRecibida.ok){

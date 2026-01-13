@@ -6,8 +6,12 @@ export const listarArchivos = async (nombreCliente = "", fecha = "") => {
     if (nombreCliente) queryParams.append("nombreCliente", nombreCliente);
     if (fecha) queryParams.append("fecha", fecha);
 
+    const token = localStorage.getItem("token");
     const respuesta = await fetch(
-      `${urlEstudio}/subirArchivos?${queryParams.toString()}`
+      `${urlEstudio}/subirArchivos?${queryParams.toString()}`,
+      {
+        headers: { "Authorization": `Bearer ${token}` },
+      }
     );
     if (!respuesta.ok) {
       throw new Error("Error al listar los documemntos");
@@ -25,7 +29,7 @@ export const crearArchivos = async (formData) => {
     const respuesta = await fetch(`${urlEstudio}/subirArchivos`, {
       method: "POST",
       headers: {
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
       body: formData,
     });
@@ -43,7 +47,7 @@ export const actualizarDocumentos = async (formData, id) => {
     const respuesta = await fetch(`${urlEstudio}/subirArchivos/${id}`, {
       method: "PUT",
       headers: {
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
       body: formData,
     });
@@ -64,7 +68,7 @@ export const eliminarDocumento = async (_id) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
     });
     if (!respuesta.ok) {
@@ -81,7 +85,7 @@ export const descargarDocumento = async (id) => {
   try {
     const token = localStorage.getItem("token");
     const respuesta = await fetch(`${urlEstudio}/subirArchivos/${id}`, {
-      headers: { "x-token": token },
+      headers: { "Authorization": `Bearer ${token}` },
     });
     if (!respuesta.ok)
       throw new Error("Error al obtener datos del archivo");
@@ -89,7 +93,7 @@ export const descargarDocumento = async (id) => {
     const respuestaRecibida = await fetch(
       `${urlEstudio}/subirArchivos/descargar/${id}`,
       {
-        headers: { "x-token": token },
+        headers: { "Authorization": `Bearer ${token}` },
       }
     );
     if (!respuestaRecibida.ok) throw new Error("Error al descargar documento");

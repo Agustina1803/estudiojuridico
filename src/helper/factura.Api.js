@@ -11,8 +11,12 @@ export const listarFacturas = async (
     if (estado) queryParams.append("estado", estado);
     if (fecha) queryParams.append("fecha", fecha);
 
+    const token = localStorage.getItem("token");
     const respuesta = await fetch(
-      `${urlEstudio}/facturacion?${queryParams.toString()}`
+      `${urlEstudio}/facturacion?${queryParams.toString()}`,
+      {
+        headers: { "Authorization": `Bearer ${token}` },
+      }
     );
     if (!respuesta.ok) {
       throw new Error("Error al listar las facturas");
@@ -30,7 +34,7 @@ export const crearFacturas = async (formData) => {
     const respuesta = await fetch(`${urlEstudio}/facturacion`, {
       method: "POST",
       headers: {
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
       body: formData,
     });
@@ -48,7 +52,7 @@ export const actualizarFacturas = async (formData, id) => {
     const respuesta = await fetch(`${urlEstudio}/facturacion/${id}`, {
       method: "PUT",
       headers: {
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
       body: formData,
     });
@@ -69,7 +73,7 @@ export const eliminarFacturas = async (_id) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
     });
     if (!respuesta.ok) {
@@ -86,7 +90,7 @@ export const descargarFactura = async (id) => {
   try {
     const token = localStorage.getItem("token");
     const respuesta = await fetch(`${urlEstudio}/facturacion/${id}`, {
-      headers: { "x-token": token },
+      headers: { "Authorization": `Bearer ${token}` },
     });
         if (!respuesta.ok)
       throw new Error("Error al obtener datos de factura");
@@ -94,7 +98,7 @@ export const descargarFactura = async (id) => {
     const respuestaRecibida = await fetch(
       `${urlEstudio}/facturacion/descargar/${id}`,
       {
-        headers: { "x-token": token },
+        headers: { "Authorization": `Bearer ${token}` },
       }
     );
     if (!respuestaRecibida.ok) throw new Error("Error al descargar factura");

@@ -6,7 +6,10 @@ export const listarTareas = async (estado = "", fecha = "") => {
     if (estado) queryParams.append("estado", estado);
     if (fecha) queryParams.append("fecha", fecha);
 
-    const respuesta = await fetch(`${urlEstudio}/tarea?${queryParams.toString()}`);
+    const token = localStorage.getItem("token");
+    const respuesta = await fetch(`${urlEstudio}/tarea?${queryParams.toString()}`, {
+      headers: { "Authorization": `Bearer ${token}` },
+    });
     if (!respuesta.ok) {
       throw new Error("Error al listar las tareas");
     }
@@ -24,7 +27,7 @@ export const crearTarea = async (tareaNueva) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify(tareaNueva),
     });
@@ -46,7 +49,7 @@ export const actualizarTarea = async (tarea) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify(body),
     });
@@ -67,7 +70,7 @@ export const eliminarTarea = async (_id) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
     });
     if (!respuesta.ok) {

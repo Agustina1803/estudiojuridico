@@ -4,7 +4,10 @@ export const listarClientes = async (identificador = "") => {
   try {
     const queryParams = new URLSearchParams();
     if (identificador) queryParams.append("identificador", identificador);
-    const respuesta = await fetch(`${urlEstudio}/clientes?${queryParams.toString()}`);
+    const token = localStorage.getItem("token");
+    const respuesta = await fetch(`${urlEstudio}/clientes?${queryParams.toString()}`, {
+      headers: { "Authorization": `Bearer ${token}` },
+    });
     if (!respuesta.ok) {
       throw new Error("Error al listar los clientes");
     }
@@ -22,7 +25,7 @@ export const crearCliente = async (clienteNuevo) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify(clienteNuevo),
     });
@@ -42,7 +45,7 @@ export const actualizarCliente = async (cliente) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify(cliente),
     });
@@ -63,7 +66,7 @@ export const eliminarCliente = async (_id) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "x-token": token,
+        "Authorization": `Bearer ${token}`,
       },
     });
     if (!respuesta.ok) {
