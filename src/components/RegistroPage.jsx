@@ -38,6 +38,12 @@ export function RegistroPage() {
         formBasicPassword: formBasicPassword,
       });
 
+      console.log("Respuesta del login:", respuesta.status, respuesta.statusText);
+      if (respuesta.status !== 200) {
+        const errorText = await respuesta.text();
+        console.log("Error del servidor:", errorText);
+      }
+
       if (!respuesta || !respuesta.ok) {
         Swal.fire({
           icon: "error",
@@ -50,6 +56,7 @@ export function RegistroPage() {
 
       const data = await respuesta.json();
       localStorage.setItem("token", data.token);
+      console.log("Token guardado en login:", data.token);
       localStorage.setItem("user", JSON.stringify(data));
       
       const rol = data.role ? data.role.toLowerCase() : "";
