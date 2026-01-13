@@ -20,7 +20,6 @@ const ContactForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Datos enviados:', formData);
         setShowAlert(true);
         setFormData({ nombre: '', email: '', mensaje: '' });
     };

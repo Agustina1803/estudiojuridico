@@ -17,7 +17,7 @@ export const listarJuicios = async (numeroExpediente = "") => {
     }
     return await respuesta.json();
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return [];
   }
 };

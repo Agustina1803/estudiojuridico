@@ -17,7 +17,6 @@ export const listarAbogados = async () => {
 export const listarUsuarios = async ( search = "") => {
   try {
     const token = localStorage.getItem("token");
-    console.log("Token usado en listarUsuarios:", token);
     const queryParams = new URLSearchParams();
     if (search) queryParams.append("search", search);
 
