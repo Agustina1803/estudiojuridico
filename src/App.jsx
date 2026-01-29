@@ -23,6 +23,7 @@ import FacturacionSecre from "./pages/Secretario/FacturacionSecre";
 import ProteccionRutas from "./routers/ProteccionRutas";
 import Nosotros from "./pages/Nosotros";
 import Contacto from "./pages/Contacto";
+import ConsultasNuevas from "./pages/Secretario/consultasNuevas";
 
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
             <Route path="documentossecre" element={<DocumentosSecre />} />
             <Route path="tareassecre" element={<TareasSecre />} />
             <Route path="facturacionsecre" element={<FacturacionSecre />} />
+            <Route path="consultasnuevas" element={<ConsultasNuevas />} />
           </Route>
 
           <Route element={<ProteccionRutas roleUsuario="abog" />}>

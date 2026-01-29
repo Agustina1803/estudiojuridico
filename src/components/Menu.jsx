@@ -3,6 +3,11 @@ import { NavLink, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "../styles/Menu.css";
 import "../styles/navBarHeader.css";
+import { useState, useEffect } from "react";
+import {
+  contarConsultasNoLeidas,
+  marcarConsultasLeidas,
+} from "../helper/consulta.Api";
 
 import {
   FaHome,
@@ -14,10 +19,13 @@ import {
   FaMoneyBillWave,
   FaFolder,
   FaSignOutAlt,
+  FaEnvelope,
 } from "react-icons/fa";
 
 const Menu = () => {
   const navigate = useNavigate();
+  const [cantidadConsultas, setCantidadConsultas] = useState(0);
+
   const cerrarSesion = () => {
     Swal.fire({
       title: `Cerrar sesión`,
@@ -36,8 +44,25 @@ const Menu = () => {
     });
   };
 
+  useEffect(() => {
+    const obtenerCantidad = async () => {
+      const cantidad = await contarConsultasNoLeidas();
+      setCantidadConsultas(cantidad);
+    };
+    obtenerCantidad();
+    const interval = setInterval(obtenerCantidad, 15000);
+    return () => clearInterval(interval);
+  }, []);
+
   const usuario = JSON.parse(localStorage.getItem("user"));
   const role = usuario?.role;
+
+  const handleClickConsultas = async () => {
+    await marcarConsultasLeidas();
+    const cantidad = await contarConsultasNoLeidas();
+    setCantidadConsultas(cantidad);
+  };
+
   const menus = () => {
     switch (role) {
       case "admin":
@@ -73,6 +98,13 @@ const Menu = () => {
             label: "Facturación",
             icon: <FaMoneyBillWave />,
           },
+          {
+            to: "consultasnuevas",
+            label: "Consultas Nuevas",
+            icon: <FaEnvelope />,
+            badge: cantidadConsultas,
+            onClick: handleClickConsultas,
+          },
         ];
       default:
         return [];
@@ -96,10 +128,14 @@ const Menu = () => {
                   <NavLink
                     to={item.to}
                     key={item.to}
+                    onClick={item.onClick}
                     className="align-items-center py-3 px-4 border-bottom text-decoration-none navhover d-flex w-100"
                   >
                     <span className="me-3">{item.icon}</span>
                     {item.label}
+                    {item.badge > 0 && (
+                      <span className="badge bg-danger ms-2">{item.badge}</span>
+                    )}
                   </NavLink>
                 ))}
                 <Button
@@ -120,4 +156,5 @@ const Menu = () => {
     </Navbar>
   );
 };
+
 export default Menu;
